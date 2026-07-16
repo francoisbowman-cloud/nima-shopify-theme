@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "mag-hero": {
+      "type": "magazine-hero",
+      "settings": {
+        "kicker": "OVL Edition 01",
+        "heading": "Viajar<br>sin ansiedad."
+      }
+    },
+    "mag-grid": {
+      "type": "magazine-grid",
+      "blocks": {
+        "s1": { "type": "side_story", "settings": { "kicker": "Guía", "heading": "Cómo elegir una transportadora sin adivinar.", "text": "Tamaño, ventilación, material y comportamiento." } },
+        "s2": { "type": "side_story", "settings": { "kicker": "Checklist", "heading": "7 cosas antes de salir.", "text": "Una lista simple para evitar estrés innecesario." } },
+        "s3": { "type": "side_story", "settings": { "kicker": "Selección", "heading": "El kit de viaje tranquilo.", "text": "Transportadora, bebedero y manta calmante." } }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    },
+    "ovl-split": {
+      "type": "ovl-story-split",
+      "settings": {}
+    }
+  },
+  "order": ["mag-hero", "mag-grid", "ovl-split"]
+}

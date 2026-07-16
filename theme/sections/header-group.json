@@ -1,0 +1,19 @@
+{
+  "type": "header",
+  "name": "Encabezado",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "Envío gratis desde €50 · Devoluciones fáciles en 30 días"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu"
+      }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

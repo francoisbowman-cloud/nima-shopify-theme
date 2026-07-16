@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {}
+    },
+    "ovl-story": {
+      "type": "product-ovl-story",
+      "settings": {}
+    }
+  },
+  "order": ["main", "ovl-story"]
+}

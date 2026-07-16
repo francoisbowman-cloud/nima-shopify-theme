@@ -1,0 +1,30 @@
+<section class="container" style="padding:60px 0 80px">
+  <h1 style="font-size:clamp(40px,5vw,72px);letter-spacing:-2px;margin:0 0 20px">{{ 'general.search' | t }}</h1>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" style="margin-bottom:40px">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search_placeholder' | t }}"
+      style="padding:14px 18px;border:1px solid var(--line);border-radius:999px;width:min(480px,100%);font-size:16px">
+    <button type="submit" class="btn">{{ 'general.search' | t }}</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- if search.results.size > 0 -%}
+      <p class="muted">{{ search.results.size }} resultado(s) para “{{ search.terms }}”.</p>
+      <div class="product-grid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'product-card', product: item %}
+          {%- else -%}
+            <a class="pcard" href="{{ item.url }}"><h3>{{ item.title }}</h3></a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="empty-state">{{ 'general.no_results' | t: terms: search.terms }}</div>
+    {%- endif -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Búsqueda", "settings": [] }
+{% endschema %}

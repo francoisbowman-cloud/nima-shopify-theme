@@ -1,0 +1,13 @@
+{
+  "type": "footer",
+  "name": "Pie de página",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "tagline": "Utility Commerce × Editorial Commerce × Omni Visual Language"
+      }
+    }
+  },
+  "order": ["footer"]
+}

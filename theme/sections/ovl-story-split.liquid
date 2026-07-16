@@ -1,0 +1,28 @@
+<section class="split">
+  <div class="dark">
+    <span class="kicker">{{ section.settings.left_kicker }}</span>
+    <h2 class="big">{{ section.settings.left_heading }}</h2>
+  </div>
+  <div>
+    <h3 style="font-size:36px">{{ section.settings.right_heading }}</h3>
+    <p class="muted">{{ section.settings.right_text }}</p>
+    {%- if section.settings.button_label != blank -%}
+      <a class="btn" href="{{ section.settings.button_url | default: '#' }}">{{ section.settings.button_label }} →</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "OVL Story (split oscuro)",
+  "settings": [
+    { "type": "text", "id": "left_kicker", "label": "Kicker", "default": "OVL Story" },
+    { "type": "textarea", "id": "left_heading", "label": "Título grande", "default": "No vendemos plástico. Diseñamos tranquilidad." },
+    { "type": "text", "id": "right_heading", "label": "Título derecho", "default": "Producto integrado" },
+    { "type": "textarea", "id": "right_text", "label": "Texto", "default": "La transportadora aparece dentro del contexto exacto en que genera valor." },
+    { "type": "text", "id": "button_label", "label": "Texto del botón", "default": "Ver producto" },
+    { "type": "url", "id": "button_url", "label": "Enlace del botón" }
+  ],
+  "presets": [{ "name": "OVL Story (split oscuro)" }]
+}
+{% endschema %}

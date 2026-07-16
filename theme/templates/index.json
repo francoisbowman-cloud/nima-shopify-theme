@@ -1,0 +1,28 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "kicker": "Bienestar para quienes más amas",
+        "heading": "Comprar rápido. Descubrir mejor.",
+        "text": "Una tienda con dos velocidades: resuelve en segundos o entra en historias, guías y experiencias dirigidas por OVL.",
+        "button_label": "Comprar ahora",
+        "button_url": "shopify://collections/all"
+      }
+    },
+    "split": {
+      "type": "dual-mode-split",
+      "settings": {}
+    },
+    "cards": {
+      "type": "feature-cards",
+      "blocks": {
+        "b1": { "type": "card", "settings": { "heading": "Una sola tienda", "text": "Mismo catálogo, inventario, precios y checkout." } },
+        "b2": { "type": "card", "settings": { "heading": "Dos intenciones", "text": "Resolver con velocidad o descubrir con profundidad." } },
+        "b3": { "type": "card", "settings": { "heading": "Una identidad OVL", "text": "Cada producto recibe una emoción, un lenguaje y un sistema visual propio." } }
+      },
+      "block_order": ["b1", "b2", "b3"]
+    }
+  },
+  "order": ["hero", "split", "cards"]
+}

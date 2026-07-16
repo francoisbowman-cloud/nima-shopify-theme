@@ -1,0 +1,18 @@
+{%- comment -%} Uso: {% render 'product-card', product: product %} {%- endcomment -%}
+<a class="pcard" href="{{ product.url }}">
+  <div class="pcard__media">
+    {%- if product.featured_image != blank -%}
+      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="300" height="375">
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+    {%- endif -%}
+  </div>
+  {%- if product.metafields.ovl.dominant_emotion != blank -%}
+    <span class="kicker">{{ product.metafields.ovl.dominant_emotion }}</span>
+  {%- endif -%}
+  <h3>{{ product.title }}</h3>
+  <div class="price{% if product.compare_at_price > product.price %} price--sale{% endif %}">
+    {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
+    {{ product.price | money }}
+  </div>
+</a>

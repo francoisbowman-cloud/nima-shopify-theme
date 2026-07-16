@@ -1,0 +1,52 @@
+{
+  "general": {
+    "cart": "Bag",
+    "search": "Search",
+    "search_placeholder": "Search products…",
+    "no_results": "No results for “{{ terms }}”.",
+    "pagination": "Pagination",
+    "not_found": "The page you are looking for does not exist or was moved.",
+    "back_home": "Back to home",
+    "password": "Password",
+    "password_error": "Wrong password.",
+    "enter": "Enter",
+    "meta": {
+      "tags": "Tags: {{ tags }}",
+      "page": "Page {{ page }}"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "menu": "Menu",
+    "primary_nav": "Primary navigation",
+    "search": "Search",
+    "account": "Account",
+    "cart": "Cart"
+  },
+  "products": {
+    "variants": "Variants",
+    "add_to_cart": "Add to cart",
+    "adding": "Adding…",
+    "added": "Added ✓",
+    "sold_out": "Sold out"
+  },
+  "collections": {
+    "shop": "Shop",
+    "all": "Collections",
+    "empty": "There are no products in this collection yet."
+  },
+  "cart": {
+    "title": "Your bag",
+    "quantity": "Quantity",
+    "remove": "Remove",
+    "update": "Update",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "empty": "Your bag is empty.",
+    "continue_shopping": "Continue shopping"
+  },
+  "blogs": {
+    "journal": "PetDrop Journal",
+    "read": "Read"
+  }
+}

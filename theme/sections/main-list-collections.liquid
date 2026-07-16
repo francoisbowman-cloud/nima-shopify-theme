@@ -1,0 +1,19 @@
+<section class="container" style="padding:60px 0 80px">
+  <h1 style="font-size:clamp(40px,5vw,72px);letter-spacing:-2px;margin:0 0 30px">{{ 'collections.all' | t }}</h1>
+  <div class="product-grid">
+    {%- for collection in collections -%}
+      <a class="pcard" href="{{ collection.url }}">
+        <div class="pcard__media">
+          {%- if collection.featured_image != blank -%}
+            <img src="{{ collection.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" loading="lazy">
+          {%- endif -%}
+        </div>
+        <h3>{{ collection.title }}</h3>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Lista de colecciones", "settings": [] }
+{% endschema %}

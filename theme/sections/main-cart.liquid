@@ -1,0 +1,56 @@
+<section class="container cart">
+  <h1>{{ 'cart.title' | t }}</h1>
+
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      {%- for item in cart.items -%}
+        <div class="cart-item">
+          <a href="{{ item.url }}">
+            {%- if item.image != blank -%}
+              <img src="{{ item.image | image_url: width: 180 }}" alt="{{ item.title | escape }}" width="90" height="90">
+            {%- endif -%}
+          </a>
+          <div>
+            <a href="{{ item.url }}"><strong>{{ item.product.title }}</strong></a>
+            {%- unless item.variant.title contains 'Default' -%}
+              <div class="muted">{{ item.variant.title }}</div>
+            {%- endunless -%}
+            <div class="muted">{{ item.final_price | money }}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="qty">
+              <input
+                type="number"
+                name="updates[]"
+                value="{{ item.quantity }}"
+                min="0"
+                aria-label="{{ 'cart.quantity' | t }}"
+                data-qty>
+            </div>
+            <div style="margin-top:8px">{{ item.final_line_price | money }}</div>
+            <a class="muted" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+          </div>
+        </div>
+      {%- endfor -%}
+
+      <div class="cart-foot">
+        <button type="submit" name="update" class="btn btn--light">{{ 'cart.update' | t }}</button>
+        <div class="cart-total">{{ 'cart.subtotal' | t }}: {{ cart.total_price | money }}</div>
+      </div>
+
+      <button type="submit" name="checkout" class="add" style="margin-top:24px">{{ 'cart.checkout' | t }}</button>
+    </form>
+  {%- else -%}
+    <div class="empty-state">
+      <p>{{ 'cart.empty' | t }}</p>
+      <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }} →</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Carrito",
+  "settings": []
+}
+{% endschema %}

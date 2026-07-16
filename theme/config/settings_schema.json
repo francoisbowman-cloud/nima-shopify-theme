@@ -1,0 +1,41 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "PetDrop OVL",
+    "theme_version": "1.0.0",
+    "theme_author": "Atlas Comerce",
+    "theme_documentation_url": "https://github.com/",
+    "theme_support_url": "https://github.com/"
+  },
+  {
+    "name": "Colores",
+    "settings": [
+      { "type": "color", "id": "color_bg", "label": "Fondo", "default": "#ffffff" },
+      { "type": "color", "id": "color_text", "label": "Texto", "default": "#111111" },
+      { "type": "color", "id": "color_muted", "label": "Texto atenuado", "default": "#6b6b67" },
+      { "type": "color", "id": "color_line", "label": "Líneas / bordes", "default": "#e9e9e5" },
+      { "type": "color", "id": "color_soft", "label": "Superficie suave", "default": "#f5f6f3" },
+      { "type": "color", "id": "color_accent", "label": "Acento (verde OVL)", "default": "#0c6b45" },
+      { "type": "color", "id": "color_accent_soft", "label": "Acento suave", "default": "#e6f1eb" }
+    ]
+  },
+  {
+    "name": "Tipografía",
+    "settings": [
+      { "type": "font_picker", "id": "heading_font", "label": "Fuente de titulares (serif)", "default": "georgia" },
+      { "type": "font_picker", "id": "body_font", "label": "Fuente de cuerpo (sans)", "default": "helvetica_n4" }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "Ancho máximo de página", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1180 }
+    ]
+  },
+  {
+    "name": "Marca",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+    ]
+  }
+]

@@ -1,0 +1,35 @@
+<section class="container cards">
+  {%- for block in section.blocks -%}
+    <div class="card" {{ block.shopify_attributes }}>
+      <h3>{{ block.settings.heading }}</h3>
+      <p>{{ block.settings.text }}</p>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Tarjetas de valor",
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Tarjeta",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Título", "default": "Una sola tienda" },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "Mismo catálogo, inventario, precios y checkout." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Tarjetas de valor",
+      "blocks": [
+        { "type": "card", "settings": { "heading": "Una sola tienda", "text": "Mismo catálogo, inventario, precios y checkout." } },
+        { "type": "card", "settings": { "heading": "Dos intenciones", "text": "Resolver con velocidad o descubrir con profundidad." } },
+        { "type": "card", "settings": { "heading": "Una identidad OVL", "text": "Cada producto recibe una emoción, un lenguaje y un sistema visual propio." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

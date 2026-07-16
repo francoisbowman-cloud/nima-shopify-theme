@@ -1,0 +1,44 @@
+<header class="container nav">
+  <a class="logo" href="{{ routes.root_url }}">
+    {%- if section.settings.logo != blank -%}
+      <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="120" height="auto">
+    {%- else -%}
+      {{ shop.name }}.
+    {%- endif -%}
+  </a>
+
+  <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="{{ 'accessibility.menu' | t }}">≡</button>
+
+  <nav class="navlinks" data-navlinks aria-label="{{ 'accessibility.primary_nav' | t }}">
+    {%- for link in section.settings.menu.links -%}
+      <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+    {%- endfor -%}
+  </nav>
+
+  <div class="actions">
+    <a href="{{ routes.search_url }}" aria-label="{{ 'accessibility.search' | t }}">⌕</a>
+    <a href="{{ routes.account_url }}" aria-label="{{ 'accessibility.account' | t }}">♡</a>
+    <a href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
+      {{ 'general.cart' | t }} <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+    </a>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Encabezado",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo (opcional)"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menú",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

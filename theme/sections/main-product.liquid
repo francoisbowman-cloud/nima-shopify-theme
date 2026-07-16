@@ -1,0 +1,103 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+-%}
+
+<section class="product">
+  <div class="gallery">
+    <div class="gallery__main">
+      {%- if product.featured_image != blank -%}
+        <img
+          data-gallery-main
+          src="{{ current_variant.featured_image | default: product.featured_image | image_url: width: 1200 }}"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          loading="eager">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+      {%- endif -%}
+    </div>
+    {%- if product.images.size > 1 -%}
+      <div class="gallery__thumbs">
+        {%- for image in product.images limit: 6 -%}
+          <button type="button" data-gallery-thumb data-full="{{ image | image_url: width: 1200 }}" aria-label="Ver imagen {{ forloop.index }}">
+            <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | escape }}" width="64" height="64" loading="lazy">
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="buy">
+    {%- assign kicker = product.metafields.ovl.dominant_emotion -%}
+    {%- if kicker != blank -%}
+      <span class="kicker">{{ product.type | default: 'Producto' }} / {{ kicker }}</span>
+    {%- elsif product.type != blank -%}
+      <span class="kicker">{{ product.type }}</span>
+    {%- endif -%}
+
+    <h1>{{ product.title }}</h1>
+
+    {%- if product.metafields.ovl.functional_benefit != blank -%}
+      <p class="muted">{{ product.metafields.ovl.functional_benefit }}</p>
+    {%- endif -%}
+
+    <div class="price{% if current_variant.compare_at_price > current_variant.price %} price--sale{% endif %}">
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+        <s>{{ current_variant.compare_at_price | money }}</s>
+      {%- endif -%}
+      <span data-price>{{ current_variant.price | money }}</span>
+    </div>
+
+    {%- if section.settings.highlights != blank -%}
+      <p>{{ section.settings.highlights }}</p>
+    {%- endif -%}
+
+    {% form 'product', product, data-product-form: 'true' %}
+      {%- unless product.has_only_default_variant -%}
+        <div class="options" role="radiogroup" aria-label="{{ 'products.variants' | t }}">
+          {%- for variant in product.variants -%}
+            <label class="option{% if variant.id == current_variant.id %} active{% endif %}">
+              <input
+                type="radio"
+                name="variant_selector"
+                value="{{ variant.id }}"
+                data-variant-option
+                {% if variant.id == current_variant.id %}checked{% endif %}
+                {% unless variant.available %}disabled{% endunless %}>
+              {{ variant.title }}
+            </label>
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
+
+      <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+      <button
+        type="submit"
+        class="add"
+        data-add-btn
+        data-adding="{{ 'products.adding' | t }}"
+        data-added="{{ 'products.added' | t }}"
+        {% unless current_variant.available %}disabled{% endunless %}>
+        {%- if current_variant.available -%}{{ 'products.add_to_cart' | t }}{%- else -%}{{ 'products.sold_out' | t }}{%- endif -%}
+      </button>
+    {% endform %}
+
+    <div class="trust">
+      {%- if section.settings.delivery_note != blank -%}<span>{{ section.settings.delivery_note }}</span>{%- endif -%}
+      {%- if section.settings.returns_note != blank -%}<span>{{ section.settings.returns_note }}</span>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Producto — Compra rápida",
+  "settings": [
+    { "type": "text", "id": "highlights", "label": "Bullets / destacados", "default": "Ventilación amplia · cierre seguro · asa ergonómica · superficie lavable" },
+    { "type": "text", "id": "delivery_note", "label": "Nota de entrega", "default": "Entrega estimada: 3–7 días laborables." },
+    { "type": "text", "id": "returns_note", "label": "Nota de devolución", "default": "Devoluciones fáciles en 30 días." }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,63 @@
+<section class="container mag-grid">
+  <article class="feature{% if section.settings.feature_image != blank %} feature--image{% endif %}"
+    {% if section.settings.feature_image != blank %}style="background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.55)),url('{{ section.settings.feature_image | image_url: width: 1400 }}')"{% endif %}>
+    <span class="kicker">{{ section.settings.feature_kicker }}</span>
+    <h2>{{ section.settings.feature_heading }}</h2>
+    <p>{{ section.settings.feature_text }}</p>
+    {%- if section.settings.feature_button_label != blank -%}
+      <a class="btn" href="{{ section.settings.feature_button_url | default: '#' }}">{{ section.settings.feature_button_label }} →</a>
+    {%- endif -%}
+  </article>
+
+  <aside>
+    {%- for block in section.blocks -%}
+      <div class="side-story" {{ block.shopify_attributes }}>
+        <span class="kicker">{{ block.settings.kicker }}</span>
+        <h3>{{ block.settings.heading }}</h3>
+        {%- if block.settings.url != blank -%}
+          <a href="{{ block.settings.url }}"><p class="muted">{{ block.settings.text }}</p></a>
+        {%- else -%}
+          <p class="muted">{{ block.settings.text }}</p>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </aside>
+</section>
+
+{% schema %}
+{
+  "name": "Magazine — Grid",
+  "settings": [
+    { "type": "header", "content": "Historia principal" },
+    { "type": "text", "id": "feature_kicker", "label": "Kicker", "default": "Historia principal" },
+    { "type": "textarea", "id": "feature_heading", "label": "Título", "default": "El primer viaje no empieza en el coche." },
+    { "type": "textarea", "id": "feature_text", "label": "Texto", "default": "Empieza cuando tu mascota entiende que ese espacio también puede ser seguro." },
+    { "type": "text", "id": "feature_button_label", "label": "Texto del botón", "default": "Leer y preparar el viaje" },
+    { "type": "url", "id": "feature_button_url", "label": "Enlace del botón" },
+    { "type": "image_picker", "id": "feature_image", "label": "Imagen de fondo (opcional)" }
+  ],
+  "blocks": [
+    {
+      "type": "side_story",
+      "name": "Nota lateral",
+      "settings": [
+        { "type": "text", "id": "kicker", "label": "Kicker", "default": "Guía" },
+        { "type": "text", "id": "heading", "label": "Título", "default": "Cómo elegir una transportadora sin adivinar." },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "Tamaño, ventilación, material y comportamiento." },
+        { "type": "url", "id": "url", "label": "Enlace" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Magazine — Grid",
+      "blocks": [
+        { "type": "side_story", "settings": { "kicker": "Guía", "heading": "Cómo elegir una transportadora sin adivinar.", "text": "Tamaño, ventilación, material y comportamiento." } },
+        { "type": "side_story", "settings": { "kicker": "Checklist", "heading": "7 cosas antes de salir.", "text": "Una lista simple para evitar estrés innecesario." } },
+        { "type": "side_story", "settings": { "kicker": "Selección", "heading": "El kit de viaje tranquilo.", "text": "Transportadora, bebedero y manta calmante." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,15 @@
+<section class="container mag-hero">
+  {%- if section.settings.kicker != blank -%}<span class="kicker">{{ section.settings.kicker }}</span>{%- endif -%}
+  <h1>{{ section.settings.heading }}</h1>
+</section>
+
+{% schema %}
+{
+  "name": "Magazine — Hero",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "OVL Edition 01" },
+    { "type": "html", "id": "heading", "label": "Título (permite <br>)", "default": "Viajar<br>sin ansiedad." }
+  ],
+  "presets": [{ "name": "Magazine — Hero" }]
+}
+{% endschema %}
