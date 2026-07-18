@@ -6,6 +6,13 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-17 (tanda 3 — decisión de moneda)
+
+### Changed
+- Moneda de la tienda cambiada de DOP a USD en el admin de Shopify, siguiendo la
+  recomendación de `docs/07_INVESTIGACION_DECISIONES_DE_NEGOCIO.md` (sección 3).
+  Confirmado por API de solo lectura tras el cambio.
+
 ## [Unreleased] - 2026-07-17 (tanda 2 — auditoría técnica + investigación de negocio)
 
 ### Fixed

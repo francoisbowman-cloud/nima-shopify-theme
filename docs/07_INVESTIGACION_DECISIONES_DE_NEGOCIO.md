@@ -27,10 +27,9 @@ falta, sin dar por sentado que ya conocés la jerga.
    proveedor original tiene fotos o no.
 2. **Revisar en AutoDS el desfase de 15 vs 13 productos** (sección 2) usando la
    lista de 13 que te dejo, para encontrar cuáles 2 nunca llegaron a Shopify.
-3. **Decidir moneda: DOP o USD** (sección 3) — te dejo mi recomendación (cambiar a
-   USD). Si estás de acuerdo, el cambio se hace en el admin de Shopify:
-   **Configuración → General → Moneda de la tienda**. Es un combo desplegable, elegís
-   "USD - Dólar estadounidense" y guardás. No requiere tocar código.
+3. ~~**Decidir moneda: DOP o USD**~~ — **Hecho (17/07/2026).** Brey cambió la moneda
+   de la tienda a USD desde el admin de Shopify, siguiendo la recomendación de abajo.
+   Confirmado por API.
 4. **Configurar el mercado "Estados Unidos"** (sección 4): **Configuración →
    Mercados** en el admin de Shopify. "Mercado" es el término que usa Shopify para
    una región de venta (moneda, idioma, métodos de pago propios de esa región). Con
@@ -131,7 +130,11 @@ lista real del lado de Shopify (arriba), que es distinto al que veníamos usando
 
 ## 3. Moneda: DOP vs USD — recomendación
 
-**Estado actual confirmado:** la tienda está configurada en pesos dominicanos (DOP).
+**✅ Resuelto (17/07/2026):** Brey cambió la moneda de la tienda a USD, siguiendo la
+recomendación de abajo. Confirmado por API — `currencyCode` de la tienda es ahora `USD`.
+Se deja el razonamiento completo como registro de por qué se tomó esta decisión.
+
+**Estado antes del cambio:** la tienda estaba configurada en pesos dominicanos (DOP).
 
 **Hallazgo clave (documentación pública de Shopify):** Shopify Payments **no está
 disponible para comercios registrados en República Dominicana** — no figura en la

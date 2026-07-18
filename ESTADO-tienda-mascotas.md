@@ -41,6 +41,7 @@ proveedor(es) de dropshipping, mercados de envío, métodos de pago]
 | 9 | 4 descripciones de producto reescritas por contener basura de scraping | Chat |
 | 10 | Metafields `ovl.*` cargados en 9 productos activos/draft | Chat |
 | 11 | Se descarta la división de trabajo entre actores (Cowork/Code) para las tareas pendientes — Code continúa solo con todo, incluida la investigación de decisiones de negocio (sin ejecutar login a cuentas externas) | Brey |
+| 12 | Moneda de la tienda cambiada de DOP a USD, siguiendo la recomendación de Code | Brey |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -88,7 +89,7 @@ manuales a Shopify/AutoDS + el `theme push` final).
   Shopify (9 Draft + 4 Archived), no 11+4 como se pensaba — de los 15 supuestamente
   importados en AutoDS, 2 no llegaron en ningún estado. Falta que Brey cruce la
   lista de 13 (en `docs/07_...md`, sección 2) contra su lista de 15 en AutoDS.
-- Moneda DOP vs USD: recomendación lista (cambiar a USD) — decisión final de Brey.
+- ~~Moneda DOP vs USD~~ — **hecho**: Brey cambió la moneda de la tienda a USD (confirmado por API el 17/07).
 - Mercados de envío, métodos de pago (Shopify Payments no disponible para RD —
   se necesita PayPal o Payoneer Checkout), políticas de devolución/envío — propuesta
   completa lista para pegar en el admin, ver `docs/07_...md`, sección 4.
