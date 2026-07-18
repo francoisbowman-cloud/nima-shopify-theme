@@ -1,5 +1,5 @@
 # Estado del proyecto: [NOMBRE PENDIENTE — codename temporal: PetDrop]
-Última actualización: 17 de julio de 2026 — por: Code
+Última actualización: 18 de julio de 2026 — por: Code
 Nivel: **Producto**, dentro del sistema **Atlas Comerce** (ver `ESTADO-atlas-comerce.md`, Project Atlas-Comerce-Lab)
 
 ---
@@ -42,6 +42,7 @@ proveedor(es) de dropshipping, mercados de envío, métodos de pago]
 | 10 | Metafields `ovl.*` cargados en 9 productos activos/draft | Chat |
 | 11 | Se descarta la división de trabajo entre actores (Cowork/Code) para las tareas pendientes — Code continúa solo con todo, incluida la investigación de decisiones de negocio (sin ejecutar login a cuentas externas) | Brey |
 | 12 | Moneda de la tienda cambiada de DOP a USD, siguiendo la recomendación de Code | Brey |
+| 13 | Cuenta PayPal Business creada como cuenta independiente (no conversión de la personal), bajo el nombre "Atlas Commerce" (grafía corregida, dos "m" — corrige el error ortográfico "Comerce" usado hasta ahora en la documentación del sistema). Se prioriza no bloquear el lanzamiento de PetDrop; el nombre de marca de Atlas Commerce en sí queda pendiente de reconsideración a futuro | Brey |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -93,8 +94,16 @@ manuales a Shopify/AutoDS + el `theme push` final).
 - Mercados de envío, métodos de pago (Shopify Payments no disponible para RD —
   se necesita PayPal o Payoneer Checkout), políticas de devolución/envío — propuesta
   completa lista para pegar en el admin, ver `docs/07_...md`, sección 4.
+  - Cuenta PayPal Business ya creada ("Atlas Commerce", independiente de la personal) —
+    falta conectarla en el admin de Shopify y **verificar en el checkout que el nombre
+    visible al cliente sea "PetDrop"**, independientemente de que el back-end de PayPal
+    esté a nombre de "Atlas Commerce".
 - `theme push` a Shopify requiere login OAuth interactivo — no ejecutable por Code, lo corre Brey manualmente.
 - Acceso al admin de Shopify (mercados/pagos) y al panel de AutoDS — fuera del alcance de Code, requieren login manual de Brey.
+- Corrección documental pendiente (a nivel sistema, no de este repo): "Atlas Comerce" →
+  "Atlas Commerce" (dos "m") en `ESTADO-atlas-comerce.md`, nombre del Project
+  ("Atlas-Comerce-Lab") y referencias cruzadas. Se posterga junto con la reconsideración
+  general del nombre de marca (decisión #13) para no hacer dos pasadas de renombrado.
 
 ---
 

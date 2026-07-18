@@ -6,6 +6,19 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-18 (tanda 4 — cuenta PayPal Business)
+
+### Added
+- Cuenta PayPal Business creada como cuenta independiente (no conversión de la
+  personal), bajo el nombre "Atlas Commerce" (grafía corregida, dos "m").
+
+### Known issues / Pending
+- Falta conectar la cuenta PayPal en el admin de Shopify y verificar en el checkout
+  que el nombre visible al cliente sea "PetDrop", no "Atlas Commerce".
+- Corrección documental pendiente a nivel sistema: "Atlas Comerce" → "Atlas Commerce"
+  en `ESTADO-atlas-comerce.md` y el nombre del Project — se pospone junto con la
+  reconsideración general del nombre de marca.
+
 ## [Unreleased] - 2026-07-17 (tanda 3 — decisión de moneda)
 
 ### Changed
