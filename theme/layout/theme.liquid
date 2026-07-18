@@ -41,8 +41,10 @@
       }
     {%- endstyle -%}
 
-    {%- if settings.body_font != blank -%}{{ settings.body_font | font_face: font_display: 'swap' }}{%- endif -%}
-    {%- if settings.heading_font != blank -%}{{ settings.heading_font | font_face: font_display: 'swap' }}{%- endif -%}
+    {%- style -%}
+      {%- if settings.body_font != blank -%}{{ settings.body_font | font_face: font_display: 'swap' }}{%- endif -%}
+      {%- if settings.heading_font != blank -%}{{ settings.heading_font | font_face: font_display: 'swap' }}{%- endif -%}
+    {%- endstyle -%}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'global.js' | asset_url }}" defer></script>

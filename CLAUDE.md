@@ -78,3 +78,41 @@ El conjunto completo previsto (story_id, risk_level, etc.) está en `docs/04_MOD
 
 - Español como idioma por defecto (`es.default.json`); inglés disponible (`en.json`).
 - No hay tests ni CI configurados — verificación es manual vía `shopify theme dev` / `theme check`.
+
+## Colores y tipografía: dónde viven y por qué NO deben duplicarse
+
+Los custom properties de color/tipografía (`--bg`, `--text`, `--green`, `--serif`, `--sans`, etc.)
+se definen **una sola vez**, dinámicamente, en un bloque `{%- style -%}...{%- endstyle -%}` dentro
+de `:root` en `layout/theme.liquid` y `layout/password.liquid`, leyendo de `settings.*`
+(`config/settings_data.json` vía `config/settings_schema.json`).
+
+`assets/base.css` se carga **después** de ese bloque inline en el `<head>` (mismo orden en
+ambos layouts). Si `base.css` redeclara esos mismos custom properties en su propio `:root`
+con valores fijos, esas declaraciones ganan la cascada (mismo selector, llegan después) y
+**pisan silenciosamente** los valores configurados en el Customizer — el color de acento o
+la tipografía elegida dejan de reflejarse aunque `settings_data.json` esté bien. Esto ya pasó
+una vez (color verde `#0c6b45` hardcodeado sobreviviendo al cambio de paleta) — `base.css`
+no debe volver a tener un bloque `:root{...}` con estos tokens; solo los layouts los definen.
+
+`font_face` (filtro de Liquid para `settings.heading_font` / `settings.body_font`) genera
+**CSS crudo** (una declaración `@font-face`), no HTML — por eso siempre tiene que ir envuelto
+en `{%- style -%}...{%- endstyle -%}` (o `<style>...</style>`). Si se llama suelto en el
+`<head>`, el navegador lo renderiza como texto plano visible en la página en vez de aplicarlo.
+Ambos layouts (`theme.liquid`, `password.liquid`) ya lo hacen así — mantené el patrón si se
+agregan más fuentes o layouts.
+
+Nota de diseño (no bug): `.hero h1` en `assets/base.css` no fija `font-family` — hereda el
+`--sans` del body por diseño heredado del prototipo original (igual que `prototype/styles.css`).
+Solo `.big`, `.mag-hero h1` y `.story h2` usan `--serif`. Si el Hero debería usar la tipografía
+de titulares (serif), es una decisión de diseño a confirmar con el producto, no un fix de código.
+
+## Atributos `width`/`height` en `<img>`: deben ser números, no "auto"
+
+El atributo HTML `height` (o `width`) espera un entero en píxeles — `height="auto"` es un
+valor inválido que el navegador simplemente ignora (no rompe la página, pero tampoco reserva
+espacio y hace inútil el atributo). Si necesitás que la imagen escale proporcionalmente,
+poné las dimensiones reales del archivo en los atributos (`{{ image.width }}` / `{{ image.height }}`,
+para el aspect-ratio) y el ancho/alto final deseado en `style` (`style="width:120px;height:auto"`),
+como se hizo en `sections/header.liquid` para el logo. El linter de `theme check`
+(`ImgWidthAndHeight`) solo verifica que el atributo *exista*, no que su valor sea válido —
+no asumas que pasar ese chequeo significa que el markup es correcto.

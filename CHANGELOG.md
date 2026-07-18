@@ -6,6 +6,44 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-17 (tanda 2 — auditoría técnica + investigación de negocio)
+
+### Fixed
+- `sections/header.liquid`: el logo tenía `height="auto"`, un valor inválido para
+  ese atributo HTML (debe ser un entero). El linter de `ImgWidthAndHeight` no lo
+  detectaba porque solo chequea que el atributo exista, no que su valor sea válido.
+  Se corrigió usando las dimensiones reales de la imagen + `style="width:120px;height:auto"`.
+
+### Added
+- `docs/07_INVESTIGACION_DECISIONES_DE_NEGOCIO.md`: investigación de las 4 decisiones
+  de negocio pendientes (imágenes faltantes, desfase de conteo AutoDS→Shopify,
+  recomendación de moneda DOP vs USD, propuesta de mercados/pagos/políticas), más
+  la lista final de acciones manuales para Brey.
+- Auditoría técnica completa: se revisaron todos los templates/secciones no
+  chequeados en la tanda anterior (Magazine, Catálogo, carrito, header, footer,
+  blog, búsqueda, 404) — la limpieza de `base.css` de la tanda 1 no rompió nada ahí.
+  Se verificó también que `es.default.json`/`en.json` tienen las mismas 36 claves
+  y que ninguna clave de traducción usada en el Liquid del theme está ausente.
+
+### Investigated (hallazgos confirmados vía API de solo lectura contra
+  `petdrop-9236.myshopify.com`, sin escribir nada)
+- Las 4 fichas sin imagen (Cat Litter Mat, Dog Birthday Hat, Dog Car Seat Cover,
+  Dog Water Bottle) tienen `images: []` en Shopify — cero imágenes cargadas, no es
+  un problema de theme ni de caché.
+- La tienda tiene 13 productos en total (9 Draft + 4 Archived), no 11 Draft + 4
+  Archived como decía el registro anterior. De los 15 supuestamente importados en
+  AutoDS, 2 no llegaron a Shopify en ningún estado — lista completa de los 13
+  existentes en `docs/07_...md` para cruzar contra AutoDS.
+- Shopify Payments no está disponible para comercios registrados en República
+  Dominicana (confirmado en la documentación pública de Shopify) — aplica sin
+  importar la moneda de la tienda; hace falta un gateway de terceros (PayPal o
+  Payoneer Checkout recomendados).
+
+### Known issues / Pending (sin cambios respecto a la tanda anterior salvo lo de arriba)
+- Moneda, mercados, métodos de pago y políticas: recomendación lista en
+  `docs/07_INVESTIGACION_DECISIONES_DE_NEGOCIO.md`, decisión y ejecución pendientes de Brey.
+- `theme push` sigue sin poder ejecutarse desde este entorno (requiere login OAuth interactivo).
+
 ## [Unreleased] - 2026-07-17
 
 ### Added

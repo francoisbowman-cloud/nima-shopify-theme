@@ -67,21 +67,31 @@ Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la ra
 ---
 
 ## 6. Próximo paso
-Code (sin división de actores desde la decisión #11) está ejecutando en esta sesión:
-auditoría técnica completa del theme, investigación de las decisiones de negocio
-pendientes (imágenes faltantes, desfase de conteo AutoDS, moneda DOP/USD, mercados/pagos/
-políticas), y va a dejar una lista final de acciones manuales para Brey (logins y CLI).
-Esta sección se cierra con el resultado concreto al terminar esa tanda de trabajo.
+Todo lo técnicamente resoluble por Code está hecho: auditoría completa del theme
+(sin roturas encontradas fuera de un bug menor ya corregido — logo del header con
+`height="auto"` inválido), `theme check` limpio, e investigación de las 4 decisiones
+de negocio pendientes con datos reales de la tienda (no solo preguntas genéricas).
+Ver el detalle completo y la lista de acciones ordenada en
+`docs/07_INVESTIGACION_DECISIONES_DE_NEGOCIO.md`, sección 0.
+Próximo paso real: que Brey ejecute esa lista (decisiones de producto + logins
+manuales a Shopify/AutoDS + el `theme push` final).
 
 ---
 
 ## 7. Pendientes / preguntas abiertas
 - Nombre de marca y dominio.
 - 4 productos sin imagen real (Cat Litter Mat, Dog Birthday Hat, Dog Car Seat Cover,
-  Dog Water Bottle) — investigación en curso, ver `CHANGELOG.md`.
-- Desfase de conteo AutoDS→Shopify (15 importados, 11 sincronizados) — investigación en curso.
-- Moneda DOP vs USD — investigación en curso.
-- Mercados de envío, métodos de pago, políticas de devolución sin configurar — propuesta en curso.
+  Dog Water Bottle) — confirmado por API que no tienen ninguna imagen cargada en
+  Shopify; falta que Brey revise en AutoDS si el proveedor tiene fotos o no
+  (ver `docs/07_...md`, sección 1).
+- Desfase de conteo AutoDS→Shopify: confirmado por API que hay 13 productos en
+  Shopify (9 Draft + 4 Archived), no 11+4 como se pensaba — de los 15 supuestamente
+  importados en AutoDS, 2 no llegaron en ningún estado. Falta que Brey cruce la
+  lista de 13 (en `docs/07_...md`, sección 2) contra su lista de 15 en AutoDS.
+- Moneda DOP vs USD: recomendación lista (cambiar a USD) — decisión final de Brey.
+- Mercados de envío, métodos de pago (Shopify Payments no disponible para RD —
+  se necesita PayPal o Payoneer Checkout), políticas de devolución/envío — propuesta
+  completa lista para pegar en el admin, ver `docs/07_...md`, sección 4.
 - `theme push` a Shopify requiere login OAuth interactivo — no ejecutable por Code, lo corre Brey manualmente.
 - Acceso al admin de Shopify (mercados/pagos) y al panel de AutoDS — fuera del alcance de Code, requieren login manual de Brey.
 

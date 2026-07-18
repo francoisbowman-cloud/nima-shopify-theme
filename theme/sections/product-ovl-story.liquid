@@ -18,7 +18,7 @@
           height="{{ section.settings.image.height }}"
           loading="lazy">
       {%- elsif product.images[1] != blank -%}
-        <img src="{{ product.images[1] | image_url: width: 1200 }}" alt="{{ product.title | escape }}" loading="lazy">
+        <img src="{{ product.images[1] | image_url: width: 1200 }}" alt="{{ product.title | escape }}" width="{{ product.images[1].width }}" height="{{ product.images[1].height }}" loading="lazy">
       {%- endif -%}
     </div>
     <div>
@@ -43,7 +43,7 @@
 
 {% schema %}
 {
-  "name": "Producto — Experiencia OVL",
+  "name": "Experiencia OVL",
   "settings": [
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Descubre por qué fue diseñada así" },
     { "type": "textarea", "id": "heading", "label": "Título grande", "default": "La tranquilidad no se añade al final. Se construye desde el primer detalle." },

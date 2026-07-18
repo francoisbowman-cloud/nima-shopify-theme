@@ -2,7 +2,7 @@
   <span class="kicker">{{ article.published_at | date: '%d %b %Y' }}</span>
   <h1 style="font-family:var(--serif);font-size:clamp(40px,6vw,84px);line-height:1;margin:8px 0 30px">{{ article.title }}</h1>
   {%- if article.image != blank -%}
-    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.title | escape }}" style="border-radius:4px;margin-bottom:40px" loading="eager">
+    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.title | escape }}" width="{{ article.image.width }}" height="{{ article.image.height }}" style="border-radius:4px;margin-bottom:40px" loading="eager">
   {%- endif -%}
   <div class="rte">{{ article.content }}</div>
 </article>

@@ -5,7 +5,7 @@
       <a class="pcard" href="{{ collection.url }}">
         <div class="pcard__media">
           {%- if collection.featured_image != blank -%}
-            <img src="{{ collection.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" loading="lazy">
+            <img src="{{ collection.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" width="{{ collection.featured_image.width }}" height="{{ collection.featured_image.height }}" loading="lazy">
           {%- endif -%}
         </div>
         <h3>{{ collection.title }}</h3>
