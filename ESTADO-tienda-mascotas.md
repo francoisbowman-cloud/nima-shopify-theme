@@ -1,14 +1,15 @@
-# Estado del proyecto: [NOMBRE PENDIENTE — codename temporal: PetDrop]
-Última actualización: 18 de julio de 2026 — por: Code
-Nivel: **Producto**, dentro del sistema **Atlas Comerce** (ver `ESTADO-atlas-comerce.md`, Project Atlas-Comerce-Lab)
+# Estado del proyecto: Nima
+Dominio: `nimapets.com` (comprado y conectado a Shopify — DNS verificado, SSL activo)
+Codename histórico: `PetDrop` (reemplazado — ver decisión #18)
+Última actualización: 19 de julio de 2026 — por: Code
+Nivel: **Producto**, dentro del sistema **Atlas Commerce** (ver `ESTADO-atlas-commerce.md`, Project Atlas-Commerce-Lab)
 
 ---
 
 ## 1. Objetivo del proyecto
 Tienda de dropshipping de artículos para mascotas, sobre Shopify.
-Segundo producto confirmado del sistema Atlas Comerce, junto a Aromia.
-[Completar: propuesta de valor, nicho específico dentro de "mascotas"
-si ya está definido — tipo de producto, mercado objetivo]
+Segundo producto confirmado del sistema Atlas Commerce, junto a Aromia.
+Nicho: bienestar para mascotas (pet wellness).
 
 ---
 
@@ -17,12 +18,17 @@ si ya está definido — tipo de producto, mercado objetivo]
 **Diferencia clave frente a Aromia — anotar explícitamente para que no
 se asuma lo contrario:**
 - **SÍ incluye venta directa transaccional** (carrito, checkout, pagos)
-  — a diferencia de Aromia, que la excluye por completo. Atlas Comerce
+  — a diferencia de Aromia, que la excluye por completo. Atlas Commerce
   como sistema no impone un modelo de negocio único a sus productos;
   cada uno define el propio.
 
-[Completar con Cowork: alcance específico — catálogo inicial,
-proveedor(es) de dropshipping, mercados de envío, métodos de pago]
+- Plataforma: **Shopify Basic**, tienda `petdrop-9236.myshopify.com` (el
+  subdominio interno se mantiene aunque la marca ya no se llame PetDrop —
+  no requiere migración).
+- Proveedor de dropshipping: **AutoDS Starter 500**.
+- Mercado geográfico de envío: **Estados Unidos** (único mercado activo).
+- Moneda: **USD**.
+- Método de pago: **PayPal Business** (único, ver decisión #17).
 
 ---
 
@@ -42,7 +48,20 @@ proveedor(es) de dropshipping, mercados de envío, métodos de pago]
 | 10 | Metafields `ovl.*` cargados en 9 productos activos/draft | Chat |
 | 11 | Se descarta la división de trabajo entre actores (Cowork/Code) para las tareas pendientes — Code continúa solo con todo, incluida la investigación de decisiones de negocio (sin ejecutar login a cuentas externas) | Brey |
 | 12 | Moneda de la tienda cambiada de DOP a USD, siguiendo la recomendación de Code | Brey |
-| 13 | Cuenta PayPal Business creada como cuenta independiente (no conversión de la personal), bajo el nombre "Atlas Commerce" (grafía corregida, dos "m" — corrige el error ortográfico "Comerce" usado hasta ahora en la documentación del sistema). Se prioriza no bloquear el lanzamiento de PetDrop; el nombre de marca de Atlas Commerce en sí queda pendiente de reconsideración a futuro | Brey |
+| 13 | Cuenta PayPal Business creada como cuenta independiente (no conversión de la personal), para mantener separadas las finanzas personales de las del negocio | Brey |
+| 14 | Plataforma confirmada: Shopify Basic + AutoDS Starter 500 | Brey |
+| 15 | Nicho definido: bienestar para mascotas (pet wellness) | Brey |
+| 16 | Mercado de envío único: Estados Unidos | Brey |
+| 17 | Método de pago: **PayPal Business** único. Payoneer Checkout fue evaluado como secundario y **descartado**: requiere entidad legal en Hong Kong y volumen mensual mínimo de $10,000-$20,000, la tienda no califica. PayPal solo alcanza para lanzar (admite checkout de invitado con tarjeta) | Chat, investigado y confirmado con Brey |
+| 18 | **Nombre de marca final: "Nima"** (marca corta — logo, checkout, redes sociales, "Nombre de la empresa" en PayPal). **Dominio: "nimapets.com"** (comprado, conectado a Shopify vía DNS en Namecheap, SSL verificado). Reemplaza el codename `PetDrop`. Nombres descartados en el proceso: Numa/Luma (colisión con marcas de otros rubros), Amble/Wilo/Kova (dominio `.com` tomado por empresas activas) | Brey, con investigación de Chat |
+| 19 | Cuenta PayPal Business: "Nombre de la empresa" = **"Nima"** (lo que ve el cliente en su estado de cuenta de tarjeta, evita contracargos por "cargo no reconocido"). "Nombre comercial (opcional)" = **"Atlas Commerce"** (marca paraguas). Categoría/giro: **"Tiendas de mascotas, comida y suministros para mascotas"** | Chat, aprobado por Brey |
+| 20 | Zona de envío "Estados Unidos" + tarifa "Free Shipping" $0.00 agregada al perfil "AutoDS Free Shipping" — ambos perfiles de envío (general + AutoDS Free Shipping) quedan completos y verificados por API | Chat |
+| 21 | Desfase de conteo AutoDS↔Shopify (15 vs 13) resuelto definitivamente: no eran productos faltantes, eran variantes (12 productos con 1 variante + Anti-Splash Water Bowl con 3 variantes = 15 variantes, 13 productos). Cerrado, no requiere más investigación | Chat |
+| 22 | 8 productos nuevos importados desde AutoDS como reemplazo de los 4 archivados sin imagen (Calming Cat Bed, Rabbit Chew Ball, Dog Poop Bags 280ct, Pet Grooming Gloves, Dog Grooming Scissors, Dog Leash, Portable Pet Grooming Hammock, Benat Pets Bath Towel), más 1 producto adicional que llegó sin documentar en su momento (Dog First Christmas Bandana) | Brey (import), Chat (limpieza posterior) |
+| 23 | Auditoría completa de contenido del catálogo (14 productos activos) tras hallazgo de Code de marcas de competidores reales coladas en descripciones vía scraping de AutoDS (Calming Cat Bed y Rabbit Chew Ball) — se ampliaron los hallazgos a 8 productos con problemas reales, todos corregidos; ver tabla en sección 6 y detalle en `CHANGELOG.md` | Chat, con hallazgo inicial de Code |
+| 24 | Los 14 productos activos se dejan publicados (Active) tras la limpieza de contenido — decisión explícita de no revertirlos a Draft | Brey, ejecutado por Chat |
+| 25 | Rebranding del theme `PetDrop_OVL`: todo el texto hardcodeado que decía "PetDrop" (visible al cliente: "PetDrop Journal" en el blog; interno: `theme_name`, preset, comentarios de `base.css`/`global.js`/`README.md`) cambiado a "Nima" — el `theme push` final a Shopify sigue pendiente (bloqueado por falta de login OAuth interactivo, lo ejecuta Brey) | Code |
+| 26 | Corrección ortográfica "Atlas Comerce" → "Atlas Commerce" aplicada en los documentos vivos de este repo (`ESTADO`, `CLAUDE.md`, `CHANGELOG.md`) y a nivel sistema (`ESTADO-atlas-comerce.md` renombrado a `ESTADO-atlas-commerce.md`, referencias corregidas en `ESTADO-aromia.md` y en `PROTOCOLO-comunicacion-actores.md`, actualizado a v2). Pendiente solo el renombrado del Project de claude.ai en la UI — acción manual de Brey | Code |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -52,10 +71,11 @@ Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la ra
 
 | Artefacto | Actor que lo creó | Ubicación/link |
 |---|---|---|
-| Sesión Cowork "Shopify store setup" | Cowork | [pegar link] |
-| Theme `PetDrop_OVL` (unpublished) | Chat (push) + Code (fixes) | Shopify admin, tienda `petdrop-9236.myshopify.com`, theme ID `198713933905` |
+| Theme `PetDrop_OVL` (unpublished, rebrandeado internamente a "Nima") | Chat (push) + Code (fixes + rebrand) | Shopify admin, tienda `petdrop-9236.myshopify.com`, theme ID `198713933905` |
 | `CHANGELOG.md` (raíz del repo) | Code | Historial detallado de cambios técnicos, actualizado por tanda |
 | `CLAUDE.md` (raíz del repo) | Code | Memoria técnica del repo (arquitectura, convenciones, causas raíz de bugs) |
+| `07_INVESTIGACION_DECISIONES_DE_NEGOCIO.md` | Code | Repo del proyecto, `docs/` |
+| Dominio `nimapets.com` | Brey (compra) | Registrador: Namecheap — conectado a Shopify |
 
 ---
 
@@ -63,48 +83,64 @@ Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la ra
 
 | Dependencia | Tipo | Referencia |
 |---|---|---|
-| **Sistema Atlas Comerce** | Sistema padre | `ESTADO-atlas-comerce.md` — Project Atlas-Comerce-Lab |
+| **Sistema Atlas Commerce** | Sistema padre | `ESTADO-atlas-commerce.md` — Project Atlas-Commerce-Lab |
 | **Image Toolkit** | Herramienta genérica (posible, a confirmar si aplica a fotos de producto) | `ESTADO-image-toolkit.md` — Project Image-Toolkit-Lab |
+| **AutoDS** | Proveedor de dropshipping | Cuenta Starter 500 — sin conector/API disponible, todo manual |
+| **PayPal Business** | Procesador de pago | Cuenta completa y activa (ver decisiones #17-19) |
 
 ---
 
-## 6. Próximo paso
-Todo lo técnicamente resoluble por Code está hecho: auditoría completa del theme
-(sin roturas encontradas fuera de un bug menor ya corregido — logo del header con
-`height="auto"` inválido), `theme check` limpio, e investigación de las 4 decisiones
-de negocio pendientes con datos reales de la tienda (no solo preguntas genéricas).
-Ver el detalle completo y la lista de acciones ordenada en
-`docs/07_INVESTIGACION_DECISIONES_DE_NEGOCIO.md`, sección 0.
-Próximo paso real: que Brey ejecute esa lista (decisiones de producto + logins
-manuales a Shopify/AutoDS + el `theme push` final).
+## 6. Estado del catálogo (auditoría de contenido, 19/07)
+
+**14 productos activos.** Tras un hallazgo de Code (marcas de competidores coladas
+por scraping de AutoDS en 2 productos), Chat auditó el catálogo completo. Resultado:
+
+| Producto | Problema encontrado | Estado |
+|---|---|---|
+| Dog Grooming Scissors | CSS "litepicker" + plantilla eBay/BigCommerce | ✅ Limpiado |
+| Dog Leash | CSS "litepicker" + plantilla eBay/BigCommerce | ✅ Limpiado |
+| Portable Pet Grooming Hammock | CSS "litepicker" + línea falsa "Ships from California" | ✅ Limpiado |
+| Calming Cat Bed | Marca y afirmación de marca registrada de competidor real ("Love's cabin") + tabla de precios ajena | ✅ Limpiado |
+| Rabbit Chew Ball | Descripción en primera persona de otra empresa real ("Hamiledyi") | ✅ Limpiado |
+| Dog Poop Bags 280 Counts | Viñeta decía "540 Count" en vez de 280 | ✅ Corregido |
+| Dog Dental Bone Treats | Marca real de competidor ("Minties") repetida | ✅ Limpiado |
+| Anti-Splash Water Bowl | Imágenes incrustadas desde AliExpress (ae01.alicdn.com) | ✅ Limpiado |
+| Dog First Christmas Bandana | Bug de precio DOP→USD ($869.80 en vez de ~$15) | ✅ Corregido a $14.99 |
+| Resto del catálogo (5 productos) | — | Revisados, ya estaban limpios |
+
+**Sin confirmar todavía:** si Brey corrigió la configuración de moneda dentro de
+AutoDS — causa raíz del bug de precio, que ya se repitió dos veces. Verificar antes
+de la próxima importación.
 
 ---
 
-## 7. Pendientes / preguntas abiertas
-- Nombre de marca y dominio.
-- 4 productos sin imagen real (Cat Litter Mat, Dog Birthday Hat, Dog Car Seat Cover,
-  Dog Water Bottle) — confirmado por API que no tienen ninguna imagen cargada en
-  Shopify; falta que Brey revise en AutoDS si el proveedor tiene fotos o no
-  (ver `docs/07_...md`, sección 1).
-- Desfase de conteo AutoDS→Shopify: confirmado por API que hay 13 productos en
-  Shopify (9 Draft + 4 Archived), no 11+4 como se pensaba — de los 15 supuestamente
-  importados en AutoDS, 2 no llegaron en ningún estado. Falta que Brey cruce la
-  lista de 13 (en `docs/07_...md`, sección 2) contra su lista de 15 en AutoDS.
-- ~~Moneda DOP vs USD~~ — **hecho**: Brey cambió la moneda de la tienda a USD (confirmado por API el 17/07).
-- Mercados de envío, métodos de pago (Shopify Payments no disponible para RD —
-  se necesita PayPal o Payoneer Checkout), políticas de devolución/envío — propuesta
-  completa lista para pegar en el admin, ver `docs/07_...md`, sección 4.
-  - Cuenta PayPal Business ya creada ("Atlas Commerce", independiente de la personal) —
-    falta conectarla en el admin de Shopify y **verificar en el checkout que el nombre
-    visible al cliente sea "PetDrop"**, independientemente de que el back-end de PayPal
-    esté a nombre de "Atlas Commerce".
-- `theme push` a Shopify requiere login OAuth interactivo — no ejecutable por Code, lo corre Brey manualmente.
-- Acceso al admin de Shopify (mercados/pagos) y al panel de AutoDS — fuera del alcance de Code, requieren login manual de Brey.
-- Corrección documental pendiente (a nivel sistema, no de este repo): "Atlas Comerce" →
-  "Atlas Commerce" (dos "m") en `ESTADO-atlas-comerce.md`, nombre del Project
-  ("Atlas-Comerce-Lab") y referencias cruzadas. Se posterga junto con la reconsideración
-  general del nombre de marca (decisión #13) para no hacer dos pasadas de renombrado.
+## 7. Próximo paso
+Lo técnico de Code está al día: theme rebrandeado (PetDrop→Nima en textos), corrección
+ortográfica de Atlas Commerce aplicada. Falta ejecutar de parte de Brey:
+1. `theme push` final del theme `PetDrop_OVL` (bloqueado por OAuth interactivo).
+2. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima",
+   independientemente de que el back-end de PayPal use "Atlas Commerce" como nombre comercial.
+3. Quitar la protección con contraseña de la tienda cuando decida abrirla al público
+   — decisión de timing, no técnica.
+4. Confirmar si ya corrigió la configuración de moneda en AutoDS.
 
 ---
 
-*Este documento sigue la plantilla del `PROTOCOLO-comunicacion-actores.md`. Referencia al sistema padre (Atlas Comerce) sin duplicar su contenido — ver sección 5.*
+## 8. Pendientes / preguntas abiertas
+- **Theme push final** del theme `PetDrop_OVL` — requiere login OAuth interactivo,
+  no ejecutable por Code.
+- Verificar que el checkout muestre "Nima" al cliente (no "Atlas Commerce" ni "PetDrop").
+- Quitar la contraseña de la tienda para abrirla al público — decisión de Brey.
+- Confirmar si Brey corrigió la configuración de moneda en AutoDS (causa raíz del bug
+  de precios, recurrente).
+- Verificar disponibilidad de handle "nima"/"nimapets" en redes sociales, si importa
+  consistencia de marca entre plataformas.
+- Acceso al admin de Shopify (mercados/pagos) y al panel de AutoDS — fuera del alcance
+  de Code, requieren login manual de Brey.
+- Renombrar el Project de claude.ai "Atlas-Comerce-Lab" → "Atlas-Commerce-Lab" en la UI
+  — acción manual de Brey, es lo único que falta de la corrección ortográfica (ver
+  decisión #26).
+
+---
+
+*Este documento sigue la plantilla del `PROTOCOLO-comunicacion-actores.md` (v2). Referencia al sistema padre (Atlas Commerce) sin duplicar su contenido — ver sección 5.*

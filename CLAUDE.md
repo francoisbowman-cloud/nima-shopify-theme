@@ -1,6 +1,8 @@
-# PetDrop OVL — CLAUDE.md
+# Nima (ex-PetDrop) OVL — CLAUDE.md
 
-Tienda de dropshipping de artículos para mascotas sobre **Shopify** (Online Store 2.0). Segundo producto del sistema Atlas Comerce (junto a Aromia) — a diferencia de Aromia, este SÍ incluye venta transaccional directa (carrito, checkout, pagos).
+Tienda de dropshipping de artículos para mascotas sobre **Shopify** (Online Store 2.0). Segundo producto del sistema Atlas Commerce (junto a Aromia) — a diferencia de Aromia, este SÍ incluye venta transaccional directa (carrito, checkout, pagos).
+
+Nombre de marca final: **Nima** (dominio `nimapets.com`). El codename `PetDrop` sigue viviendo en el nombre de la carpeta del repo, el subdominio `petdrop-9236.myshopify.com`, y el theme ID `PetDrop_OVL` en Shopify — ninguno de esos requiere renombrarse, son identificadores internos. El texto visible al cliente dentro del theme (locales, nombre del theme, comentarios) ya se rebrandeó a "Nima".
 
 ## Stack
 
@@ -25,7 +27,7 @@ prototype/         # HTML estático original (index, product, magazine) — refe
 docs/              # 01-06: visión, arquitectura, especificación OVL, modelo de contenido, roadmap
 skills/omni-visual-language/  # definición del sistema OVL (skill)
 references/        # imágenes de referencia visual
-ESTADO-tienda-mascotas.md  # estado del proyecto (nivel producto, dentro de Atlas Comerce)
+ESTADO-tienda-mascotas.md  # estado del proyecto (nivel producto, dentro de Atlas Commerce)
 ```
 
 ## Mapeo prototipo → theme
@@ -72,7 +74,7 @@ El conjunto completo previsto (story_id, risk_level, etc.) está en `docs/04_MOD
 - `templates/gift_card.liquid` y `templates/customers/*` no incluidos — agregar solo si se habilitan tarjetas de regalo o cuentas de cliente.
 - Selección de variante sin JS cae siempre a la primera variante; con JS (`global.js`) funciona completo (galería + variantes + add-to-cart AJAX).
 - Filtros de colección (por mascota/necesidad/tamaño) descritos en `docs/02_ARQUITECTURA_DE_EXPERIENCIA.md` — requieren `filter`/`facets`, no incluidos en esta primera pasada.
-- Nombre de marca y dominio: aún sin definir (codename temporal "PetDrop").
+- Nombre de marca: **Nima** (dominio `nimapets.com`, ya definido y conectado — ver ESTADO decisión #18). El `theme push` final que propaga el rebrand al theme publicado en Shopify sigue pendiente (requiere login OAuth interactivo, lo ejecuta Brey).
 
 ## Convenciones
 

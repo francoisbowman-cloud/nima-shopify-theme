@@ -1,10 +1,107 @@
-# Changelog — PetDrop (RFC-007, Atlas Comerce)
+# Changelog — Nima (ex-PetDrop, RFC-007, Atlas Commerce)
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) —
 convención estándar en proyectos de software: agrupa los cambios por
 tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
+
+## [Unreleased] - 2026-07-19 (tanda 6 — rebrand del theme + corrección ortográfica)
+
+### Added
+- Reconciliado el `ESTADO-tienda-mascotas.md` con toda la sesión de Chat del 19/07
+  (rename a "Nima", dominio conectado, PayPal completo, envíos cerrados, catálogo
+  auditado) — asignando numeración de decisiones nueva (14-26) en vez de aceptar la
+  numeración que traía el documento transportado, siguiendo la regla del protocolo v2
+  de evitar colisiones de numeración entre sesiones que no se vieron entre sí.
+
+### Changed
+- **Rebranding del theme `PetDrop_OVL`:** todo el texto hardcodeado "PetDrop" cambiado
+  a "Nima" — `locales/es.default.json` y `en.json` ("PetDrop Journal" → "Nima Journal",
+  visible en la página de blog), `config/settings_schema.json` (`theme_name`,
+  `theme_author`), `config/settings_data.json` (nombre del preset), y comentarios
+  internos en `assets/base.css`, `assets/global.js`, `theme/README.md`.
+- Corrección ortográfica "Atlas Comerce" → "Atlas Commerce" (dos "m") en todos los
+  documentos vivos de este repo: este `CHANGELOG.md`, `ESTADO-tienda-mascotas.md`,
+  `CLAUDE.md`. `prompt-tienda-mascotas.md` se deja sin tocar por ser un documento
+  histórico (transporte textual de una sesión pasada).
+- A nivel sistema (Project "Atlas E-Commerce", fuera de este repo):
+  `ESTADO-atlas-comerce.md` renombrado a `ESTADO-atlas-commerce.md` y su contenido
+  actualizado; referencias corregidas en `ESTADO-aromia.md`;
+  `PROTOCOLO-comunicacion-actores.md` actualizado a la v2 provista por Brey.
+
+### Known issues / Pending
+- `theme push` final del theme `PetDrop_OVL` — sigue bloqueado por falta de login
+  OAuth interactivo, lo ejecuta Brey.
+- Verificar en el checkout real de Shopify que el nombre visible al cliente sea
+  "Nima" (no "PetDrop" ni "Atlas Commerce").
+- Renombrar el Project de claude.ai "Atlas-Comerce-Lab" → "Atlas-Commerce-Lab" en la
+  UI — única parte de la corrección ortográfica que sigue siendo manual.
+- Sin confirmar si Brey corrigió la configuración de moneda en AutoDS (causa raíz del
+  bug de precios DOP→USD, recurrente — ver historial abajo).
+
+## [Unreleased] - 2026-07-19 (tanda 5 — rename a Nima, envíos, catálogo)
+
+### Added
+- 8 productos nuevos importados desde AutoDS como reemplazo de los 4
+  archivados por falta de imagen: Calming Cat Bed, Rabbit Chew Ball, Dog Poop
+  Bags (280ct), Pet Grooming Gloves, Dog Grooming Scissors, Dog Leash (17
+  variantes por largo/color), Portable Pet Grooming Hammock (9 variantes por
+  talla/color), Benat Pets Bath Towel — más un 9º producto no documentado en
+  su momento (Dog First Christmas Bandana).
+- Zona de envío "Estados Unidos" + tarifa "Free Shipping" $0.00 USD agregada
+  al perfil "AutoDS Free Shipping" (el perfil general ya tenía su zona
+  resuelta). Ambos perfiles de envío quedan completos y verificados por API.
+- Dominio `nimapets.com` comprado por Brey y conectado a Shopify (DNS en
+  Namecheap, SSL verificado).
+
+### Changed
+- **Nombre de marca cambiado de "PetDrop" a "Nima"**, con dominio
+  `nimapets.com`. Decisión tomada tras evaluar que "PetDrop" revelaba el
+  modelo de negocio (dropshipping) y no encajaba con el posicionamiento
+  "clínico y confiable" ya definido. Candidatos descartados: Numa, Luma,
+  Amble, Wilo, Kova (dominio `.com` tomado o colisión de marca en otro rubro).
+- Cuenta PayPal Business completada: cuenta Empresas independiente, nombre
+  de la empresa "Nima", nombre comercial "Atlas Commerce", categoría "Tiendas
+  de mascotas, comida y suministros para mascotas", sitio web `nimapets.com`.
+- Los 14 productos activos del catálogo se dejan publicados (Active) tras
+  limpiar su contenido, en vez de revertirlos a Draft.
+
+### Fixed
+- Precios recalculados en los 8 productos nuevos (26 variantes en total).
+  Se repitió el bug de conversión DOP→USD de la sesión anterior — corregidos
+  dividiendo por el tipo de cambio de referencia (~58.5 DOP/USD).
+- Los 8 productos nuevos llegaron publicados como "Active" en vez de "Draft"
+  (saltándose la revisión humana de RFC-002) — revertidos a Draft de
+  inmediato como contención, y luego vueltos a publicar tras la limpieza
+  (ver "Changed" arriba).
+- Desfase de conteo AutoDS↔Shopify (15 vs 13) resuelto definitivamente: no
+  eran productos faltantes, eran variantes (12 productos con 1 variante +
+  Anti-Splash Water Bowl con 3 variantes = 15 variantes, 13 productos).
+- Auditoría de contenido del catálogo completo (14 productos activos) tras
+  un hallazgo de Code de marcas de competidores reales coladas por scraping
+  de AutoDS: Calming Cat Bed (marca "Love's cabin" + tabla de precios ajena),
+  Rabbit Chew Ball (descripción de otra empresa, "Hamiledyi"), Dog Dental
+  Bone Treats (marca "Minties"), Anti-Splash Water Bowl (imágenes incrustadas
+  desde AliExpress), Dog Poop Bags 280 Counts ("540 Count" incorrecto en una
+  viñeta), Dog Grooming Scissors / Dog Leash / Portable Pet Grooming Hammock
+  (CSS "litepicker" y restos de plantilla eBay/BigCommerce). Todos corregidos;
+  5 productos revisados ya estaban limpios.
+- Bug de precio DOP→USD también en Dog First Christmas Bandana ($869.80 en
+  vez de ~$15) — corregido a $14.99.
+
+### Removed / Archived
+- 4 productos sin imagen real archivados (reversible, no eliminados): Cat
+  Litter Mat, Dog Birthday Hat, Dog Car Seat Cover, Dog Water Bottle.
+
+### Known issues / Pending
+- Sin confirmar si Brey corrigió la configuración de moneda dentro de AutoDS
+  (causa raíz del bug de precios recurrente) — verificar antes de la próxima
+  importación.
+- Payoneer Checkout evaluado como método de pago secundario y descartado:
+  requiere entidad legal en Hong Kong y volumen mensual mínimo de
+  $10,000-$20,000, no califica.
+- `theme push` final del theme `PetDrop_OVL` — sigue pendiente (ver tanda 6).
 
 ## [Unreleased] - 2026-07-18 (tanda 4 — cuenta PayPal Business)
 
@@ -14,10 +111,10 @@ es nuevo" de un vistazo.
 
 ### Known issues / Pending
 - Falta conectar la cuenta PayPal en el admin de Shopify y verificar en el checkout
-  que el nombre visible al cliente sea "PetDrop", no "Atlas Commerce".
-- Corrección documental pendiente a nivel sistema: "Atlas Comerce" → "Atlas Commerce"
-  en `ESTADO-atlas-comerce.md` y el nombre del Project — se pospone junto con la
-  reconsideración general del nombre de marca.
+  que el nombre visible al cliente sea "Nima" (actualizado — antes decía "PetDrop"),
+  no "Atlas Commerce".
+- ~~Corrección documental pendiente a nivel sistema: "Atlas Comerce" → "Atlas Commerce"~~
+  — hecho en tanda 6.
 
 ## [Unreleased] - 2026-07-17 (tanda 3 — decisión de moneda)
 

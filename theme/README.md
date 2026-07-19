@@ -1,4 +1,4 @@
-# PetDrop OVL — Theme Shopify
+# Nima OVL — Theme Shopify
 
 Theme Online Store 2.0 que porta el prototipo (`prototype/*.html`) a Shopify:
 secciones editables desde el Customizer, plantillas JSON y capa OVL sobre metafields.
