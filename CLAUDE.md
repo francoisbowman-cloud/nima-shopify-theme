@@ -49,6 +49,10 @@ shopify theme check                # linter de temas
 shopify theme push --unpublished   # sube como tema no publicado para revisión
 ```
 
+## Repositorio remoto
+
+El repo vive en GitHub: `github.com/francoisbowman-cloud/nima-shopify-theme` (privado), rama `main` sincronizada. Se agregó para que ChatGPT (vía Codex Cloud) pueda trabajar sobre el código de forma remota y entregar cambios como pull request — Code los revisa antes de aplicarlos al theme real en Shopify (`shopify theme push` sigue siendo la única forma de que un cambio llegue a la tienda, y sigue requiriendo login OAuth interactivo, así que ese paso lo ejecuta siempre Brey).
+
 ## Metafields OVL (namespace `ovl`)
 
 Definidos en Configuración → Metafields personalizados → Productos:

@@ -1,5 +1,6 @@
 # Estado del proyecto: Nima
 Dominio: `nimapets.com` (comprado y conectado a Shopify — DNS verificado, SSL activo)
+Repo: `https://github.com/francoisbowman-cloud/nima-shopify-theme` (privado)
 Codename histórico: `PetDrop` (reemplazado — ver decisión #18)
 Última actualización: 19 de julio de 2026 — por: Code
 Nivel: **Producto**, dentro del sistema **Atlas Commerce** (ver `ESTADO-atlas-commerce.md`, Project Atlas-Commerce-Lab)
@@ -62,6 +63,8 @@ se asuma lo contrario:**
 | 24 | Los 14 productos activos se dejan publicados (Active) tras la limpieza de contenido — decisión explícita de no revertirlos a Draft | Brey, ejecutado por Chat |
 | 25 | Rebranding del theme `PetDrop_OVL`: todo el texto hardcodeado que decía "PetDrop" (visible al cliente: "PetDrop Journal" en el blog; interno: `theme_name`, preset, comentarios de `base.css`/`global.js`/`README.md`) cambiado a "Nima" — el `theme push` final a Shopify sigue pendiente (bloqueado por falta de login OAuth interactivo, lo ejecuta Brey) | Code |
 | 26 | Corrección ortográfica "Atlas Comerce" → "Atlas Commerce" aplicada en los documentos vivos de este repo (`ESTADO`, `CLAUDE.md`, `CHANGELOG.md`) y a nivel sistema (`ESTADO-atlas-comerce.md` renombrado a `ESTADO-atlas-commerce.md`, referencias corregidas en `ESTADO-aromia.md` y en `PROTOCOLO-comunicacion-actores.md`, actualizado a v2). Pendiente solo el renombrado del Project de claude.ai en la UI — acción manual de Brey | Code |
+| 27 | Repo movido de local-only a GitHub: `github.com/francoisbowman-cloud/nima-shopify-theme` (privado), para habilitar que ChatGPT (vía Codex Cloud) trabaje sobre el código y entregue resultados como pull request, revisados por Code antes de aplicarlos a Shopify | Brey |
+| 28 | `gh` (GitHub CLI) instalado y autenticado en la máquina de Brey, como herramienta de soporte para este flujo | Code (instalación), Brey (login interactivo) |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -116,17 +119,22 @@ de la próxima importación.
 
 ## 7. Próximo paso
 Lo técnico de Code está al día: theme rebrandeado (PetDrop→Nima en textos), corrección
-ortográfica de Atlas Commerce aplicada. Falta ejecutar de parte de Brey:
-1. `theme push` final del theme `PetDrop_OVL` (bloqueado por OAuth interactivo).
-2. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima",
+ortográfica de Atlas Commerce aplicada, y el repo ahora vive en GitHub
+(`github.com/francoisbowman-cloud/nima-shopify-theme`, privado) con `main` sincronizado.
+Falta ejecutar de parte de Brey:
+1. Conectar ChatGPT (Codex Cloud) al repo de GitHub para que pueda tomar temas nuevos
+   y entregarlos como pull request — Code los revisa antes de aplicarlos a Shopify.
+2. `theme push` final del theme `PetDrop_OVL` (bloqueado por OAuth interactivo).
+3. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima",
    independientemente de que el back-end de PayPal use "Atlas Commerce" como nombre comercial.
-3. Quitar la protección con contraseña de la tienda cuando decida abrirla al público
+4. Quitar la protección con contraseña de la tienda cuando decida abrirla al público
    — decisión de timing, no técnica.
-4. Confirmar si ya corrigió la configuración de moneda en AutoDS.
+5. Confirmar si ya corrigió la configuración de moneda en AutoDS.
 
 ---
 
 ## 8. Pendientes / preguntas abiertas
+- Conectar Codex Cloud (ChatGPT) al repo de GitHub — flujo de trabajo nuevo, primer uso.
 - **Theme push final** del theme `PetDrop_OVL` — requiere login OAuth interactivo,
   no ejecutable por Code.
 - Verificar que el checkout muestre "Nima" al cliente (no "Atlas Commerce" ni "PetDrop").

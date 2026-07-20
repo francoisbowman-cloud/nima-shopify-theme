@@ -6,6 +6,24 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-19 (tanda 7 — repo movido a GitHub)
+
+### Added
+- Repo publicado en GitHub como privado: `github.com/francoisbowman-cloud/nima-shopify-theme`.
+  `main` local sincronizado con `origin/main`. Objetivo: habilitar que ChatGPT (vía Codex
+  Cloud) trabaje sobre el código de forma remota, entregando cambios como pull request para
+  que Code los revise antes de aplicarlos a Shopify.
+- `gh` (GitHub CLI) instalado vía `winget` y autenticado (cuenta `francoisbowman-cloud`,
+  scope `repo`) — usado para crear el repo (`gh repo create ... --source=. --remote=origin`).
+
+### Known issues / Pending
+- Primer `git push` a GitHub se colgó indefinidamente reusando una conexión HTTPS
+  keep-alive stale (`Reusing existing https: connection` seguido de silencio en el body
+  POST) — se resolvió reintentando (funcionó al segundo intento) tras subir
+  `http.postBuffer` y fijar `http.version HTTP/1.1`. Si vuelve a pasar, reintentar
+  primero antes de investigar más a fondo.
+- Falta que Brey conecte Codex Cloud al repo — primer uso de este flujo, sin probar todavía.
+
 ## [Unreleased] - 2026-07-19 (tanda 6 — rebrand del theme + corrección ortográfica)
 
 ### Added
