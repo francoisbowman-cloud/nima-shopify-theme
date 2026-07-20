@@ -6,6 +6,27 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-19 (tanda 8 — AGENTS.md + confirmación de theme publicado)
+
+### Added
+- `AGENTS.md` en la raíz del repo: contexto de protocolo (v2 completo, embebido) y reglas
+  duras para Codex Cloud — solo pull request, nunca push directo a `main`.
+
+### Changed
+- Confirmado por API que `PetDrop_OVL` es ahora el theme `MAIN` (publicado) en Shopify,
+  no `UNPUBLISHED` como en la tanda anterior — el `theme push` final ya se ejecutó
+  (fuera de esta sesión, por Brey). El rebrand a "Nima" ya vive en producción.
+
+### Known issues / Pending
+- Un mensaje reciente mencionó "adendas v3-v5" del protocolo y un archivo
+  `PROTOCOLO-adendas-completas.md` — no se encontraron en ninguna carpeta de proyecto
+  local verificada (solo existe la v2 de `PROTOCOLO-comunicacion-actores.md`). `AGENTS.md`
+  deja esto marcado como gap conocido en vez de inventar contenido.
+- Un mensaje reciente pidió recrear el repo de GitHub y re-aplicar la corrección
+  "Atlas Comerce"→"Atlas Commerce" — ambas ya estaban hechas (tandas 6 y 7); se verificó
+  contra el estado real antes de repetir el trabajo, y no se recreó el repo ni se duplicaron
+  los cambios de ortografía.
+
 ## [Unreleased] - 2026-07-19 (tanda 7 — repo movido a GitHub)
 
 ### Added
