@@ -3,7 +3,7 @@
     <div class="split--b__side split--b__side--light">
       <div class="split--b__step">01 / UTILITY</div>
       {%- if section.settings.left_image != blank -%}
-        <img class="split--b__img" src="{{ section.settings.left_image | image_url: width: 900 }}" alt="{{ section.settings.left_image.alt | default: section.settings.left_heading | escape }}" loading="lazy">
+        <img class="split--b__img" src="{{ section.settings.left_image | image_url: width: 900 }}" alt="{{ section.settings.left_image.alt | default: section.settings.left_heading | escape }}" width="{{ section.settings.left_image.width }}" height="{{ section.settings.left_image.height }}" loading="lazy">
       {%- endif -%}
       <span class="kicker">{{ section.settings.left_kicker }}</span>
       <h2 class="split--b__h">{{ section.settings.left_heading }}</h2>
@@ -15,14 +15,14 @@
     <div class="split--b__divider"></div>
     <div class="split--b__side split--b__side--dark">
       {%- if section.settings.right_image != blank -%}
-        <img class="split--b__bgimg" src="{{ section.settings.right_image | image_url: width: 1200 }}" alt="{{ section.settings.right_image.alt | default: section.settings.right_heading | escape }}" loading="lazy">
+        <img class="split--b__bgimg" src="{{ section.settings.right_image | image_url: width: 1200 }}" alt="{{ section.settings.right_image.alt | default: section.settings.right_heading | escape }}" width="{{ section.settings.right_image.width }}" height="{{ section.settings.right_image.height }}" loading="lazy">
       {%- endif -%}
       <div class="split--b__scrim"></div>
       <div class="split--b__content">
         <div class="split--b__step split--b__step--light">02 / EDITORIAL</div>
-        <span class="kicker" style="color:#EDE0D0">{{ section.settings.right_kicker }}</span>
-        <h2 class="split--b__h" style="color:#FBF8F3">{{ section.settings.right_heading }}</h2>
-        <p style="color:rgba(251,248,243,0.75);max-width:340px">{{ section.settings.right_text }}</p>
+        <span class="kicker on-dark-kicker">{{ section.settings.right_kicker }}</span>
+        <h2 class="split--b__h on-dark-heading">{{ section.settings.right_heading }}</h2>
+        <p class="on-dark-text" style="max-width:340px">{{ section.settings.right_text }}</p>
         {%- if section.settings.right_button_label != blank -%}
           <a class="btn btn--light" href="{{ section.settings.right_button_url | default: '#' }}">{{ section.settings.right_button_label }}</a>
         {%- endif -%}

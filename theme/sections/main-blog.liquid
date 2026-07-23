@@ -1,7 +1,7 @@
 <section class="container" style="padding:60px 0 80px">
   <span class="kicker">{{ 'blogs.journal' | t }}</span>
   <h1 style="font-family:var(--serif);font-size:clamp(48px,7vw,110px);line-height:.92;margin:6px 0 40px">{{ blog.title }}</h1>
-  <div class="mag-grid" style="grid-template-columns:1fr 1fr">
+  <div class="mag-grid mag-grid--blog">
     {%- for article in blog.articles -%}
       <article class="feature" style="min-height:380px{% if article.image %};background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.55)),url('{{ article.image | image_url: width: 1200 }}');background-size:cover;background-position:center;color:#fff{% endif %}">
         <span class="kicker"{% if article.image %} style="color:#fff"{% endif %}>{{ article.published_at | date: '%d %b %Y' }}</span>

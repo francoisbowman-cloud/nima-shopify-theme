@@ -1,13 +1,13 @@
 <div class="container">
   <section class="mag-teaser">
     {%- if section.settings.image != blank -%}
-      <img class="mag-teaser__img" src="{{ section.settings.image | image_url: width: 1600 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}" loading="lazy">
+      <img class="mag-teaser__img" src="{{ section.settings.image | image_url: width: 1600 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}" width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}" loading="lazy">
     {%- endif -%}
     <div class="mag-teaser__scrim"></div>
     <div class="mag-teaser__card">
-      <span class="kicker" style="color:#EDE0D0">{{ section.settings.kicker }}</span>
+      <span class="kicker on-dark-kicker">{{ section.settings.kicker }}</span>
       <h3 class="mag-teaser__h">{{ section.settings.heading }}</h3>
-      <p style="color:rgba(251,248,243,0.8)">{{ section.settings.text }}</p>
+      <p class="on-dark-text">{{ section.settings.text }}</p>
       {%- if section.settings.button_label != blank -%}
         <a class="btn btn--light" href="{{ section.settings.button_url | default: '#' }}">{{ section.settings.button_label }}</a>
       {%- endif -%}

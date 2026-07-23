@@ -57,5 +57,11 @@
   "blogs": {
     "journal": "Nima Journal",
     "read": "Read"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send message"
   }
 }

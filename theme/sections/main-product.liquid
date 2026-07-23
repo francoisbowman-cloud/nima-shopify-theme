@@ -25,7 +25,7 @@
     </div>
     {%- if product.images.size > 1 -%}
       <div class="gallery__thumbs gallery__thumbs--b">
-        {%- for image in product.images limit: 4 offset: 1 -%}
+        {%- for image in product.images limit: 8 -%}
           <button type="button" data-gallery-thumb data-full="{{ image | image_url: width: 1200 }}" aria-label="Ver imagen {{ forloop.index }}">
             <img src="{{ image | image_url: width: 300 }}" alt="{{ image.alt | escape }}" width="150" height="150" loading="lazy">
           </button>
@@ -63,7 +63,7 @@
 
     {% form 'product', product, data-product-form: 'true' %}
       {%- unless product.has_only_default_variant -%}
-        {%- if color_option_index > -1 -%}
+        {%- if color_option_index > -1 and product.options.size == 1 -%}
           <div class="swatch-label">Color</div>
           <div class="swatches" role="radiogroup" aria-label="Color">
             {%- for variant in product.variants -%}

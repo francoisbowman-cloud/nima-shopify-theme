@@ -1,6 +1,6 @@
 <section class="container" style="padding:60px 0 80px">
   <h1 style="font-size:clamp(40px,5vw,72px);letter-spacing:-2px;margin:0 0 30px">{{ 'collections.all' | t }}</h1>
-  <div class="product-grid">
+  <div class="product-grid product-grid--b">
     {%- for collection in collections -%}
       <a class="pcard" href="{{ collection.url }}">
         <div class="pcard__media">
@@ -8,7 +8,7 @@
             <img src="{{ collection.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" width="{{ collection.featured_image.width }}" height="{{ collection.featured_image.height }}" loading="lazy">
           {%- endif -%}
         </div>
-        <h3>{{ collection.title }}</h3>
+        <div class="pcard__body"><h3>{{ collection.title }}</h3></div>
       </a>
     {%- endfor -%}
   </div>

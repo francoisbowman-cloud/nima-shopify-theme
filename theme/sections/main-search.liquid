@@ -10,12 +10,12 @@
   {%- if search.performed -%}
     {%- if search.results.size > 0 -%}
       <p class="muted">{{ search.results.size }} resultado(s) para “{{ search.terms }}”.</p>
-      <div class="product-grid">
+      <div class="product-grid product-grid--b">
         {%- for item in search.results -%}
           {%- if item.object_type == 'product' -%}
             {% render 'product-card', product: item %}
           {%- else -%}
-            <a class="pcard" href="{{ item.url }}"><h3>{{ item.title }}</h3></a>
+            <a class="pcard" href="{{ item.url }}"><div class="pcard__body"><h3>{{ item.title }}</h3></div></a>
           {%- endif -%}
         {%- endfor -%}
       </div>
