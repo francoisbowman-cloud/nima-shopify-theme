@@ -1,19 +1,34 @@
-<section class="split">
-  <div>
-    <span class="kicker">{{ section.settings.left_kicker }}</span>
-    <h2 class="big">{{ section.settings.left_heading }}</h2>
-    <p class="muted">{{ section.settings.left_text }}</p>
-    {%- if section.settings.left_button_label != blank -%}
-      <a class="btn" href="{{ section.settings.left_button_url | default: '#' }}">{{ section.settings.left_button_label }} →</a>
-    {%- endif -%}
-  </div>
-  <div class="dark">
-    <span class="kicker">{{ section.settings.right_kicker }}</span>
-    <h2 class="big">{{ section.settings.right_heading }}</h2>
-    <p>{{ section.settings.right_text }}</p>
-    {%- if section.settings.right_button_label != blank -%}
-      <a class="btn btn--light" href="{{ section.settings.right_button_url | default: '#' }}">{{ section.settings.right_button_label }} →</a>
-    {%- endif -%}
+<section class="split split--b">
+  <div class="split--b__frame">
+    <div class="split--b__side split--b__side--light">
+      <div class="split--b__step">01 / UTILITY</div>
+      {%- if section.settings.left_image != blank -%}
+        <img class="split--b__img" src="{{ section.settings.left_image | image_url: width: 900 }}" alt="{{ section.settings.left_image.alt | default: section.settings.left_heading | escape }}" loading="lazy">
+      {%- endif -%}
+      <span class="kicker">{{ section.settings.left_kicker }}</span>
+      <h2 class="split--b__h">{{ section.settings.left_heading }}</h2>
+      <p class="muted">{{ section.settings.left_text }}</p>
+      {%- if section.settings.left_button_label != blank -%}
+        <a class="btn" href="{{ section.settings.left_button_url | default: '#' }}">{{ section.settings.left_button_label }}</a>
+      {%- endif -%}
+    </div>
+    <div class="split--b__divider"></div>
+    <div class="split--b__side split--b__side--dark">
+      {%- if section.settings.right_image != blank -%}
+        <img class="split--b__bgimg" src="{{ section.settings.right_image | image_url: width: 1200 }}" alt="{{ section.settings.right_image.alt | default: section.settings.right_heading | escape }}" loading="lazy">
+      {%- endif -%}
+      <div class="split--b__scrim"></div>
+      <div class="split--b__content">
+        <div class="split--b__step split--b__step--light">02 / EDITORIAL</div>
+        <span class="kicker" style="color:#EDE0D0">{{ section.settings.right_kicker }}</span>
+        <h2 class="split--b__h" style="color:#FBF8F3">{{ section.settings.right_heading }}</h2>
+        <p style="color:rgba(251,248,243,0.75);max-width:340px">{{ section.settings.right_text }}</p>
+        {%- if section.settings.right_button_label != blank -%}
+          <a class="btn btn--light" href="{{ section.settings.right_button_url | default: '#' }}">{{ section.settings.right_button_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="split--b__connector"><span>→</span></div>
   </div>
 </section>
 
@@ -22,16 +37,18 @@
   "name": "Split Comprar / Descubrir",
   "settings": [
     { "type": "header", "content": "Lado Comprar (Utility)" },
+    { "type": "image_picker", "id": "left_image", "label": "Imagen" },
     { "type": "text", "id": "left_kicker", "label": "Kicker", "default": "Utility Commerce" },
-    { "type": "text", "id": "left_heading", "label": "Título", "default": "Cuando ya sabes lo que necesitas." },
-    { "type": "textarea", "id": "left_text", "label": "Texto", "default": "Categorías claras, filtros útiles, información esencial y compra inmediata." },
-    { "type": "text", "id": "left_button_label", "label": "Texto del botón", "default": "Ir a comprar" },
+    { "type": "text", "id": "left_heading", "label": "Título", "default": "Todo lo esencial, sin vueltas." },
+    { "type": "textarea", "id": "left_text", "label": "Texto", "default": "Catálogo curado de comederos, descanso y grooming — con envío rápido y devoluciones simples." },
+    { "type": "text", "id": "left_button_label", "label": "Texto del botón", "default": "Ir al catálogo" },
     { "type": "url", "id": "left_button_url", "label": "Enlace del botón" },
     { "type": "header", "content": "Lado Descubrir (Editorial)" },
+    { "type": "image_picker", "id": "right_image", "label": "Imagen" },
     { "type": "text", "id": "right_kicker", "label": "Kicker", "default": "Editorial Commerce" },
-    { "type": "text", "id": "right_heading", "label": "Título", "default": "Cuando quieres entender antes de elegir." },
-    { "type": "textarea", "id": "right_text", "label": "Texto", "default": "Historias, contextos, comparativas y productos integrados en una narrativa." },
-    { "type": "text", "id": "right_button_label", "label": "Texto del botón", "default": "Entrar al Journal" },
+    { "type": "text", "id": "right_heading", "label": "Título", "default": "Historias de cuidado diario." },
+    { "type": "textarea", "id": "right_text", "label": "Texto", "default": "Magazine: rituales, texturas y la filosofía detrás de cada objeto que elegimos vender." },
+    { "type": "text", "id": "right_button_label", "label": "Texto del botón", "default": "Leer el Magazine" },
     { "type": "url", "id": "right_button_url", "label": "Enlace del botón" }
   ],
   "presets": [{ "name": "Split Comprar / Descubrir" }]

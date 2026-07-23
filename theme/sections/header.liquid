@@ -1,7 +1,7 @@
 <header class="container nav">
   <a class="logo" href="{{ routes.root_url }}">
     {%- if section.settings.logo != blank -%}
-      <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}" style="width:120px;height:auto">
+      <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="120" height="auto">
     {%- else -%}
       {{ shop.name }}.
     {%- endif -%}

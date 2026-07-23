@@ -10,11 +10,14 @@
 {
   "sections": {
     "main": {
-      "type": "main-blog",
-      "settings": {}
+      "type": "main-page-contact",
+      "settings": {
+        "kicker": "Contacto",
+        "intro": "¿Dudas sobre un producto, un pedido o una devolución? Respondemos todos los días hábiles.",
+        "email": "hola@nima.pet",
+        "hours": "Lunes a viernes, 9 a 18h"
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }

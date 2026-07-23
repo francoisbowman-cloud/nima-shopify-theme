@@ -1,5 +1,5 @@
 /* ============================================================
-   Nima — OVL theme base styles
+   PetDrop — OVL theme base styles
    Adaptado desde prototype/styles.css a un theme Shopify OS 2.0.
    Los tokens de color/tipografía se inyectan desde theme.liquid /
    password.liquid (bloque {% style %} inline en <head>), a partir
@@ -97,7 +97,8 @@ button{font-family:inherit}
 .story{padding:120px 0}
 .story h2{font-family:var(--serif);font-size:clamp(58px,7vw,110px);line-height:.95;max-width:950px}
 .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;margin-top:70px}
-.story-grid img{border-radius:2px}
+.story-grid>div:first-child{aspect-ratio:4/3;overflow:hidden;border-radius:2px}
+.story-grid img{width:100%;height:100%;object-fit:cover;border-radius:2px}
 .ovl-badges{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
 .ovl-badge{font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--green2);color:var(--green);padding:8px 12px;border-radius:999px;font-weight:700}
 
@@ -156,4 +157,120 @@ button{font-family:inherit}
   .buy h1{font-size:48px}
   .product-grid{grid-template-columns:1fr 1fr}
   .footer-cols{grid-template-columns:1fr}
+}
+
+/* ---- Contact form (page.contact) ---- */
+.form-field{margin-bottom:18px;display:flex;flex-direction:column;gap:6px}
+.form-field label{font-size:13px;font-weight:700}
+.form-field input,.form-field textarea{padding:14px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:15px;background:#fff;color:var(--text)}
+.form-success{background:var(--green2);color:var(--green);padding:14px 18px;border-radius:8px;margin-bottom:20px;font-weight:700}
+.form-error{background:#fdeceb;color:#c0392b;padding:14px 18px;border-radius:8px;margin-bottom:20px}
+.contact-alt a{font-weight:700;text-decoration:underline}
+
+/* ---- Catálogo — Dirección B (grid 4 col, destacado 2x2) ---- */
+.collection-sub{max-width:520px;margin-top:10px;line-height:1.6}
+.product-grid--b{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;grid-auto-rows:1fr}
+.pcard{border:1px solid var(--line);overflow:hidden;background:var(--bg);display:flex;flex-direction:column;transition:border-color .2s ease}
+.pcard:hover{border-color:var(--text)}
+.pcard__media{position:relative;aspect-ratio:1/1;background:var(--soft);overflow:hidden;flex-shrink:0}
+.pcard__media img{width:100%;height:100%;object-fit:cover}
+.pcard__tag{position:absolute;top:10px;left:10px;font-size:11px;letter-spacing:.03em;color:#fff;background:var(--green);padding:5px 12px}
+.pcard__body{padding:16px;display:flex;flex-direction:column;gap:4px}
+.pcard__category{font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;font-family:monospace}
+.pcard__body h3{font-family:var(--serif);font-size:17px;margin:4px 0;line-height:1.25}
+.pcard__body .price{font-size:15px;margin:0}
+
+.pcard--featured{grid-column:span 2;grid-row:span 2;border:2px solid var(--text)}
+.pcard--featured .pcard__media{aspect-ratio:auto;min-height:260px;flex:1}
+.pcard--featured .pcard__body{padding:22px}
+.pcard--featured .pcard__body h3{font-size:24px;margin:8px 0}
+.pcard--featured .pcard__tag{font-size:12px;padding:6px 14px}
+
+@media(max-width:1000px){
+  .product-grid--b{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:800px){
+  .product-grid--b{grid-template-columns:repeat(2,1fr)}
+  .pcard--featured{grid-column:span 2;grid-row:span 1}
+}
+
+/* ---- Home — Split Dirección B ---- */
+.split--b{padding:64px 0}
+.split--b__frame{max-width:var(--page-width);margin:0 auto;width:calc(100% - 40px);display:flex;border:1px solid var(--line);position:relative}
+.split--b__side{flex:1;display:flex;flex-direction:column;gap:14px;padding:56px 40px;position:relative}
+.split--b__side--light{background:var(--bg)}
+.split--b__side--dark{background:var(--text);overflow:hidden;min-height:520px;justify-content:flex-end}
+.split--b__step{font-size:11px;letter-spacing:.12em;color:var(--muted);font-family:monospace}
+.split--b__step--light{color:rgba(251,248,243,.6)}
+.split--b__img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.split--b__bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.split--b__scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,38,33,.15),rgba(43,38,33,.78))}
+.split--b__content{position:relative;display:flex;flex-direction:column;gap:14px}
+.split--b__h{font-family:var(--serif);font-size:30px;line-height:1.2;margin:0}
+.split--b__divider{width:2px;background:var(--green);flex-shrink:0}
+.split--b__connector{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:var(--green);border:4px solid var(--bg);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(43,38,33,.25);color:#fff;font-size:16px}
+
+/* ---- Home — Teaser de Magazine (Dirección B) ---- */
+.mag-teaser{position:relative;border-radius:6px;overflow:hidden;min-height:420px;display:flex;align-items:flex-end;margin:48px 0 96px}
+.mag-teaser__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mag-teaser__scrim{position:absolute;inset:0;background:linear-gradient(135deg,rgba(43,38,33,.35),rgba(43,38,33,.35))}
+.mag-teaser__card{position:relative;background:rgba(43,38,33,.55);backdrop-filter:blur(10px);padding:32px 36px;border-radius:4px;max-width:440px;margin:48px}
+.mag-teaser__h{font-family:var(--serif);font-size:28px;color:#FBF8F3;line-height:1.25;margin:12px 0 14px}
+
+@media(max-width:800px){
+  .split--b__frame{flex-direction:column}
+  .split--b__divider{width:auto;height:2px}
+  .split--b__side--dark{min-height:360px}
+  .mag-teaser__card{margin:20px;max-width:none}
+}
+
+/* ---- Página Sobre Nima ---- */
+.about-hero{padding:88px 0 40px}
+.about-hero__h{font-family:var(--serif);font-size:clamp(32px,5vw,42px);max-width:640px;line-height:1.15;margin:16px 0 20px}
+.about-hero__text{max-width:560px}
+.about-pillars{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--text);padding:16px 0 96px}
+.about-pillar{padding:40px 32px;border-right:1px solid var(--line)}
+.about-pillar:last-child{border-right:none}
+.about-pillar__num{font-size:11px;letter-spacing:.12em;color:var(--muted);font-family:monospace;margin-bottom:16px}
+.about-pillar p{font-size:15px;line-height:1.7}
+.about-values{background:var(--text);color:var(--bg);padding:80px 0}
+.about-values__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.about-values__h{font-family:var(--serif);font-size:20px;margin-bottom:8px}
+.about-values__grid p{font-size:13px;color:rgba(251,248,243,.7);line-height:1.6}
+
+@media(max-width:800px){
+  .about-pillars{grid-template-columns:1fr}
+  .about-pillar{border-right:none;border-bottom:1px solid var(--line)}
+  .about-values__grid{grid-template-columns:1fr 1fr;gap:24px}
+}
+
+/* ---- Producto — Dirección B ---- */
+.gallery--b{background:none;padding:0;display:block}
+.gallery--b .gallery__main{background:var(--soft);border-radius:6px;overflow:hidden;aspect-ratio:1/1}
+.gallery--b .gallery__main img{width:100%;height:100%;object-fit:cover}
+.gallery__thumbs--b{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.gallery__thumbs--b button{border:none;border-radius:4px;padding:0;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
+.gallery__thumbs--b img{width:100%;height:100%;object-fit:cover}
+
+.badge-row{display:flex;gap:8px;margin:16px 0 20px}
+.badge-pill{font-size:12px;color:var(--green);background:var(--green2);border:1px solid var(--line);padding:6px 12px;border-radius:12px}
+
+.swatch-label{font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin:20px 0 10px}
+.swatches{display:flex;gap:10px;margin-bottom:24px}
+.swatch{width:32px;height:32px;border-radius:50%;display:inline-block;cursor:pointer;border:1px solid var(--line);position:relative}
+.swatch--active{border:2px solid var(--text);box-shadow:0 0 0 2px var(--bg)}
+
+.trust--center{justify-content:center;text-align:center}
+
+.product-banner{background:var(--soft);margin-top:56px;padding:26px 32px;text-align:center}
+.product-banner p{font-family:var(--serif);font-style:italic;font-size:15px;margin:0}
+
+.story--b{padding-top:72px}
+.story-grid--b{grid-template-columns:1fr 1.1fr;gap:48px}
+.story-grid--b>div:first-child{aspect-ratio:4/5}
+.story--b__h{font-family:var(--serif);font-size:30px;line-height:1.2;margin:16px 0}
+.ovl-badge--active{background:var(--green);color:#fff;border-color:var(--green)}
+
+@media(max-width:800px){
+  .story-grid--b{grid-template-columns:1fr}
 }

@@ -1,24 +1,73 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "mag-hero": {
       "type": "magazine-hero",
       "settings": {
-        "kicker": "OVL Edition 01",
-        "heading": "Viajar<br>sin ansiedad."
+        "image": "shopify://shop_images/Home_Journal_Magazine_Hero.png",
+        "kicker": "Nima Magazine",
+        "heading": "Un día tranquilo."
       }
     },
     "mag-grid": {
       "type": "magazine-grid",
+      "settings": {
+        "feature_kicker": "Historia principal",
+        "feature_heading": "El ritual del baño: por qué el grooming es un momento de calma",
+        "feature_text": "Bañar a un perro no debería sentirse como una tarea. Con el soporte correcto — y algo de paciencia — se convierte en el momento más tranquilo del día, tanto para él como para quien lo cuida. Por eso diseñamos accesorios de grooming que sostienen en vez de restringir: menos forcejeo, más calma compartida.",
+        "feature_button_label": "Leer la historia completa",
+        "feature_button_url": "/products/pet-grooming-gloves-dog-brush-mitt-deshedding-hair-removal-massage-horse-pair",
+        "feature_image": "shopify://shop_images/Home_Journal_Magazine_Grid_historia_principal.png"
+      },
       "blocks": {
-        "s1": { "type": "side_story", "settings": { "kicker": "Guía", "heading": "Cómo elegir una transportadora sin adivinar.", "text": "Tamaño, ventilación, material y comportamiento." } },
-        "s2": { "type": "side_story", "settings": { "kicker": "Checklist", "heading": "7 cosas antes de salir.", "text": "Una lista simple para evitar estrés innecesario." } },
-        "s3": { "type": "side_story", "settings": { "kicker": "Selección", "heading": "El kit de viaje tranquilo.", "text": "Transportadora, bebedero y manta calmante." } }
+        "s1": {
+          "type": "side_story",
+          "settings": {
+            "kicker": "Comederos",
+            "heading": "Agua en su lugar",
+            "text": "Un comedero que no se derrama es un gesto pequeño de orden, y de cuidado.",
+            "url": "/products/anti-splash-water-bowl-for-dogs-1l-large-capacity-drinker-drinking-bowls-dog-waterer-for-puppy-cat-pet-accessories"
+          }
+        },
+        "s2": {
+          "type": "side_story",
+          "settings": {
+            "kicker": "Descanso",
+            "heading": "El arte de no hacer nada",
+            "text": "Las siestas largas son parte del ritual. Una cama que abraza ayuda a que duren más.",
+            "url": "/products/calming-cat-bed-for-indoor-cats-anti-anxiety-donut-round-dog-bed-fluffy-faux-fur-washable-pet-bed-for-small-medium-dogs-and-cats-grey-20in"
+          }
+        },
+        "s3": {
+          "type": "side_story",
+          "settings": {
+            "kicker": "Grooming",
+            "heading": "Manos libres, cuidado presente",
+            "text": "Guantes de grooming que dejan que las manos hagan lo que el cepillo no puede: quedarse cerca.",
+            "url": "/products/pet-grooming-gloves-dog-brush-mitt-deshedding-hair-removal-massage-horse-pair"
+          }
+        }
       },
       "block_order": ["s1", "s2", "s3"]
     },
     "ovl-split": {
       "type": "ovl-story-split",
-      "settings": {}
+      "settings": {
+        "left_kicker": "OVL — Omni Visual Language",
+        "left_heading": "Cada objeto tiene una emoción dominante. Nosotros diseñamos alrededor de ella.",
+        "right_heading": "Un mismo hilo",
+        "right_text": "Utility Commerce resuelve rápido. Editorial Commerce cuenta la historia. OVL es el hilo que conecta ambos — una identidad compartida que se adapta a cada emoción, sin perder consistencia.",
+        "button_label": "Ver catálogo",
+        "button_url": "/collections/all"
+      }
     }
   },
   "order": ["mag-hero", "mag-grid", "ovl-split"]

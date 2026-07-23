@@ -1,0 +1,73 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page-about",
+      "blocks": {
+        "p1": {
+          "type": "pillar",
+          "settings": {
+            "number": "01",
+            "label": "MISIÓN",
+            "text": "Diseñar objetos de cuidado diario que resuelvan lo esencial sin perder calidez — para las mascotas, y para quienes las cuidan."
+          }
+        },
+        "p2": {
+          "type": "pillar",
+          "settings": {
+            "number": "02",
+            "label": "VISIÓN",
+            "text": "Que cada rincón de la casa tenga un objeto Nima que haga el día un poco más tranquilo."
+          }
+        },
+        "p3": {
+          "type": "pillar",
+          "settings": {
+            "number": "03",
+            "label": "VALORES",
+            "text": "Simplicidad útil, calma compartida y calidad sin exceso — en cada objeto que elegimos hacer."
+          }
+        },
+        "v1": {
+          "type": "value",
+          "settings": {
+            "heading": "Simplicidad útil",
+            "text": "Cada objeto resuelve un problema real, sin funciones de más."
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "heading": "Calma compartida",
+            "text": "Diseñamos para bajar la ansiedad del momento — la de ellos, y la nuestra."
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "heading": "Calidad sin exceso",
+            "text": "Materiales que duran, sin sobreproducir ni encarecer."
+          }
+        },
+        "v4": {
+          "type": "value",
+          "settings": {
+            "heading": "Cuidado real",
+            "text": "Nada aspiracional: objetos probados en el ritmo de todos los días."
+          }
+        }
+      },
+      "block_order": ["p1", "p2", "p3", "v1", "v2", "v3", "v4"],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

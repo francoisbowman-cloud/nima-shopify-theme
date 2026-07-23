@@ -1,4 +1,4 @@
-/* Nima theme — interacciones mínimas sin dependencias.
+/* PetDrop theme — interacciones mínimas sin dependencias.
    - Toggle del menú móvil
    - Galería de producto (thumbnails)
    - Selección de variantes + add to cart vía AJAX Cart API

@@ -1,28 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero",
       "settings": {
-        "kicker": "Bienestar para quienes más amas",
-        "heading": "Comprar rápido. Descubrir mejor.",
-        "text": "Una tienda con dos velocidades: resuelve en segundos o entra en historias, guías y experiencias dirigidas por OVL.",
+        "kicker": "Nima — cuidado diario",
+        "heading": "Un día tranquilo,<br>en casa.",
+        "text": "Objetos pensados para el ritmo lento de las mascotas — y de las personas que las cuidan.",
         "button_label": "Comprar ahora",
-        "button_url": "shopify://collections/all"
+        "button_url": "shopify://collections/all",
+        "image": "shopify://shop_images/01-hero.png"
       }
     },
     "split": {
       "type": "dual-mode-split",
-      "settings": {}
+      "settings": {
+        "left_image": "shopify://shop_images/Home_Split_lado_ComprarUtility.png",
+        "left_button_url": "/collections/all",
+        "right_image": "shopify://shop_images/Home_Split_lado_DescubrirEditorial.png",
+        "right_button_url": "/pages/magazine"
+      }
     },
-    "cards": {
-      "type": "feature-cards",
-      "blocks": {
-        "b1": { "type": "card", "settings": { "heading": "Una sola tienda", "text": "Mismo catálogo, inventario, precios y checkout." } },
-        "b2": { "type": "card", "settings": { "heading": "Dos intenciones", "text": "Resolver con velocidad o descubrir con profundidad." } },
-        "b3": { "type": "card", "settings": { "heading": "Una identidad OVL", "text": "Cada producto recibe una emoción, un lenguaje y un sistema visual propio." } }
-      },
-      "block_order": ["b1", "b2", "b3"]
+    "magazine-teaser": {
+      "type": "magazine-teaser",
+      "settings": {
+        "image": "shopify://shop_images/Home_Journal_Magazine_Hero.png",
+        "button_url": "/pages/magazine"
+      }
     }
   },
-  "order": ["hero", "split", "cards"]
+  "order": [
+    "hero",
+    "split",
+    "magazine-teaser"
+  ]
 }

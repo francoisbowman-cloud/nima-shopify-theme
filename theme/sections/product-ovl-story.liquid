@@ -1,14 +1,12 @@
 {%- liquid
-  assign emotion = product.metafields.ovl.emotional_benefit
-  assign dominant = product.metafields.ovl.dominant_emotion
-  assign profile = product.metafields.ovl.visual_profile
+  assign e1 = product.metafields.ovl.dominant_emotion
+  assign e2 = product.metafields.ovl.emotional_benefit
 -%}
 
-<section class="container story">
+<section class="container story story--b">
   {%- if section.settings.kicker != blank -%}<span class="kicker">{{ section.settings.kicker }}</span>{%- endif -%}
-  <h2>{{ section.settings.heading }}</h2>
 
-  <div class="story-grid">
+  <div class="story-grid story-grid--b">
     <div>
       {%- if section.settings.image != blank -%}
         <img
@@ -22,17 +20,22 @@
       {%- endif -%}
     </div>
     <div>
-      <h3 style="font-size:40px">{{ section.settings.subheading }}</h3>
+      <span class="kicker">Experiencia OVL</span>
+      <h3 class="story--b__h">{{ section.settings.subheading }}</h3>
+      <div class="rte">{{ section.settings.body }}</div>
 
-      {%- if dominant != blank or emotion != blank or profile != blank -%}
+      {%- if e1 != blank or e2 != blank -%}
         <div class="ovl-badges">
-          {%- if dominant != blank -%}<span class="ovl-badge">{{ dominant }}</span>{%- endif -%}
-          {%- if emotion != blank -%}<span class="ovl-badge">{{ emotion }}</span>{%- endif -%}
-          {%- if profile != blank -%}<span class="ovl-badge">{{ profile }}</span>{%- endif -%}
+          {%- assign all_emotions = "Tranquilidad,Seguridad,Confort,Ternura,Frescura,Cuidado" | split: "," -%}
+          {%- for emo in all_emotions -%}
+            {%- if emo == e1 or emo == e2 -%}
+              <span class="ovl-badge ovl-badge--active">{{ emo }}</span>
+            {%- else -%}
+              <span class="ovl-badge">{{ emo }}</span>
+            {%- endif -%}
+          {%- endfor -%}
         </div>
       {%- endif -%}
-
-      <div class="rte">{{ section.settings.body }}</div>
 
       {%- if section.settings.button_label != blank -%}
         <a class="btn" href="{{ section.settings.button_url | default: '#' }}">{{ section.settings.button_label }} →</a>
@@ -45,12 +48,11 @@
 {
   "name": "Experiencia OVL",
   "settings": [
-    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Descubre por qué fue diseñada así" },
-    { "type": "textarea", "id": "heading", "label": "Título grande", "default": "La tranquilidad no se añade al final. Se construye desde el primer detalle." },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Experiencia OVL" },
     { "type": "image_picker", "id": "image", "label": "Imagen (si vacío, usa la 2ª imagen del producto)" },
-    { "type": "text", "id": "subheading", "label": "Subtítulo", "default": "Un objeto convertido en experiencia." },
+    { "type": "text", "id": "subheading", "label": "Título", "default": "Un objeto convertido en experiencia." },
     { "type": "richtext", "id": "body", "label": "Cuerpo", "default": "<p>OVL organiza la luz, el ritmo, la composición y el lenguaje alrededor de una emoción dominante. El producto sigue siendo fácil de comprar; la historia empieza después, para quien quiere comprender más.</p>" },
-    { "type": "text", "id": "button_label", "label": "Texto del botón", "default": "Leer la historia" },
+    { "type": "text", "id": "button_label", "label": "Texto del botón" },
     { "type": "url", "id": "button_url", "label": "Enlace del botón" }
   ],
   "presets": [{ "name": "Producto — Experiencia OVL" }]

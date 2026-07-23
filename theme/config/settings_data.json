@@ -1,25 +1,34 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
-    "color_bg": "#ffffff",
-    "color_text": "#1F2E33",
-    "color_muted": "#5C7A80",
-    "color_line": "#DCE8E6",
-    "color_soft": "#EAF4F2",
-    "color_accent": "#3E8FA6",
-    "color_accent_soft": "#DCEEF3",
+    "color_bg": "#FBF8F3",
+    "color_text": "#2B2621",
+    "color_muted": "#7A6F62",
+    "color_line": "#E7DFD2",
+    "color_soft": "#F3ECE1",
+    "color_accent": "#8A5A3B",
+    "color_accent_soft": "#EDE0D0",
     "heading_font": "georgia_pro_n4",
     "body_font": "helvetica_n4",
     "page_width": 1180
   },
   "presets": {
-    "Nima OVL": {
-      "color_bg": "#ffffff",
-      "color_text": "#1F2E33",
-      "color_muted": "#5C7A80",
-      "color_line": "#DCE8E6",
-      "color_soft": "#EAF4F2",
-      "color_accent": "#3E8FA6",
-      "color_accent_soft": "#DCEEF3",
+    "Nima OVL Cálido": {
+      "color_bg": "#FBF8F3",
+      "color_text": "#2B2621",
+      "color_muted": "#7A6F62",
+      "color_line": "#E7DFD2",
+      "color_soft": "#F3ECE1",
+      "color_accent": "#8A5A3B",
+      "color_accent_soft": "#EDE0D0",
       "heading_font": "georgia_pro_n4",
       "body_font": "helvetica_n4",
       "page_width": 1180

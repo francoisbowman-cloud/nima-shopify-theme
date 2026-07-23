@@ -1,0 +1,69 @@
+<section class="container" style="padding:60px 0 80px;max-width:640px">
+  <span class="kicker">{{ section.settings.kicker }}</span>
+  <h1 style="font-size:clamp(40px,5vw,64px);letter-spacing:-2px;margin:12px 0 16px">{{ page.title }}</h1>
+  {%- if section.settings.intro != blank -%}
+    <p class="muted" style="margin-bottom:32px">{{ section.settings.intro }}</p>
+  {%- endif -%}
+
+  {%- if page.content != blank -%}
+    <div class="rte" style="margin-bottom:32px">{{ page.content }}</div>
+  {%- endif -%}
+
+  {% form 'contact' %}
+    {%- if form.posted_successfully? -%}
+      <p class="form-success">{{ section.settings.success_message }}</p>
+    {%- endif -%}
+    {%- if form.errors -%}
+      <p class="form-error">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+
+    <div class="form-field">
+      <label for="ContactFormName">{{ 'contact.name' | t }}</label>
+      <input type="text" id="ContactFormName" name="contact[name]" value="{{ form.name }}">
+    </div>
+
+    <div class="form-field">
+      <label for="ContactFormEmail">{{ 'contact.email' | t }}</label>
+      <input type="email" id="ContactFormEmail" name="contact[email]" value="{{ form.email }}" required>
+    </div>
+
+    <div class="form-field">
+      <label for="ContactFormMessage">{{ 'contact.message' | t }}</label>
+      <textarea id="ContactFormMessage" name="contact[body]" rows="6">{{ form.body }}</textarea>
+    </div>
+
+    <button type="submit" class="btn">{{ 'contact.send' | t }}</button>
+  {% endform %}
+
+  {%- if section.settings.email != blank or section.settings.phone != blank or section.settings.hours != blank -%}
+    <div class="contact-alt" style="margin-top:40px;border-top:1px solid var(--line);padding-top:28px;display:flex;flex-direction:column;gap:18px">
+      {%- if section.settings.email != blank -%}
+        <div>
+          <div style="font-size:11px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Email</div>
+          <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+        </div>
+      {%- endif -%}
+      {%- if section.settings.hours != blank -%}
+        <div>
+          <div style="font-size:11px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Horario</div>
+          <span>{{ section.settings.hours }}</span>
+        </div>
+      {%- endif -%}
+      {%- if section.settings.phone != blank -%}<p><a href="tel:{{ section.settings.phone }}">{{ section.settings.phone }}</a></p>{%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Página — Contacto",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Hablemos" },
+    { "type": "textarea", "id": "intro", "label": "Texto introductorio", "default": "¿Tienes una pregunta sobre un pedido, un producto o algo más? Escríbenos y te respondemos lo antes posible." },
+    { "type": "text", "id": "success_message", "label": "Mensaje de éxito", "default": "¡Gracias! Recibimos tu mensaje y te responderemos pronto." },
+    { "type": "text", "id": "email", "label": "Email de contacto (opcional, se muestra como enlace)" },
+    { "type": "text", "id": "hours", "label": "Horario de atención (opcional)" },
+    { "type": "text", "id": "phone", "label": "Teléfono de contacto (opcional, se muestra como enlace)" }
+  ]
+}
+{% endschema %}

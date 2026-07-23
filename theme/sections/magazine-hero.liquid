@@ -1,4 +1,4 @@
-<section class="container mag-hero">
+<section class="container mag-hero"{% if section.settings.image != blank %} style="background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.45)),url('{{ section.settings.image | image_url: width: 1600 }}');background-size:cover;background-position:center;"{% endif %}>
   {%- if section.settings.kicker != blank -%}<span class="kicker">{{ section.settings.kicker }}</span>{%- endif -%}
   <h1>{{ section.settings.heading }}</h1>
 </section>
@@ -7,6 +7,7 @@
 {
   "name": "Magazine — Hero",
   "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen de fondo" },
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "OVL Edition 01" },
     { "type": "html", "id": "heading", "label": "Título (permite <br>)", "default": "Viajar<br>sin ansiedad." }
   ],

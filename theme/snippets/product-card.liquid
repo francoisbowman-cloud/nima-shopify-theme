@@ -1,18 +1,32 @@
 {%- comment -%} Uso: {% render 'product-card', product: product %} {%- endcomment -%}
-<a class="pcard" href="{{ product.url }}">
+{%- assign is_featured = false -%}
+{%- assign tag_label = '' -%}
+{%- if product.tags contains 'bestseller' -%}
+  {%- assign is_featured = true -%}
+  {%- assign tag_label = 'Más vendido' -%}
+{%- elsif product.tags contains 'nuevo' -%}
+  {%- assign tag_label = 'Nuevo' -%}
+{%- endif -%}
+
+<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}">
   <div class="pcard__media">
     {%- if product.featured_image != blank -%}
-      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="300" height="375">
+      <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="400" height="500">
     {%- else -%}
       {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
     {%- endif -%}
+    {%- if tag_label != '' -%}
+      <span class="pcard__tag">{{ tag_label }}</span>
+    {%- endif -%}
   </div>
-  {%- if product.metafields.ovl.dominant_emotion != blank -%}
-    <span class="kicker">{{ product.metafields.ovl.dominant_emotion }}</span>
-  {%- endif -%}
-  <h3>{{ product.title }}</h3>
-  <div class="price{% if product.compare_at_price > product.price %} price--sale{% endif %}">
-    {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
-    {{ product.price | money }}
+  <div class="pcard__body">
+    {%- if product.type != blank -%}
+      <span class="pcard__category">{{ product.type }}</span>
+    {%- endif -%}
+    <h3>{{ product.title }}</h3>
+    <div class="price{% if product.compare_at_price > product.price %} price--sale{% endif %}">
+      {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
+      {{ product.price | money }}
+    </div>
   </div>
 </a>

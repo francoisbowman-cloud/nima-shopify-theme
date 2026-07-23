@@ -3,13 +3,15 @@
   <h1>{{ collection.title }}</h1>
   {%- if collection.description != blank -%}
     <div class="rte muted">{{ collection.description }}</div>
+  {%- else -%}
+    <p class="muted collection-sub">Seis objetos pensados para comer, descansar y cuidar — sin vueltas.</p>
   {%- endif -%}
 </div>
 
 <div class="container">
   {%- if collection.products.size > 0 -%}
     {%- paginate collection.products by section.settings.products_per_page -%}
-      <div class="product-grid">
+      <div class="product-grid product-grid--b">
         {%- for product in collection.products -%}
           {% render 'product-card', product: product %}
         {%- endfor -%}

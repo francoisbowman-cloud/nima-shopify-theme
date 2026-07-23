@@ -1,0 +1,60 @@
+<div class="container about-hero">
+  <span class="kicker">{{ section.settings.kicker }}</span>
+  <h1 class="about-hero__h">{{ section.settings.heading }}</h1>
+  <p class="muted about-hero__text">{{ section.settings.intro }}</p>
+</div>
+
+<div class="container about-pillars">
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'pillar' -%}
+      <div class="about-pillar">
+        <div class="about-pillar__num">{{ block.settings.number }} / {{ block.settings.label }}</div>
+        <p>{{ block.settings.text }}</p>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+<div class="about-values">
+  <div class="container about-values__grid">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'value' -%}
+        <div>
+          <div class="about-values__h">{{ block.settings.heading }}</div>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Página — Sobre Nima",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Sobre Nima" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Cuidado diario, sin vueltas." },
+    { "type": "textarea", "id": "intro", "label": "Texto introductorio", "default": "Nima nació de una idea simple: los objetos que rodean a una mascota deberían facilitar el día, no complicarlo." }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pilar M/V/V",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Número", "default": "01" },
+        { "type": "text", "id": "label", "label": "Etiqueta", "default": "MISIÓN" },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "Escribe el texto aquí." }
+      ]
+    },
+    {
+      "type": "value",
+      "name": "Valor (franja oscura)",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Título", "default": "Escribe el texto aquí." },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "Escribe el texto aquí." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Página — Sobre Nima" }]
+}
+{% endschema %}
