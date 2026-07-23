@@ -202,7 +202,7 @@ button{font-family:inherit}
 .split--b__side--light{background:var(--bg)}
 .split--b__side--dark{background:var(--text);overflow:hidden;min-height:520px;justify-content:flex-end}
 .split--b__step{font-size:11px;letter-spacing:.12em;color:var(--muted);font-family:monospace}
-.split--b__step--light{color:rgba(251,248,243,.6)}
+.split--b__step--light{color:color-mix(in srgb, var(--bg) 60%, transparent)}
 .split--b__img{width:100%;aspect-ratio:4/3;object-fit:cover}
 .split--b__bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .split--b__scrim{position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb, var(--text) 15%, transparent),color-mix(in srgb, var(--text) 78%, transparent))}
@@ -237,7 +237,7 @@ button{font-family:inherit}
 .about-values{background:var(--text);color:var(--bg);padding:80px 0}
 .about-values__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
 .about-values__h{font-family:var(--serif);font-size:20px;margin-bottom:8px}
-.about-values__grid p{font-size:13px;color:rgba(251,248,243,.7);line-height:1.6}
+.about-values__grid p{font-size:13px;color:color-mix(in srgb, var(--bg) 70%, transparent);line-height:1.6}
 
 @media(max-width:800px){
   .about-pillars{grid-template-columns:1fr}
