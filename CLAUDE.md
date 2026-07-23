@@ -32,11 +32,22 @@ ESTADO-tienda-mascotas.md  # estado del proyecto (nivel producto, dentro de Atla
 
 ## Mapeo prototipo → theme
 
-| Prototipo | Plantilla Shopify | Secciones |
+**Nota (23/07):** el theme publicado real ("Nima — Dirección B", ver sección siguiente)
+diverge del prototipo original — Design agregó secciones y páginas nuevas. Esta tabla
+refleja el estado actual del repo, ya resincronizado con lo publicado.
+
+| Página | Plantilla Shopify | Secciones |
 |---|---|---|
-| `index.html` | `templates/index.json` | hero, dual-mode-split, feature-cards |
-| `product.html` | `templates/product.json` | main-product (Zona 1: compra rápida), product-ovl-story (Zona 2: experiencia OVL) |
-| `magazine.html` | `templates/page.magazine.json` | magazine-hero, magazine-grid, ovl-story-split |
+| Home | `templates/index.json` | hero, dual-mode-split (`.split--b`), magazine-teaser |
+| Producto | `templates/product.json` | main-product (Zona 1, con variantes `--b`: swatches de color, galería en grid), product-ovl-story (Zona 2, variante `story--b`) |
+| Magazine | `templates/page.magazine.json` | magazine-hero, magazine-grid, ovl-story-split |
+| Catálogo | `templates/collection.json` | main-collection (grid `product-grid--b`, tarjeta destacada 2x2 vía tag `bestseller`/`nuevo`) |
+| Sobre Nima | `templates/page.about-nima.json` | main-page-about (pilares M/V/V + franja de valores) |
+| Contacto | `templates/page.contact.json` | main-page-contact (formulario nativo `{% form 'contact' %}`) |
+| Búsqueda / Lista de colecciones | `templates/search.json` / `templates/list-collections.json` | main-search, main-list-collections — ambas reusan el mismo patrón de tarjeta (`product-grid--b` + `pcard__body`) que el Catálogo |
+
+`feature-cards.liquid` sigue existiendo en el repo pero **ya no está en ningún template** —
+quedó fuera del Home al pasar a "Dirección B". No borrado por si se reusa.
 
 ## Comandos
 
@@ -73,12 +84,39 @@ El conjunto completo previsto (story_id, risk_level, etc.) está en `docs/04_MOD
 3. Definir namespace `ovl` (metafields arriba) y cargar datos por producto.
 4. Ajustar colores/tipografía en Customizer → Configuración del tema.
 
+## ⚠️ El theme publicado puede divergir del repo — verificar antes de auditar/tocar nada
+
+El 23/07 se descubrió que el theme publicado (MAIN) en Shopify ya no era el que este
+repo trackeaba: Design lo había reemplazado por uno nuevo ("Nima — Dirección B"),
+partiendo del mismo código pero con cambios propios. `shopify theme pull` no funciona
+en este entorno (requiere login OAuth interactivo), así que la única forma de detectar
+esto y resincronizar es vía **Admin GraphQL API, solo lectura**:
+
+```graphql
+query { themes(first: 10) { edges { node { id name role } } } }
+query { theme(id: "gid://shopify/OnlineStoreTheme/ID") {
+  files(first: 250, filenames: ["*"]) { nodes { filename body { __typename ... on OnlineStoreThemeFileBodyText { content } } } }
+} }
+```
+
+**Antes de cualquier auditoría o fix de theme, confirmá que `role: MAIN` corresponde al
+mismo `id` que dice `ESTADO-tienda-mascotas.md`** (sección 1, línea "Theme publicado").
+Si no coincide, resincronizar el repo primero (sobreescribir `theme/` con el contenido
+real vía la query de arriba) antes de tocar nada — si no, se audita/corrige código que
+no es el que está en producción.
+
+**Escribir cambios de vuelta:** Shopify bloquea `themeFilesUpsert` sobre el theme MAIN/
+publicado (solo permite escritura en themes no publicados). El flujo seguro: `themeDuplicate`
+(mutation) → aplicar fixes con `themeFilesUpsert` sobre el duplicado → Brey previsualiza
+y publica manualmente desde el admin si aprueba. Nunca commitear en el repo sin haber
+verificado primero contra el theme real.
+
 ## Pendientes conocidos
 
 - `templates/gift_card.liquid` y `templates/customers/*` no incluidos — agregar solo si se habilitan tarjetas de regalo o cuentas de cliente.
 - Selección de variante sin JS cae siempre a la primera variante; con JS (`global.js`) funciona completo (galería + variantes + add-to-cart AJAX).
 - Filtros de colección (por mascota/necesidad/tamaño) descritos en `docs/02_ARQUITECTURA_DE_EXPERIENCIA.md` — requieren `filter`/`facets`, no incluidos en esta primera pasada.
-- Nombre de marca: **Nima** (dominio `nimapets.com`, ya definido y conectado — ver ESTADO decisión #18). El `theme push` final que propaga el rebrand al theme publicado en Shopify sigue pendiente (requiere login OAuth interactivo, lo ejecuta Brey).
+- Nombre de marca: **Nima** (dominio `nimapets.com`, ya definido y conectado). El `theme push` que lleva el rebrand a producción **ya se ejecutó** (ver ESTADO decisión #29) — pendiente distinto ahora: publicar el duplicado con los fixes de la auditoría del 23/07 (ver ESTADO decisión #33).
 
 ## Convenciones
 
@@ -106,6 +144,14 @@ en `{%- style -%}...{%- endstyle -%}` (o `<style>...</style>`). Si se llama suel
 `<head>`, el navegador lo renderiza como texto plano visible en la página en vez de aplicarlo.
 Ambos layouts (`theme.liquid`, `password.liquid`) ya lo hacen así — mantené el patrón si se
 agregan más fuentes o layouts.
+
+**Convención agregada (23/07):** para texto/fondos "claros sobre oscuro" (paneles dark,
+scrims sobre imagen), no hardcodees el hex — usá las clases utilitarias ya definidas
+(`.on-dark-kicker`, `.on-dark-heading`, `.on-dark-text`) o `color-mix(in srgb, var(--bg) N%, transparent)`
+/ `color-mix(in srgb, var(--text) N%, transparent)` para variantes translúcidas (scrims,
+overlays). Ya se aplicó en footer, `.btn`/`.btn--light`, `.option`, `.split .dark`, y los
+componentes `--b` (split, teaser de magazine) — no reintroducir `rgba(43,38,33,...)` ni
+`rgba(251,248,243,...)` hardcodeado, son `--text`/`--bg` disfrazados.
 
 Nota de diseño (no bug): `.hero h1` en `assets/base.css` no fija `font-family` — hereda el
 `--sans` del body por diseño heredado del prototipo original (igual que `prototype/styles.css`).
