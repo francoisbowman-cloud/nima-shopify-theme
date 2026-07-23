@@ -4,6 +4,24 @@ Tienda de dropshipping de artículos para mascotas sobre **Shopify** (Online Sto
 
 Nombre de marca final: **Nima** (dominio `nimapets.com`). El codename `PetDrop` sigue viviendo en el nombre de la carpeta del repo, el subdominio `petdrop-9236.myshopify.com`, y el theme ID `PetDrop_OVL` en Shopify — ninguno de esos requiere renombrarse, son identificadores internos. El texto visible al cliente dentro del theme (locales, nombre del theme, comentarios) ya se rebrandeó a "Nima".
 
+## ✅ Checklist de coherencia de diseño — verificación obligatoria (toda tarea de diseño/frontend)
+
+Antes de dar por cerrada **cualquier** auditoría o corrección visual/frontend, repasar
+`checklist-coherencia-diseno.md` (raíz del repo) punto por punto contra el trabajo hecho.
+No es solo para una sesión puntual — aplica siempre que se toque `theme/sections`,
+`theme/assets/base.css`, templates, o contenido de producto visible al cliente.
+
+Reglas no negociables de ese checklist:
+1. **Cobertura completa (punto 1):** generar la lista real y completa de secciones del
+   theme desde el código/API antes de auditar — nunca trabajar de memoria sobre qué
+   secciones existen (ya pasó una vez: una sección quedó fuera de una auditoría por no
+   estar en la lista mental).
+2. **Publicar y verificar en vivo (punto 4):** ninguna tarea se marca como terminada si
+   el cambio quedó en un theme/borrador sin publicar, o si no se confirmó visualmente en
+   el sitio real (no alcanza con preview). Ver la sección "⚠️ El theme publicado puede
+   divergir del repo" más abajo para el flujo seguro de escritura (duplicar → aplicar →
+   Brey publica manualmente).
+
 ## Stack
 
 - **Shopify Online Store 2.0** theme (Liquid + JSON templates/sections, sin build step de JS/CSS).

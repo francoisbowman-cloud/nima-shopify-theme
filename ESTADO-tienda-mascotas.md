@@ -70,6 +70,10 @@ se asuma lo contrario:**
 | 31 | **El theme publicado ya no es `PetDrop_OVL` — Design reemplazó el MAIN por un theme nuevo, "Nima — Dirección B (Design)" (ID `198916800593`)**, construido a partir del código de Code pero con paleta cálida propia, páginas Sobre Nima/Contacto y sección de teaser de Magazine nuevas. El repo se resincronizó leyendo el theme real vía API (no vía `shopify theme pull`, bloqueado por falta de OAuth interactivo en este entorno) | Design (theme), Code (detectado y resincronizado) |
 | 32 | Auditoría técnica completa de "Nima — Dirección B": 2 bugs reales de compra corregidos (selector de color roto en productos con 2+ opciones — ej. Dog Leash 17 variantes, Portable Pet Grooming Hammock 9 variantes — y galería de producto sin forma de volver a la imagen principal), 1 bug responsive (grid del blog no colapsaba en mobile), 1 bug de traducción (formulario de contacto en inglés sin el bloque `contact`), consolidación de CSS duplicado (tarjetas de catálogo/búsqueda/colecciones) y migración de colores hardcodeados a variables de tema (footer, botones, splits oscuros — antes no seguían la paleta del Customizer). Detalle completo en `CHANGELOG.md` | Code |
 | 33 | Los fixes se aplicaron sobre un **theme duplicado sin publicar** ("Nima — Dirección B (Auditoría Code)", ID `198934265937`), no directo sobre el MAIN — Shopify bloquea escritura vía API sobre el theme publicado. Falta que Brey previsualice ese duplicado y lo publique manualmente si aprueba los cambios | Code (fixes), pendiente Brey (revisión + publicar) |
+| 34 | **Brey revisó y publicó el duplicado `198934265937`** — confirmado por API: ese theme ahora tiene `role: MAIN`. Los fixes de la decisión #32 ya están viviendo en producción | Brey |
+| 35 | **`checklist-coherencia-diseno.md` agregado al repo** (raíz, junto a este documento) y referenciado como paso de verificación **obligatorio** en `CLAUDE.md` para toda tarea de diseño/frontend futura — no solo la sesión que lo introdujo. Cubre: cobertura completa (auditar desde código/API, no de memoria), tokens, contraste texto-sobre-imagen, estados, responsive, consistencia entre pantallas, pipeline de assets externos, y cierre obligatorio con publicación + verificación en vivo | Brey (documento origen), Code (incorporado al repo y a CLAUDE.md) |
+| 36 | Bug de contraste encontrado en `sections/magazine-hero.liquid` (no cubierto en la auditoría de la decisión #32): `h1` y `kicker` usaban el color de texto por defecto sobre un degradado débil (5%–45% negro), ilegibles sobre fotos ocupadas. Corregido aplicando el mismo tratamiento que `magazine-teaser.liquid` (clases `on-dark-kicker`/`on-dark-heading`, solo cuando hay imagen de fondo) y reforzando el degradado a 35%–55%. Se auditaron las 8 secciones del theme que usan imagen de fondo — el resto (`magazine-grid.liquid`, `main-blog.liquid`) ya maneja el contraste correctamente vía herencia de `color:#fff`. Fix subido a un **nuevo theme duplicado sin publicar** ("Nima — Fix contraste Magazine Hero (Code)", ID `198963363921`), verificado visualmente en preview (clases y colores computados correctos vía inspección JS) — **pendiente que Brey lo publique manualmente** | Code |
+| 37 | Auditoría de imágenes de producto (14 productos activos, catálogo completo) encontró 5 productos con fotos crudas de AutoDS sin tratamiento: **Dog Dental Bone Treats** (foto es literalmente el empaque de un competidor real, "Minties", con reclamo "Compare to Greenies" — más grave que un problema de estilo, es la foto de otra marca representando nuestro producto), **Portable Pet Grooming Hammock**, **Dog Leash** y **Pet Dog Grooming Scissors** (las 3 con banner "US Seller / Fast Shipping From USA" + collage multi-panel de AliExpress/eBay), y **Dog Poop Bags 280 Counts** (foto de la caja de empaque genérica, "Made in China" visible). No se corrigieron en esta sesión — requieren el pipeline del punto 3 del checklist (quitar fondo, fondo unificado, mismo aspect ratio), que es reemplazo de asset, no CSS; para Dental Bone Treats además hace falta una foto real del producto (no la de "Minties") desde AutoDS. Queda pendiente decidir si Code ejecuta el pipeline con el Image Toolkit conectado o si Brey re-sourcea las fotos manualmente | Code (hallazgo) |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -124,29 +128,38 @@ de la próxima importación.
 ---
 
 ## 7. Próximo paso
-**Prioridad actual: revisar y publicar la auditoría del theme "Nima — Dirección B".**
-Code auditó el theme real publicado (no el que tenía en el repo — Design lo había
-reemplazado, ver decisión #31), encontró y corrigió bugs reales de compra, responsive,
-traducción y consistencia visual (decisión #32), y subió los fixes a un **duplicado sin
-publicar** ("Nima — Dirección B (Auditoría Code)", ID `198934265937`) porque Shopify
-bloquea escritura por API sobre el theme MAIN.
+**Prioridad actual: revisar y publicar el fix de contraste de `magazine-hero.liquid`.**
+El duplicado de la auditoría anterior (`198934265937`) ya fue revisado y publicado por
+Brey (decisión #34) — ese trabajo está cerrado. Lo nuevo: Code encontró un bug de
+contraste que no había quedado cubierto en esa auditoría (decisión #36) y lo corrigió en
+un **duplicado nuevo, sin publicar** ("Nima — Fix contraste Magazine Hero (Code)", ID
+`198963363921`), duplicado a partir del MAIN actual — el fix ya está verificado en preview.
 Falta ejecutar de parte de Brey:
-1. **Previsualizar el duplicado `198934265937` en Shopify y, si aprueba los cambios,
-   publicarlo manualmente** (Online Store → Themes → ese theme → "Publicar"). Ver sección 9
-   más abajo para qué revisar puntualmente.
-2. Conectar ChatGPT (Codex Cloud) al repo de GitHub para que pueda tomar temas nuevos
+1. **Previsualizar el duplicado `198963363921` en Shopify y, si aprueba el cambio,
+   publicarlo manualmente** (Online Store → Themes → ese theme → "Publicar"). Qué revisar:
+   la página Magazine (`/pages/magazine`), que el kicker y el título se lean claramente
+   sobre la foto de fondo.
+2. **Decidir cómo resolver las 5 imágenes de producto crudas de AutoDS** encontradas en
+   esta sesión (decisión #37) — en particular Dog Dental Bone Treats, que muestra el
+   empaque de un competidor real ("Minties") en vez del producto propio. Requiere
+   re-sourcear fotos desde AutoDS (Dental Bone Treats) y/o correr el pipeline de
+   fondo unificado (Image Toolkit) sobre las otras 4.
+3. Conectar ChatGPT (Codex Cloud) al repo de GitHub para que pueda tomar temas nuevos
    y entregarlos como pull request — Code los revisa antes de aplicarlos a Shopify.
-3. Confirmar si existen las "adendas v3-v5" del protocolo (`PROTOCOLO-adendas-completas.md`)
+4. Confirmar si existen las "adendas v3-v5" del protocolo (`PROTOCOLO-adendas-completas.md`)
    mencionadas en un mensaje reciente — no se encontraron en ninguna carpeta de proyecto
    verificada; si existen, pasárselas a Code para incorporarlas a `AGENTS.md`.
-4. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima".
-5. Confirmar si ya corrigió la configuración de moneda en AutoDS.
+5. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima".
+6. Confirmar si ya corrigió la configuración de moneda en AutoDS.
 
 ---
 
 ## 8. Pendientes / preguntas abiertas
-- **Revisar y publicar el duplicado `198934265937`** con los fixes de la auditoría (ver
-  sección 9) — sin esto, los bugs corregidos siguen viviendo en el theme publicado real.
+- **Revisar y publicar el duplicado `198963363921`** con el fix de contraste de
+  `magazine-hero.liquid` (decisión #36) — sin esto, el bug sigue viviendo en el theme
+  publicado real.
+- **Decidir el tratamiento para las 5 imágenes de producto crudas de AutoDS** (decisión
+  #37), empezando por Dog Dental Bone Treats (foto de marca competidora real).
 - Conectar Codex Cloud (ChatGPT) al repo de GitHub — flujo de trabajo nuevo, primer uso.
 - Confirmar existencia real de "adendas v3-v5" / `PROTOCOLO-adendas-completas.md` (ver
   decisión #30) — de no existir, aclarar de dónde salió la referencia para evitar que se
@@ -169,21 +182,14 @@ Falta ejecutar de parte de Brey:
 
 ---
 
-## 9. Qué revisar antes de publicar el duplicado `198934265937`
-- **Producto:** en un producto con Color + otra opción (ej. talla), el selector ahora
-  muestra pills con el nombre completo de la variante en vez de círculos de color — antes
-  mostraba círculos duplicados sin indicar la opción secundaria. Confirmar que se ve bien.
-- **Producto:** la galería ahora muestra también la miniatura de la imagen principal
-  (antes no se podía volver a ella tras hacer clic en otra).
-- **Contacto (en inglés):** el formulario ahora muestra "Name/Email/Message/Send message"
-  en vez de las claves de traducción sin resolver.
-- **Blog en mobile:** la grilla de artículos ahora colapsa a una columna en pantallas
-  angostas.
-- **Catálogo, Búsqueda, Colecciones:** las tarjetas deberían verse visualmente idénticas
-  entre sí (mismo estilo de card que ya tenía el Catálogo).
-- **Cambio de color/tipografía en el Customizer:** botones, footer y los paneles oscuros
-  (Home, Magazine) deberían seguir el color elegido — antes quedaban fijos en negro/blanco
-  sin importar la paleta configurada.
+## 9. Qué revisar antes de publicar el duplicado `198963363921`
+- **Magazine (`/pages/magazine`):** el kicker y el título de la sección Hero ahora se leen
+  con texto claro sobre la foto de fondo, con un degradado algo más marcado que antes.
+  Confirmar que se ve bien tanto con fotos claras como oscuras (el tratamiento solo se
+  activa cuando la sección tiene imagen configurada).
+- Este duplicado se creó a partir del MAIN ya publicado (decisión #34) — no debería traer
+  ninguna otra diferencia visual. Si aparece algo más distinto, avisar a Code antes de
+  publicar.
 
 ---
 
