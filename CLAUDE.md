@@ -27,6 +27,7 @@ Reglas no negociables de ese checklist:
 - **Shopify Online Store 2.0** theme (Liquid + JSON templates/sections, sin build step de JS/CSS).
 - Vanilla JS (`theme/assets/global.js`) y CSS (`theme/assets/base.css`) — sin framework ni bundler.
 - Capa de contenido "OVL" (Omni Visual Language) implementada sobre **metafields de producto**, namespace `ovl` (ver `skills/omni-visual-language/SKILL.md`).
+- Dirección de arte y sistema de imágenes de catálogo: ver `skills/nima-image-art-direction/SKILL.md` — úsala para cualquier auditoría, tratamiento o implementación de fotografía de producto (roles de imagen, paleta/luz por categoría, ratios, tokens visuales, rendimiento y accesibilidad). Complementa, no reemplaza, el `checklist-coherencia-diseno.md` de la raíz.
 - `prototype/*.html` es el prototipo estático original (pre-Shopify) — se mantiene como referencia de diseño, ya no es el entregable activo.
 
 ## Estructura del repo
@@ -44,6 +45,7 @@ theme/            # theme Shopify activo (Online Store 2.0)
 prototype/         # HTML estático original (index, product, magazine) — referencia de diseño
 docs/              # 01-06: visión, arquitectura, especificación OVL, modelo de contenido, roadmap
 skills/omni-visual-language/  # definición del sistema OVL (skill)
+skills/nima-image-art-direction/  # dirección de arte y sistema de imágenes de catálogo (skill)
 references/        # imágenes de referencia visual
 ESTADO-tienda-mascotas.md  # estado del proyecto (nivel producto, dentro de Atlas Commerce)
 ```
