@@ -2,7 +2,7 @@
 Dominio: `nimapets.com` (comprado y conectado a Shopify — DNS verificado, SSL activo)
 Repo: `https://github.com/francoisbowman-cloud/nima-shopify-theme` (privado)
 Codename histórico: `PetDrop` (reemplazado — ver decisión #18)
-Última actualización: 19 de julio de 2026 — por: Code
+Última actualización: 23 de julio de 2026 — por: Code
 Nivel: **Producto**, dentro del sistema **Atlas Commerce** (ver `ESTADO-atlas-commerce.md`, Project Atlas-Commerce-Lab)
 
 ---
@@ -67,6 +67,9 @@ se asuma lo contrario:**
 | 28 | `gh` (GitHub CLI) instalado y autenticado en la máquina de Brey, como herramienta de soporte para este flujo | Code (instalación), Brey (login interactivo) |
 | 29 | **`theme push` final ejecutado — `PetDrop_OVL` es ahora el theme MAIN (publicado) en Shopify**, confirmado por API (antes era `UNPUBLISHED`). El rebrand a "Nima" en los textos del theme ya está viviendo en producción | Brey |
 | 30 | `AGENTS.md` creado en la raíz del repo de GitHub — equivalente de `CLAUDE.md` para Codex Cloud, con el protocolo v2 completo embebido (Codex no puede leer archivos fuera del repo). Nota abierta: se mencionaron "adendas v3-v5" y un archivo `PROTOCOLO-adendas-completas.md` que no existen en ninguna carpeta de proyecto verificada — Brey debe confirmar si existen en otro lado o si es una referencia desactualizada | Code |
+| 31 | **El theme publicado ya no es `PetDrop_OVL` — Design reemplazó el MAIN por un theme nuevo, "Nima — Dirección B (Design)" (ID `198916800593`)**, construido a partir del código de Code pero con paleta cálida propia, páginas Sobre Nima/Contacto y sección de teaser de Magazine nuevas. El repo se resincronizó leyendo el theme real vía API (no vía `shopify theme pull`, bloqueado por falta de OAuth interactivo en este entorno) | Design (theme), Code (detectado y resincronizado) |
+| 32 | Auditoría técnica completa de "Nima — Dirección B": 2 bugs reales de compra corregidos (selector de color roto en productos con 2+ opciones — ej. Dog Leash 17 variantes, Portable Pet Grooming Hammock 9 variantes — y galería de producto sin forma de volver a la imagen principal), 1 bug responsive (grid del blog no colapsaba en mobile), 1 bug de traducción (formulario de contacto en inglés sin el bloque `contact`), consolidación de CSS duplicado (tarjetas de catálogo/búsqueda/colecciones) y migración de colores hardcodeados a variables de tema (footer, botones, splits oscuros — antes no seguían la paleta del Customizer). Detalle completo en `CHANGELOG.md` | Code |
+| 33 | Los fixes se aplicaron sobre un **theme duplicado sin publicar** ("Nima — Dirección B (Auditoría Code)", ID `198934265937`), no directo sobre el MAIN — Shopify bloquea escritura vía API sobre el theme publicado. Falta que Brey previsualice ese duplicado y lo publique manualmente si aprueba los cambios | Code (fixes), pendiente Brey (revisión + publicar) |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -121,25 +124,29 @@ de la próxima importación.
 ---
 
 ## 7. Próximo paso
-Lo técnico de Code está al día: theme rebrandeado (PetDrop→Nima en textos) **y ya publicado
-como theme MAIN** (confirmado por API), corrección ortográfica de Atlas Commerce aplicada,
-repo en GitHub (`github.com/francoisbowman-cloud/nima-shopify-theme`, privado) con `main`
-sincronizado, y `AGENTS.md` creado para que Codex Cloud tenga contexto propio.
+**Prioridad actual: revisar y publicar la auditoría del theme "Nima — Dirección B".**
+Code auditó el theme real publicado (no el que tenía en el repo — Design lo había
+reemplazado, ver decisión #31), encontró y corrigió bugs reales de compra, responsive,
+traducción y consistencia visual (decisión #32), y subió los fixes a un **duplicado sin
+publicar** ("Nima — Dirección B (Auditoría Code)", ID `198934265937`) porque Shopify
+bloquea escritura por API sobre el theme MAIN.
 Falta ejecutar de parte de Brey:
-1. Conectar ChatGPT (Codex Cloud) al repo de GitHub para que pueda tomar temas nuevos
+1. **Previsualizar el duplicado `198934265937` en Shopify y, si aprueba los cambios,
+   publicarlo manualmente** (Online Store → Themes → ese theme → "Publicar"). Ver sección 9
+   más abajo para qué revisar puntualmente.
+2. Conectar ChatGPT (Codex Cloud) al repo de GitHub para que pueda tomar temas nuevos
    y entregarlos como pull request — Code los revisa antes de aplicarlos a Shopify.
-2. Confirmar si existen las "adendas v3-v5" del protocolo (`PROTOCOLO-adendas-completas.md`)
+3. Confirmar si existen las "adendas v3-v5" del protocolo (`PROTOCOLO-adendas-completas.md`)
    mencionadas en un mensaje reciente — no se encontraron en ninguna carpeta de proyecto
    verificada; si existen, pasárselas a Code para incorporarlas a `AGENTS.md`.
-3. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima",
-   independientemente de que el back-end de PayPal use "Atlas Commerce" como nombre comercial.
-4. Quitar la protección con contraseña de la tienda cuando decida abrirla al público
-   — decisión de timing, no técnica.
+4. Verificar en el checkout real de Shopify que el nombre visible al cliente sea "Nima".
 5. Confirmar si ya corrigió la configuración de moneda en AutoDS.
 
 ---
 
 ## 8. Pendientes / preguntas abiertas
+- **Revisar y publicar el duplicado `198934265937`** con los fixes de la auditoría (ver
+  sección 9) — sin esto, los bugs corregidos siguen viviendo en el theme publicado real.
 - Conectar Codex Cloud (ChatGPT) al repo de GitHub — flujo de trabajo nuevo, primer uso.
 - Confirmar existencia real de "adendas v3-v5" / `PROTOCOLO-adendas-completas.md` (ver
   decisión #30) — de no existir, aclarar de dónde salió la referencia para evitar que se
@@ -155,6 +162,28 @@ Falta ejecutar de parte de Brey:
 - Renombrar el Project de claude.ai "Atlas-Comerce-Lab" → "Atlas-Commerce-Lab" en la UI
   — acción manual de Brey, es lo único que falta de la corrección ortográfica (ver
   decisión #26).
+- **Recordatorio operativo:** de acá en adelante, si Design vuelve a tocar el theme
+  directo en Shopify, avisar a Code antes de pedirle auditorías — el repo solo refleja
+  la realidad si se resincroniza primero (pasó en esta sesión: el repo apuntaba a un
+  theme que ya no existía).
+
+---
+
+## 9. Qué revisar antes de publicar el duplicado `198934265937`
+- **Producto:** en un producto con Color + otra opción (ej. talla), el selector ahora
+  muestra pills con el nombre completo de la variante en vez de círculos de color — antes
+  mostraba círculos duplicados sin indicar la opción secundaria. Confirmar que se ve bien.
+- **Producto:** la galería ahora muestra también la miniatura de la imagen principal
+  (antes no se podía volver a ella tras hacer clic en otra).
+- **Contacto (en inglés):** el formulario ahora muestra "Name/Email/Message/Send message"
+  en vez de las claves de traducción sin resolver.
+- **Blog en mobile:** la grilla de artículos ahora colapsa a una columna en pantallas
+  angostas.
+- **Catálogo, Búsqueda, Colecciones:** las tarjetas deberían verse visualmente idénticas
+  entre sí (mismo estilo de card que ya tenía el Catálogo).
+- **Cambio de color/tipografía en el Customizer:** botones, footer y los paneles oscuros
+  (Home, Magazine) deberían seguir el color elegido — antes quedaban fijos en negro/blanco
+  sin importar la paleta configurada.
 
 ---
 

@@ -6,6 +6,90 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-23 (tanda 9 — auditoría del theme "Nima — Dirección B")
+
+### Contexto
+El theme que este repo trackeaba (`PetDrop_OVL`) ya no era el publicado — Design lo
+había reemplazado por uno nuevo, "Nima — Dirección B (Design)" (ID `198916800593`,
+`role: MAIN`), construido a partir del mismo código base pero con paleta cálida propia
+y páginas nuevas (Sobre Nima, Contacto, teaser de Magazine). Se resincronizó el repo
+leyendo el theme real vía Admin GraphQL API (`theme.files`, solo lectura) — `shopify
+theme pull` no es viable en este entorno (requiere login OAuth interactivo).
+
+### Fixed — rompe la experiencia de compra
+- **Selector de color roto en productos con 2+ opciones** (`sections/main-product.liquid`):
+  el bloque de swatches iteraba sobre `product.variants` en vez de sobre valores de color
+  únicos. En productos con Color + otra opción (Dog Leash: 17 variantes por largo/color;
+  Portable Pet Grooming Hammock: 9 variantes por talla/color) esto generaba círculos de
+  color duplicados sin indicar la segunda opción, dejando al comprador sin forma de elegir
+  talla. Restringido el swatch a productos donde Color es la única opción; el resto cae al
+  selector genérico por variante (ya funcional, muestra el nombre completo, ej. "Terracota
+  / M").
+- **Galería de producto sin retorno a la imagen principal** (`sections/main-product.liquid`):
+  el loop de miniaturas usaba `offset: 1`, excluyendo la primera imagen de la tira de
+  miniaturas. Una vez el comprador hacía clic en otra miniatura, no había forma de volver
+  a ver la imagen principal sin recargar la página. Quitado el offset.
+- **Formulario de contacto en inglés roto** (`locales/en.json`): faltaba el bloque
+  `"contact"` completo (presente en `es.default.json`) — los campos del formulario
+  mostraban literalmente las claves de traducción (`contact.name`, `contact.email`, etc.)
+  en vez de las etiquetas ("Name", "Email", "Message", "Send message").
+- **Logo del header con `height="auto"`** (`sections/header.liquid`): regresión — el fork
+  de Design partió de una versión del código anterior a este fix. Corregido igual que antes
+  (dimensiones reales + `style="width:120px;height:auto"`).
+- **3 imágenes sin `width`/`height`** (`sections/dual-mode-split.liquid` x2,
+  `sections/magazine-teaser.liquid` x1) — nuevas en el fork de Design, no tenían los
+  atributos. `shopify theme check` pasó de 7 errores a 0.
+- Swatches y pills de variante sin estado visual para "sin stock" — se veían igual
+  disponibles que agotadas salvo por no poder seleccionarlas. Agregado estilo disabled
+  (opacidad + diagonal tachada en swatches, tachado en pills).
+
+### Fixed — responsive
+- **Grid del blog no colapsaba en mobile** (`sections/main-blog.liquid`): un `style`
+  inline (`grid-template-columns:1fr 1fr`) pisaba el breakpoint de `.mag-grid` que
+  colapsa a 1 columna en pantallas angostas, dejando 2 columnas fijas y cramped en
+  mobile. Movido a una clase dedicada (`.mag-grid--blog`) que sí respeta el breakpoint.
+
+### Changed — consistencia visual / duplicación
+- Unificados `main-search.liquid` y `main-list-collections.liquid` al mismo patrón de
+  tarjeta que ya usa el Catálogo (`product-grid--b` + `pcard__body`) — antes usaban un
+  grid/card distinto (`product-grid` viejo), dando resultados visualmente distintos
+  para el mismo tipo de contenido en 3 pantallas diferentes.
+- Eliminado el bloque CSS viejo de `.pcard`/`.pcard__media`/`.product-grid` que había
+  quedado parcial y silenciosamente superpuesto (misma clase, dos definiciones no
+  contiguas) con el bloque nuevo "Catálogo — Dirección B" — sin cambio visual, menos
+  superficie para bugs futuros.
+- Colores hardcodeados que coincidían exactamente con variables de tema (`#EDE0D0`,
+  `#FBF8F3`, `rgba(43,38,33,...)`, `rgba(251,248,243,...)`) migrados a
+  `var(--bg)`/`var(--text)`/`var(--green2)` vía clases reutilizables (`.on-dark-kicker`,
+  `.on-dark-heading`, `.on-dark-text`) y `color-mix()` para las variantes translúcidas —
+  incluye el footer, los botones (`.btn`/`.btn--light`), las pills de variante
+  (`.option`), y el split oscuro de Magazine (`ovl-story-split`, que antes usaba negro
+  puro en vez de `--text`). Antes, cambiar la paleta en el Customizer no afectaba estos
+  elementos.
+
+### Changed — limpieza
+- `settings_schema.json`: `theme_name`/`theme_author`/colores por defecto actualizados
+  a "Nima OVL — Dirección B"/"Atlas Commerce"/paleta cálida real (antes decían "PetDrop
+  OVL"/"Atlas Comerce"/verde OVL viejo #0c6b45 — nunca se habían actualizado tras el
+  rebrand ni el cambio de paleta).
+- `announcement-bar.liquid`: default corregido de "€50" a "$50" (la tienda opera en USD).
+- `main-collection.liquid`: quitado el "Seis objetos" hardcodeado del copy de fallback —
+  ya no coincide con las 14 fichas reales del catálogo.
+
+### Cómo se aplicó
+Los fixes se subieron vía Admin GraphQL API (`themeFilesUpsert`) a un **theme duplicado
+sin publicar**, "Nima — Dirección B (Auditoría Code)" (ID `198934265937`) — Shopify
+bloquea escritura por API sobre el theme MAIN/publicado. `shopify theme check` local:
+0 errores (antes 7), 2 warnings ya conocidos (fuentes deprecated).
+
+### Known issues / Pending
+- **El duplicado con los fixes no está publicado todavía** — Brey debe previsualizarlo
+  y publicarlo manualmente desde el admin de Shopify si aprueba los cambios (ver
+  `ESTADO-tienda-mascotas.md`, sección 9, para la checklist de qué revisar).
+- No se pudo verificar visualmente en navegador (sin herramientas de browser/preview
+  disponibles en esta sesión) — la verificación fue por lectura de código, `theme check`,
+  y consistencia de CSS/Liquid, no por captura de pantalla real.
+
 ## [Unreleased] - 2026-07-19 (tanda 8 — AGENTS.md + confirmación de theme publicado)
 
 ### Added
