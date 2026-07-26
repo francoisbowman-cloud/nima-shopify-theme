@@ -6,6 +6,66 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-25 (tanda 10 — bug "Agotado" en catálogo + exploración de tratamiento de imagen)
+
+### Fixed — rompe la experiencia de compra
+- **Todo el catálogo mostraba "Agotado" en el storefront publicado**, pese a que el Admin
+  API confirmaba inventario real (`availableForSale: true`, `inventoryPolicy: CONTINUE`
+  en las variantes probadas) y el código del theme (`main-product.liquid`) resultó
+  idéntico byte a byte entre el repo y el theme MAIN — descartado bug de código o de
+  caché. Causa raíz real: **el mercado primario de la tienda (República Dominicana) no
+  tenía ninguna zona de envío configurada** — solo existía zona de envío para Estados
+  Unidos. Cualquier visita cuya sesión resolviera al mercado por defecto (RD) veía todo
+  como agotado, sin importar el stock real. Confirmado leyendo el JSON público del
+  storefront (`/products/<handle>.js` → `available: false`), no solo el HTML — y
+  reproducido con y sin la contraseña del sitio, descartando también un problema de
+  caché de página. La API de Shopify no expone ningún mutation para cambiar el mercado
+  primario (`MarketUpdateInput` no tiene ese campo) — resuelto manualmente por Brey en
+  Configuración → Mercados (RD a Borrador, Estados Unidos como predeterminado). Verificado
+  en vivo tras el cambio: `available: true`, botón "Add to cart" habilitado.
+
+### Investigado, sin cambios de código todavía
+- **Auditoría de imágenes de fondo/hero mal encuadradas** (reportado por Brey: Hero de
+  Home con franja vacía arriba y caras de mascotas cortadas abajo) — invocado el skill
+  `director-de-diseno`, listadas las 22 secciones del theme como paso de cobertura
+  completa. La auditoría en sí (identificar cuáles usan imagen de fondo, revisar
+  `object-fit`/`object-position`, corregir) queda pendiente para la próxima sesión — ver
+  `ESTADO-tienda-mascotas.md`, sección 7.
+- **Tratamiento de imagen de producto** (Portable Pet Grooming Hammock, como caso de
+  prueba antes de escalar a las otras 4 fotos crudas de AutoDS pendientes de la tanda 9):
+  se probó la herramienta MCP `imagetoolkit` para recorte + quitar fondo + color de fondo
+  del tema + ajuste 1:1. Encontrados 2 límites reales: (a) solo acepta `input_path` como
+  URL pública, sin soporte para archivos locales — se resolvió parcialmente usando los
+  parámetros de recorte del CDN de Shopify (`?width=&height=&crop=left`) sobre la imagen
+  ya pública en vez de subir un recorte propio; (b) no había forma de bajar el resultado
+  tratado — resuelto a mitad de sesión con una tool nueva del mismo servidor,
+  `get_result_base64` (con la salvedad de que hay que mantener el archivo bajo ~35KB o la
+  respuesta se trunca). El resultado final quedó en el scratchpad de la sesión, no en el
+  repo ni subido a Shopify — decisión pendiente de si vale la pena terminar este camino o
+  usar directamente el servicio propio (`image-server/`, ver abajo).
+- Un intento previo de subir el recorte directo a Shopify vía `stagedUploadsCreate` +
+  POST a Google Cloud Storage falló de forma reproducible: la política firmada que
+  devuelve el API de Shopify no incluye `x-goog-credential` entre las condiciones, pero
+  GCS exige ese campo — un bug del lado de Shopify, no algo corregible ajustando la
+  request. Documentado en memoria (`shopify_staged_upload_signature_bug`).
+
+### Added
+- `image-server/` (FastAPI + Pillow + rembg): servicio propio de tratamiento de imagen
+  para reemplazar la dependencia de `imagetoolkit` — recibe el archivo directo por HTTP
+  (multipart) y devuelve el resultado directo en la respuesta, sin el rodeo de URLs
+  públicas intermedias ni el límite de tamaño de `imagetoolkit`. Endpoints: `/crop`,
+  `/remove-bg`, `/replace-bg`, `/resize`, `/palette`, `/process` (pipeline encadenado).
+  Documentado en `image-server/README.md`, incluye instrucciones de deploy en Railway.
+  **Todavía no desplegado.**
+
+### Aclarado (sin cambios, solo diagnóstico)
+- El email público de la página de Contacto (`hola@nima.pet`) es un alias de marca, no
+  el Gmail real de Brey — ese último solo lo usa Shopify internamente para notificaciones
+  y nunca se expone al público.
+- Confirmado que la protección por contraseña del sitio (`/password`) sigue activa —
+  cualquier visita nueva sin la contraseña cae ahí, incluida la verificación en vivo del
+  bug de "Agotado" en esta misma tanda.
+
 ## [Unreleased] - 2026-07-23 (tanda 9 — auditoría del theme "Nima — Dirección B")
 
 ### Contexto
