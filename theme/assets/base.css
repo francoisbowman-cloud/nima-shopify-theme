@@ -146,6 +146,7 @@ button{font-family:inherit}
   .hero,.split,.product,.mag-grid,.story-grid{grid-template-columns:1fr}
   .hero-art{height:52vh}
   .hero{min-height:auto}
+  .hero-copy{padding:48px 24px}
   .hero h1{font-size:58px;letter-spacing:-3px}
   .split>div{padding:50px 24px}
   .cards{grid-template-columns:1fr}

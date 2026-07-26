@@ -81,7 +81,7 @@ se asuma lo contrario:**
 | 42 | Confirmado que la tienda sigue con **protección por contraseña activa** (pantalla "Estamos preparando algo especial") — cualquier visita nueva sin la contraseña correcta cae ahí, incluyendo la comprobación en vivo del punto 41 (fue necesario que Brey pasara la contraseña para poder verificar el bug con datos frescos, no cacheados). Sigue siendo una decisión pendiente de Brey (ver sección 8) | Code (confirmado), pendiente Brey |
 | 43 | Aclarado que el email público del formulario de Contacto es un alias de marca (`hola@nima.pet`), no el Gmail real de Brey (`francoisbowman@gmail.com`, que Shopify usa solo internamente para notificaciones — nunca se expone al público). Se le indicó a Brey cómo confirmar en Shopify/Namecheap si ese alias reenvía correctamente a su bandeja real | Code |
 | 44 | **Bug "Agotado" (decisión #41) resuelto y verificado en vivo.** Brey puso el mercado "Dominican Republic" en Borrador y confirmó "Estados Unidos" como mercado predeterminado de la tienda (`primary: true`, verificado por API). Code volvió a probar el producto Dog Leash en el storefront real: `/products/<handle>.js` ahora devuelve `available: true`, y el botón "Add to cart" ya no aparece deshabilitado. Cerrado | Brey (acción), Code (verificación) |
-| 45 | **Nueva tarea abierta, en curso:** Brey reportó imágenes de fondo/hero recortadas mal (ejemplo: Home, el hero muestra una franja vacía de fondo crema arriba y corta las caras del gato/perro abajo — el punto focal de la imagen no está centrado en el sujeto). Pidió invocar el skill `director-de-diseno` para auditar **todas** las secciones del theme que usan imagen de fondo/hero (no solo Home) y corregir cualquier caso de mal encuadre (`object-fit`/`object-position`/`aspect-ratio`). El skill se invocó y se listaron las 22 secciones del theme (`theme/sections/*.liquid`) como paso 1 de cobertura completa (regla no negociable del `checklist-coherencia-diseno.md`) — **la auditoría en sí (grep de `background-image`/`object-fit`/hero, revisión visual por sección, fix) todavía no se ejecutó**, quedó cortada por el pedido de guardar estado. Continuar desde acá en la próxima sesión | Code (en curso) |
+| 45 | **Auditoría de imágenes de fondo/hero recortadas — causa raíz encontrada y fix aplicado (parcial).** Brey reportó el Hero de Home con una franja vacía de fondo crema arriba y las caras del gato/perro cortadas abajo. Cobertura completa: grep de `background-image`/`object-fit`/`background-size` sobre las 22 secciones + `base.css` — solo 4 archivos usan imagen de fondo (`hero.liquid` vía `base.css`, `magazine-hero.liquid`, `magazine-grid.liquid`, `main-blog.liquid`). Causa raíz real confirmada por inspección del DOM en vivo (no por captura de pantalla — el screenshot del navegador falló en esta sesión): `.hero-copy` tenía `padding:80px ...80px` **fijo, sin reducir en el media query de mobile** (`@media(max-width:800px)`), generando un bloque de ~545px de alto antes de la imagen — la "franja vacía". Corregido: agregado `.hero-copy{padding:48px 24px}` dentro del breakpoint mobile existente. Las otras 3 secciones (`magazine-hero`, `magazine-grid`, `main-blog`) usan el mismo patrón `background-size:cover` pero con altura controlada por padding/min-height razonable, sin el mismo bug — revisadas, sin cambios necesarios. **Pendiente sin resolver:** el recorte horizontal de la imagen del hero en viewports angostos (`object-position:center` por defecto sobre una foto panorámica 1400×933 forzada a un contenedor casi cuadrado en mobile, hasta ~45% de recorte de ancho) — no se pudo confirmar visualmente si esto corta a las mascotas porque la herramienta de captura de pantalla no funcionó en esta sesión; Brey debe revisar en el sitio (mobile y desktop) tras publicar el fix y confirmar si además hace falta ajustar `object-position`. Fix subido a un **nuevo theme duplicado sin publicar** ("Nima — Fix hero mobile padding (Code)", ID `199060881489`), duplicado desde el MAIN actual (`198963363921`) — **pendiente que Brey lo revise y publique** | Code |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -136,32 +136,30 @@ de la próxima importación.
 ---
 
 ## 7. Próximo paso
-**Prioridad actual: terminar la auditoría de imágenes de fondo/hero recortadas (decisión #45), en curso, cortada a mitad de camino.**
+**Prioridad actual: previsualizar y publicar el duplicado `199060881489` con el fix de
+padding mobile del Hero (decisión #45), y confirmar visualmente si además hace falta
+ajustar el encuadre horizontal de la imagen.**
 
 Retomar así:
-1. Ya se listaron las 22 secciones del theme (`theme/sections/*.liquid`, ver decisión
-   #45 para el listado completo). Falta: `grep` de `background-image`, `object-fit`,
-   `object-position`, `background-size` en esas secciones + `assets/base.css`, para saber
-   cuáles renderizan imagen de fondo/hero (no todas lo hacen).
-2. Por cada sección con imagen de fondo, revisar visualmente en el sitio publicado
-   (`nimapets.com`, contraseña actual: la que Brey ya compartió esta sesión — pedirle de
-   nuevo si hace falta, no quedó guardada en ningún archivo por seguridad) si el encuadre
-   corta mal al sujeto — el caso reportado fue el Hero de Home (franja vacía arriba,
-   caras de gato/perro cortadas abajo, sugiere `object-position` mal centrado o imagen
-   origen con aspect ratio distinto al contenedor).
-3. Corregir con `object-fit: cover` + `object-position` ajustado (o `background-position`
-   si es CSS `background-image` en vez de `<img>`) — **no** rediseñar el layout del hero,
-   solo el encuadre. Seguir la convención de tokens ya establecida (no hardcodear colores
-   nuevos; esto es solo posicionamiento de imagen, no debería tocar la paleta).
-4. Aplicar el checklist de coherencia de diseño completo antes de cerrar (cobertura,
-   publicar y verificar en vivo — ver `checklist-coherencia-diseno.md`). Los cambios van
-   sobre un **theme duplicado sin publicar** (Shopify bloquea escritura vía API sobre el
-   MAIN) — Brey debe previsualizar y publicar manualmente al final, como en tandas
-   anteriores.
+1. **Brey**: previsualizar el theme `199060881489` ("Nima — Fix hero mobile padding
+   (Code)") en Shopify → Online Store → Themes, revisar el Home en mobile (real o
+   simulado, ancho <800px) — la franja vacía sobre la imagen debería haber desaparecido.
+   Si se ve bien, publicar.
+2. **Revisar con más cuidado, en mobile y en desktop angosto (~900-1150px):** si la foto
+   del hero (`01-hero.png`, gato + perro lado a lado) corta a los animales por los bordes
+   — no se pudo confirmar visualmente en esta sesión porque la herramienta de captura de
+   pantalla del navegador falló repetidamente ("Browser pane is not displayed"). Si se
+   confirma que sí corta mal, decirle a Code el punto exacto (¿se corta la oreja del gato?
+   ¿la cara del perro?) para ajustar `object-position` en `.hero-art img` con precisión,
+   en vez de adivinar.
+3. Aplicar el checklist de coherencia de diseño completo antes de cerrar (cobertura ya
+   hecha esta sesión — ver decisión #45 — falta el paso de "publicar y verificar en vivo").
 
 **Ya cerrado en esta sesión** (no repetir):
 - Bug "Agotado" en todo el catálogo — resuelto y verificado en vivo (decisión #44).
 - Fix de contraste de `magazine-hero.liquid` — publicado por Brey (decisión #38).
+- Causa raíz del padding mobile del Hero encontrada y corregida (decisión #45) — falta
+  solo publicar.
 
 **Pendientes de tandas anteriores, todavía abiertos:**
 - Decidir cómo resolver las 5 imágenes de producto crudas de AutoDS (decisión #37) — en
@@ -182,7 +180,9 @@ Retomar así:
 ## 8. Pendientes / preguntas abiertas
 *(Ver sección 7 para el detalle completo y el orden de prioridad — esta lista es solo
 un índice rápido.)*
-- **Auditoría de imágenes de fondo/hero recortadas — en curso** (decisión #45).
+- **Publicar el duplicado `199060881489`** con el fix de padding mobile del Hero, y
+  confirmar visualmente si además hace falta ajustar `object-position` de la imagen
+  (decisión #45).
 - Decidir el tratamiento para las 5 imágenes de producto crudas de AutoDS (decisión #37).
 - Desplegar `image-server/` en Railway si se opta por ese camino para el punto anterior
   (decisión #40) — o descartarlo si Brey prefiere re-sourcear fotos manualmente.

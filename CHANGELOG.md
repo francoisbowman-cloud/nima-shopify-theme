@@ -24,13 +24,24 @@ es nuevo" de un vistazo.
   Configuración → Mercados (RD a Borrador, Estados Unidos como predeterminado). Verificado
   en vivo tras el cambio: `available: true`, botón "Add to cart" habilitado.
 
-### Investigado, sin cambios de código todavía
-- **Auditoría de imágenes de fondo/hero mal encuadradas** (reportado por Brey: Hero de
-  Home con franja vacía arriba y caras de mascotas cortadas abajo) — invocado el skill
-  `director-de-diseno`, listadas las 22 secciones del theme como paso de cobertura
-  completa. La auditoría en sí (identificar cuáles usan imagen de fondo, revisar
-  `object-fit`/`object-position`, corregir) queda pendiente para la próxima sesión — ver
-  `ESTADO-tienda-mascotas.md`, sección 7.
+### Fixed — imagen de fondo del Hero (Home)
+- **`.hero-copy` no reducía su padding en mobile** (`assets/base.css`): mantenía
+  `padding:80px ... 80px` fijo (heredado del valor desktop) dentro del breakpoint
+  `@media(max-width:800px)`, generando un bloque de ~545px de alto (padding + kicker +
+  h1 + párrafo + botón) antes de llegar a la imagen del Hero — la "franja vacía de fondo
+  crema" reportada por Brey. Auditadas las 22 secciones del theme (cobertura completa vía
+  skill `director-de-diseno`) — solo 4 usan imagen de fondo (`hero.liquid`,
+  `magazine-hero.liquid`, `magazine-grid.liquid`, `main-blog.liquid`); las otras 3 no
+  tenían el mismo problema (altura controlada por padding/min-height razonable, no por un
+  padding vertical duplicado sin breakpoint). Corregido agregando
+  `.hero-copy{padding:48px 24px}` al breakpoint mobile existente.
+- **Pendiente sin resolver, requiere verificación visual de Brey:** el posible recorte
+  horizontal de la foto del Hero (`01-hero.png`, gato + perro lado a lado, 1400×933)
+  en viewports angostos — con `object-fit:cover` + `object-position:center` por defecto,
+  el cálculo geométrico da hasta ~45% de recorte de ancho a 375px de viewport. No se pudo
+  confirmar por captura de pantalla si esto corta a las mascotas (la herramienta de
+  screenshot del navegador falló durante toda la sesión) — verificado solo por inspección
+  de DOM/rects, no visualmente.
 - **Tratamiento de imagen de producto** (Portable Pet Grooming Hammock, como caso de
   prueba antes de escalar a las otras 4 fotos crudas de AutoDS pendientes de la tanda 9):
   se probó la herramienta MCP `imagetoolkit` para recorte + quitar fondo + color de fondo
@@ -57,6 +68,12 @@ es nuevo" de un vistazo.
   `/remove-bg`, `/replace-bg`, `/resize`, `/palette`, `/process` (pipeline encadenado).
   Documentado en `image-server/README.md`, incluye instrucciones de deploy en Railway.
   **Todavía no desplegado.**
+
+### Cómo se aplicó
+El fix de `.hero-copy` se subió vía Admin GraphQL API (`themeFilesUpsert`) a un **theme
+duplicado sin publicar**, "Nima — Fix hero mobile padding (Code)" (ID `199060881489`,
+duplicado desde el MAIN `198963363921`) — Shopify bloquea escritura por API sobre el
+theme publicado. Pendiente que Brey lo previsualice y publique.
 
 ### Aclarado (sin cambios, solo diagnóstico)
 - El email público de la página de Contacto (`hola@nima.pet`) es un alias de marca, no
