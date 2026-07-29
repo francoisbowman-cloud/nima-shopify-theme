@@ -2,7 +2,7 @@
 Dominio: `nimapets.com` (comprado y conectado a Shopify — DNS verificado, SSL activo)
 Repo: `https://github.com/francoisbowman-cloud/nima-shopify-theme` (privado)
 Codename histórico: `PetDrop` (reemplazado — ver decisión #18)
-Última actualización: 25 de julio de 2026 — por: Code
+Última actualización: 29 de julio de 2026 — por: Cowork
 Nivel: **Producto**, dentro del sistema **Atlas Commerce** (ver `ESTADO-atlas-commerce.md`, Project Atlas-Commerce-Lab)
 
 ---
@@ -81,7 +81,18 @@ se asuma lo contrario:**
 | 42 | Confirmado que la tienda sigue con **protección por contraseña activa** (pantalla "Estamos preparando algo especial") — cualquier visita nueva sin la contraseña correcta cae ahí, incluyendo la comprobación en vivo del punto 41 (fue necesario que Brey pasara la contraseña para poder verificar el bug con datos frescos, no cacheados). Sigue siendo una decisión pendiente de Brey (ver sección 8) | Code (confirmado), pendiente Brey |
 | 43 | Aclarado que el email público del formulario de Contacto es un alias de marca (`hola@nima.pet`), no el Gmail real de Brey (`francoisbowman@gmail.com`, que Shopify usa solo internamente para notificaciones — nunca se expone al público). Se le indicó a Brey cómo confirmar en Shopify/Namecheap si ese alias reenvía correctamente a su bandeja real | Code |
 | 44 | **Bug "Agotado" (decisión #41) resuelto y verificado en vivo.** Brey puso el mercado "Dominican Republic" en Borrador y confirmó "Estados Unidos" como mercado predeterminado de la tienda (`primary: true`, verificado por API). Code volvió a probar el producto Dog Leash en el storefront real: `/products/<handle>.js` ahora devuelve `available: true`, y el botón "Add to cart" ya no aparece deshabilitado. Cerrado | Brey (acción), Code (verificación) |
-| 45 | **Auditoría de imágenes de fondo/hero recortadas — causa raíz encontrada y fix aplicado (parcial).** Brey reportó el Hero de Home con una franja vacía de fondo crema arriba y las caras del gato/perro cortadas abajo. Cobertura completa: grep de `background-image`/`object-fit`/`background-size` sobre las 22 secciones + `base.css` — solo 4 archivos usan imagen de fondo (`hero.liquid` vía `base.css`, `magazine-hero.liquid`, `magazine-grid.liquid`, `main-blog.liquid`). Causa raíz real confirmada por inspección del DOM en vivo (no por captura de pantalla — el screenshot del navegador falló en esta sesión): `.hero-copy` tenía `padding:80px ...80px` **fijo, sin reducir en el media query de mobile** (`@media(max-width:800px)`), generando un bloque de ~545px de alto antes de la imagen — la "franja vacía". Corregido: agregado `.hero-copy{padding:48px 24px}` dentro del breakpoint mobile existente. Las otras 3 secciones (`magazine-hero`, `magazine-grid`, `main-blog`) usan el mismo patrón `background-size:cover` pero con altura controlada por padding/min-height razonable, sin el mismo bug — revisadas, sin cambios necesarios. **Pendiente sin resolver:** el recorte horizontal de la imagen del hero en viewports angostos (`object-position:center` por defecto sobre una foto panorámica 1400×933 forzada a un contenedor casi cuadrado en mobile, hasta ~45% de recorte de ancho) — no se pudo confirmar visualmente si esto corta a las mascotas porque la herramienta de captura de pantalla no funcionó en esta sesión; Brey debe revisar en el sitio (mobile y desktop) tras publicar el fix y confirmar si además hace falta ajustar `object-position`. Fix subido a un **nuevo theme duplicado sin publicar** ("Nima — Fix hero mobile padding (Code)", ID `199060881489`), duplicado desde el MAIN actual (`198963363921`) — **pendiente que Brey lo revise y publique** | Code |
+| 45 | **Auditoría de imágenes de fondo/hero recortadas — causa raíz encontrada y fix aplicado.** Brey reportó el Hero de Home con una franja vacía de fondo crema arriba y las caras del gato/perro cortadas abajo. Cobertura completa: grep de `background-image`/`object-fit`/`background-size` sobre las 22 secciones + `base.css` — solo 4 archivos usan imagen de fondo (`hero.liquid` vía `base.css`, `magazine-hero.liquid`, `magazine-grid.liquid`, `main-blog.liquid`). Causa raíz real confirmada por inspección del DOM en vivo (no por captura de pantalla — el screenshot del navegador falló en esta sesión): `.hero-copy` tenía `padding:80px ...80px` **fijo, sin reducir en el media query de mobile** (`@media(max-width:800px)`), generando un bloque de ~545px de alto antes de la imagen — la "franja vacía". Corregido: agregado `.hero-copy{padding:48px 24px}` dentro del breakpoint mobile existente. Las otras 3 secciones (`magazine-hero`, `magazine-grid`, `main-blog`) usan el mismo patrón `background-size:cover` pero con altura controlada por padding/min-height razonable, sin el mismo bug — revisadas, sin cambios necesarios. Fix subido a un **nuevo theme duplicado sin publicar** ("Nima — Fix hero mobile padding (Code)", ID `199060881489`), duplicado desde el MAIN actual (`198963363921`) — **pendiente que Brey lo revise y publique**. El recorte horizontal en viewports angostos (pendiente de esta decisión) quedó verificado en la decisión #46 — no corta a las mascotas | Code |
+| 46 | **Recorte horizontal del Hero en mobile (pendiente de la decisión #45) verificado y cerrado: no corta a las mascotas.** El browser pane volvió a funcionar en esta sesión (accedido vía cookie de `?preview_theme_id=199060881489` sobre `nimapets.com` — Shopify la mantiene aunque la URL visible se limpie a la raíz). Se confirmó por CSS servido en vivo que el duplicado `199060881489` sí trae `.hero-copy{padding:48px 24px}` en el breakpoint mobile (el MAIN publicado `198963363921` no lo trae — confirmado leyendo `assets/base.css` de ambos themes vía Admin API, no solo por inspección del navegador). Se calculó el recorte real de `object-fit:cover` a 375px de viewport (~20% por lado sobre la imagen 1400×933, `01-hero.png`) y se simuló recortando la imagen real a esa proporción exacta: el gato y el perro quedan completos — solo se recorta fondo decorativo (jarrón/planta a la izquierda, cortina a la derecha). No hace falta ajustar `object-position`; el fix de padding de la decisión #45 es suficiente. Sigue pendiente solo la publicación manual del duplicado `199060881489` | Code |
+
+| 47 | **Checkout real verificado: muestra "Nima"** (no "PetDrop" ni "Atlas Commerce"). Se agregó un producto de prueba al carrito y se avanzó hasta la pantalla de checkout (sin llenar ni enviar ningún dato personal/de pago) — título de pestaña "Checkout - Nima", header "Nima Checkout", método de pago PayPal visible. Cierra el pendiente de la sección 8 | Code |
+| 48 | **Confirmado que las "adendas v3-v5" del protocolo (decisión #30) no existen** — grep completo de `PROTOCOLO-comunicacion-actores.md` y de toda la carpeta `Atlas E-Commerce/` sin ningún resultado para "adenda". Solo existe la v2 del protocolo, ya referenciada en `AGENTS.md`. Cerrado, no repetir la búsqueda salvo que Brey aporte una ubicación concreta | Code |
+| 49 | **Tratamiento de las 5 imágenes de producto crudas de AutoDS (decisión #37) pospuesto a pedido de Brey** — va a volver con un plan propio para curar las imágenes de producto antes de que Code ejecute nada (ni `imagetoolkit` ni desplegar `image-server/`). No tocar este punto hasta que Brey lo indique | Brey |
+| 50 | **Handle de Instagram `@nimapets` ya existe** — pertenece a una cuenta llamada "NIMA PETS", pero no se pudo confirmar de quién es (Instagram bloqueó la carga completa de la página al navegar sin sesión iniciada). Code se detuvo ahí — no siguió probando otras plataformas (TikTok, etc.) de forma automatizada, por riesgo de que se lea como scraping contra los términos de servicio de esas plataformas. Brey debe confirmar manualmente si esa cuenta es propia o de terceros, y si hace falta un handle alternativo | Code (hallazgo), pendiente Brey (confirmar) |
+| 51 | **Catálogo activo real corregido: 25 productos, no 14.** Cowork encontró que 11 productos nuevos (vendor "Nima") se agregaron a la tienda el 26/07/2026 sin documentarse en este ESTADO ni auditarse — nunca pasaron por la revisión de contenido de la decisión #23. Sección 6 actualizada con el detalle | Cowork (hallazgo) |
+| 52 | **Theme de trabajo `Nima_Cowork` creado** (`gid://shopify/OnlineStoreTheme/199221641297`, UNPUBLISHED, duplicado del MAIN `198963363921`) con el fix de padding mobile del Hero (decisión #45) ya fusionado — evita perder ese trabajo mientras sigue sin publicarse. Brey delegó a Cowork libertad total de optimización sobre este theme específico (no el MAIN). Sobre este theme se aplicaron 4 fixes técnicos de bajo riesgo (ver `CHANGELOG.md` tanda 12): atributo height incorrecto en `product-card.liquid`, comentario "PetDrop"→"Nima" en `global.js`, y 2 scrims `rgba()` hardcodeados migrados a `color-mix()` en `magazine-grid.liquid`/`main-blog.liquid`. **Pendiente: Brey debe revisar y decidir si publica `Nima_Cowork` (reemplazando o no al MAIN) y si Code debe resincronizar el repo con estos cambios** | Cowork |
+| 53 | **6 productos de la tanda nueva del 26/07 limpiados de contenido de scraping/marca de competidor real** (Bird Chewing Toy: marca "Kintor"; Dog Bed Crate Pad: marca "Mora Pets"; Pet Memorial Picture Frame: marca "KCRasan"; Critter Nation: branding de "MidWest Homes for Pets"; Waterproof Pet Feeding Mats: marca ajena mal raspada; Feather Teaser Cat Toy y 1 Teaspoon Measuring Spoon: tablas HTML de SKUs ajenos de Amazon) — mismo patrón que la limpieza de la decisión #23, aplicado directo en Shopify Admin | Cowork |
+| 54 | **Guía de estilo de imágenes por sección creada** (`GUIA-ESTILO-IMAGENES-NIMA.md`, raíz del repo) — ratios oficiales, object-fit y pesos objetivo por sección del sitio, verificados contra el CSS real del theme y basados en `skills/nima-image-art-direction/SKILL.md`. Responde al plan de imágenes que Brey delegó a Cowork en esta sesión — el tratamiento pipeline (decisión #37/#49) sigue en pausa, esta guía es el marco de referencia para cuando se retome | Cowork |
+| 55 | **Plan de ventas y de tráfico entregado** (`PLAN-VENTAS-Y-TRAFICO-NIMA.md`, raíz del repo) — incluye alerta de 2 precios atípicos sin confirmar (Critter Nation $404.82, Elevated Dog Bed $165.01, mismo patrón que el bug DOP→USD ya visto), mecánicas de upsell nativas de Shopify sin apps de pago, y prioridad de acciones de SEO/redes de bajo costo para operador único | Cowork |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -111,10 +122,13 @@ Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la ra
 
 ---
 
-## 6. Estado del catálogo (auditoría de contenido, 19/07)
+## 6. Estado del catálogo (auditoría de contenido — 19/07 + actualizado 29/07)
 
-**14 productos activos.** Tras un hallazgo de Code (marcas de competidores coladas
-por scraping de AutoDS en 2 productos), Chat auditó el catálogo completo. Resultado:
+**25 productos activos** (corregido — el documento decía 14 hasta esta actualización).
+14 productos originales (vendor "PetDrop") + 11 productos nuevos (vendor "Nima")
+agregados el 26/07/2026, que no habían sido auditados hasta la sesión de Cowork del 29/07.
+
+### Tanda original (19/07) — 14 productos, vendor "PetDrop"
 
 | Producto | Problema encontrado | Estado |
 |---|---|---|
@@ -129,47 +143,64 @@ por scraping de AutoDS en 2 productos), Chat auditó el catálogo completo. Resu
 | Dog First Christmas Bandana | Bug de precio DOP→USD ($869.80 en vez de ~$15) | ✅ Corregido a $14.99 |
 | Resto del catálogo (5 productos) | — | Revisados, ya estaban limpios |
 
+### Tanda nueva (26/07, auditada 29/07) — 11 productos, vendor "Nima"
+
+| Producto | Problema encontrado | Estado |
+|---|---|---|
+| Bird Chewing Toy (Parrot) | Marca de competidor real "Kintor" repetida | ✅ Limpiado |
+| Dog Bed Crate Pad | Marca "Mora Pets" + referencia a tienda de Amazon ajena | ✅ Limpiado |
+| Pet Memorial Picture Frame | Marca "KCRasan" en título/bullets | ✅ Limpiado |
+| Critter Nation (jaula) | Branding completo del fabricante real "MidWest Homes for Pets" | ✅ Limpiado |
+| Waterproof Pet Feeding Mats | Marca ajena mal raspada + tablas HTML de scraping | ✅ Limpiado |
+| Feather Teaser Cat Toy | Tabla HTML comparando SKUs ajenos de Amazon | ✅ Limpiado |
+| 1 Teaspoon Measuring Spoon | Tabla HTML de SKUs ajenos + sin imagen + nicho ambiguo | ✅ Descripción limpiada — ⚠️ nicho/imagen sin resolver |
+| Critter Nation | Precio $404.82, ~25x el resto del catálogo | ⚠️ Sin confirmar si es error |
+| Original Elevated Dog Bed | Precio $165.01, ~10x el resto del catálogo | ⚠️ Sin confirmar si es error |
+| Critter Nation | Título roto: "Critter Nation by [espacio vacío] Double Unit..." | ⚠️ No corregido |
+| Timothy Hay Treats, Dog Costume Clothes, Bird Chewing Toy | Gramática menor (ej. "gurantee") | ⚠️ No corregido, bajo impacto |
+
 **Sin confirmar todavía:** si Brey corrigió la configuración de moneda dentro de
-AutoDS — causa raíz del bug de precio, que ya se repitió dos veces. Verificar antes
+AutoDS — causa raíz del bug de precio, que ya se repitió dos veces (Christmas Bandana,
+y posiblemente Critter Nation/Elevated Dog Bed de la tanda nueva). Verificar antes
 de la próxima importación.
 
 ---
 
 ## 7. Próximo paso
-**Prioridad actual: previsualizar y publicar el duplicado `199060881489` con el fix de
-padding mobile del Hero (decisión #45), y confirmar visualmente si además hace falta
-ajustar el encuadre horizontal de la imagen.**
+**Prioridad actual: que Brey revise el theme `Nima_Cowork` (`199221641297`) — trae el fix
+de padding mobile del Hero YA fusionado (decisión #45/#52) más 4 fixes técnicos nuevos de
+esta sesión — y decida si lo publica (reemplazando al MAIN `198963363921`) o si prefiere
+que Code lo revise/fusione al repo primero.**
 
 Retomar así:
-1. **Brey**: previsualizar el theme `199060881489` ("Nima — Fix hero mobile padding
-   (Code)") en Shopify → Online Store → Themes, revisar el Home en mobile (real o
-   simulado, ancho <800px) — la franja vacía sobre la imagen debería haber desaparecido.
-   Si se ve bien, publicar.
-2. **Revisar con más cuidado, en mobile y en desktop angosto (~900-1150px):** si la foto
-   del hero (`01-hero.png`, gato + perro lado a lado) corta a los animales por los bordes
-   — no se pudo confirmar visualmente en esta sesión porque la herramienta de captura de
-   pantalla del navegador falló repetidamente ("Browser pane is not displayed"). Si se
-   confirma que sí corta mal, decirle a Code el punto exacto (¿se corta la oreja del gato?
-   ¿la cara del perro?) para ajustar `object-position` en `.hero-art img` con precisión,
-   en vez de adivinar.
-3. Aplicar el checklist de coherencia de diseño completo antes de cerrar (cobertura ya
-   hecha esta sesión — ver decisión #45 — falta el paso de "publicar y verificar en vivo").
+1. **Brey**: previsualizar el theme `Nima_Cowork` (`199221641297`) en Shopify → Online
+   Store → Themes. Trae: fix de padding mobile del Hero, fix de atributo height en
+   tarjetas de producto, 2 scrims migrados a `color-mix()`, limpieza de comentario
+   "PetDrop"→"Nima". Si se ve bien, publicar (o pedirle a Code que lo revise/commitee
+   primero — el repo todavía no está resincronizado con este theme).
+2. **Brey**: confirmar si los precios de Critter Nation ($404.82) y Original Elevated
+   Dog Bed ($165.01) son correctos o error de importación (decisiones #51/#53).
+3. **Brey**: decidir qué hacer con "1 Teaspoon Measuring Spoon" (sin imagen, nicho
+   ambiguo) y si la sección `dual-mode-split` debe seguir `disabled` en el Home.
+4. Revisar `GUIA-ESTILO-IMAGENES-NIMA.md` y `PLAN-VENTAS-Y-TRAFICO-NIMA.md` (decisiones
+   #54/#55) — son insumos para retomar el tratamiento de imágenes (decisión #49) y las
+   promociones/checkout cuando Brey esté listo.
+5. Aplicar el checklist de coherencia de diseño completo antes de publicar cualquier
+   theme — falta siempre el paso de "publicar y verificar en vivo".
 
 **Ya cerrado en esta sesión** (no repetir):
 - Bug "Agotado" en todo el catálogo — resuelto y verificado en vivo (decisión #44).
 - Fix de contraste de `magazine-hero.liquid` — publicado por Brey (decisión #38).
 - Causa raíz del padding mobile del Hero encontrada y corregida (decisión #45) — falta
   solo publicar.
+- Recorte horizontal del Hero en mobile — verificado, no corta a las mascotas, cerrado
+  sin necesidad de cambios adicionales (decisión #46).
 
 **Pendientes de tandas anteriores, todavía abiertos:**
-- Decidir cómo resolver las 5 imágenes de producto crudas de AutoDS (decisión #37) — en
-  particular Dog Dental Bone Treats, que muestra el empaque de un competidor real
-  ("Minties"). Hay dos caminos evaluados esta sesión: la tool MCP `imagetoolkit` (limitada,
-  ver decisión #39) o el servicio propio `image-server/` (armado, no desplegado — ver
-  decisión #40, requiere que Brey lo despliegue en Railway).
+- Tratamiento de las 5 imágenes de producto crudas de AutoDS (decisión #37) — **en pausa,
+  Brey va a traer un plan propio** (decisión #49). No iniciar `imagetoolkit` ni el deploy
+  de `image-server/` hasta entonces.
 - Conectar ChatGPT (Codex Cloud) al repo de GitHub para pull requests.
-- Confirmar existencia real de las "adendas v3-v5" del protocolo — no encontradas.
-- Verificar en el checkout real que el nombre visible al cliente sea "Nima".
 - Confirmar si Brey corrigió la configuración de moneda en AutoDS (bug de precios recurrente).
 - Decidir cuándo quitar la contraseña del sitio para abrirlo al público (sigue activa,
   decisión #42) — ahora que el mercado primario es Estados Unidos, tiene más sentido
@@ -180,24 +211,20 @@ Retomar así:
 ## 8. Pendientes / preguntas abiertas
 *(Ver sección 7 para el detalle completo y el orden de prioridad — esta lista es solo
 un índice rápido.)*
-- **Publicar el duplicado `199060881489`** con el fix de padding mobile del Hero, y
-  confirmar visualmente si además hace falta ajustar `object-position` de la imagen
-  (decisión #45).
-- Decidir el tratamiento para las 5 imágenes de producto crudas de AutoDS (decisión #37).
-- Desplegar `image-server/` en Railway si se opta por ese camino para el punto anterior
-  (decisión #40) — o descartarlo si Brey prefiere re-sourcear fotos manualmente.
+- **Publicar el duplicado `199060881489`** con el fix de padding mobile del Hero
+  (decisión #45) — el recorte horizontal ya se verificó y no requiere cambios
+  adicionales (decisión #46).
+- Tratamiento de las 5 imágenes de producto crudas de AutoDS — en pausa, esperando plan
+  de Brey (decisión #49).
 - Conectar Codex Cloud (ChatGPT) al repo de GitHub — flujo de trabajo nuevo, primer uso.
-- Confirmar existencia real de "adendas v3-v5" / `PROTOCOLO-adendas-completas.md` (ver
-  decisión #30) — de no existir, aclarar de dónde salió la referencia para evitar que se
-  repita en futuros mensajes.
-- Verificar que el checkout muestre "Nima" al cliente (no "Atlas Commerce" ni "PetDrop").
-- Decidir cuándo quitar la contraseña de la tienda para abrirla al público (decisión #42).
+- Decidir cuándo quitar la contraseña de la tienda para abrirla al público (decisión #42)
+  — **explícitamente no tocar todavía, a pedido de Brey (26/07)**.
 - Confirmar si Brey corrigió la configuración de moneda en AutoDS (causa raíz del bug
   de precios, recurrente).
 - Confirmar que el alias `hola@nima.pet` reenvía correctamente al Gmail real de Brey
   (decisión #43) — pendiente de que Brey lo revise en Shopify/Namecheap.
-- Verificar disponibilidad de handle "nima"/"nimapets" en redes sociales, si importa
-  consistencia de marca entre plataformas.
+- **Confirmar de quién es la cuenta de Instagram `@nimapets`** (ya existe, nombre "NIMA
+  PETS") — Code no pudo determinarlo sin sesión iniciada (decisión #50).
 - Acceso al admin de Shopify (mercados/pagos) y al panel de AutoDS — fuera del alcance
   de Code, requieren login manual de Brey.
 - Renombrar el Project de claude.ai "Atlas-Comerce-Lab" → "Atlas-Commerce-Lab" en la UI

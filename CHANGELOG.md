@@ -6,6 +6,137 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-29 (tanda 12 — Cowork, optimización integral, theme Nima_Cowork)
+
+**Actor:** Cowork. **No se hizo ningún `git commit`/`push`** (autoridad exclusiva de Code) —
+los cambios de theme viven en el theme Shopify `Nima_Cowork` (UNPUBLISHED, no en el repo
+todavía), y los de producto directo en Shopify Admin. Code debe revisar y decidir si
+sincroniza el repo con este theme antes de commitear.
+
+### Discrepancia encontrada vs. `ESTADO-tienda-mascotas.md` (corregir en sección 6)
+- El catálogo activo real tiene **25 productos**, no 14: 11 productos nuevos (vendor "Nima")
+  se agregaron el 26/07/2026 sin documentar en el ESTADO ni auditar nunca.
+- El theme MAIN publicado real es `198963363921` ("Nima — Fix contraste Magazine Hero").
+  El fix de padding mobile del Hero (`199060881489`, ESTADO decisión #45) **seguía sin
+  publicarse** — no se publicó en esta sesión (Cowork no tiene esa autoridad); en cambio
+  se fusionó el fix a un theme de trabajo nuevo (ver abajo).
+- Existe un theme `Development (d0428a-DESKTOP-2KBPIGU)` (`199058718801`) no documentado
+  en el ESTADO — no se tocó, solo se detectó.
+- Los productos "Reflective Service Dog in Training Patches" y "Dog Clothes I Love My Mom"
+  mencionados en el ticket original **no existen en la tienda** — no se encontraron
+  imágenes procesadas en el repo ni en el workspace. Tratado como dato desactualizado del
+  ticket, no como pendiente real.
+
+### Added
+- **Theme `Nima_Cowork`** (`gid://shopify/OnlineStoreTheme/199221641297`, UNPUBLISHED)
+  creado como duplicado de trabajo del MAIN (`198963363921`), con el fix de padding mobile
+  del Hero (`.hero-copy{padding:48px 24px}` en `@media(max-width:800px)`, decisión #45)
+  ya fusionado en `assets/base.css`. A partir de acá, todo el trabajo de auditoría/fix de
+  esta tanda se hizo sobre este theme, no sobre el MAIN.
+- `GUIA-ESTILO-IMAGENES-NIMA.md` (raíz del repo) — guía de estilo de imágenes por sección
+  (ratios oficiales, object-fit, pesos objetivo, checklist previo a subir imagen), basada
+  en `skills/nima-image-art-direction/SKILL.md` y verificada contra el CSS real del theme.
+- `PLAN-VENTAS-Y-TRAFICO-NIMA.md` (raíz del repo) — plan de precios/upsell/checkout y plan
+  de SEO/redes/Magazine, con prioridad de bajo costo/alto impacto para operador único.
+
+### Fixed (aplicado sobre `Nima_Cowork`, vía `themeFilesUpsert`)
+- `snippets/product-card.liquid`: atributo `height="500"` no coincidía con el
+  `aspect-ratio:1/1` real de `.pcard__media` (era 400×500) — corregido a 400×400.
+- `assets/global.js`: comentario de cabecera "PetDrop theme" → "Nima theme".
+- `sections/magazine-grid.liquid` y `sections/main-blog.liquid`: scrims con
+  `rgba(0,0,0,...)` hardcodeado migrados a `color-mix(in srgb, var(--text) N%, transparent)`,
+  siguiendo la convención ya establecida en CLAUDE.md.
+- 6 productos con contenido de scraping/marca de competidor real limpiado (ver detalle
+  en sección "Contenido de producto" abajo) — aplicado directo en Shopify Admin
+  (`productUpdate`), no en el repo.
+
+### Contenido de producto corregido (Shopify Admin, catálogo real)
+Los 6 productos son parte de la tanda nueva del 26/07, nunca auditada:
+- **Bird Chewing Toy (Parrot):** marca de competidor real "Kintor" repetida en toda la
+  descripción — reescrita.
+- **Dog Bed Crate Pad:** marca "Mora Pets" + referencia a tienda de Amazon ajena — reescrita.
+- **Pet Memorial Picture Frame:** marca "KCRasan" en título/bullets — reescrita, se
+  conservó el poema (contenido genérico).
+- **Critter Nation (jaula):** branding completo del fabricante real "MidWest Homes for
+  Pets" — reescrita a specs neutras.
+- **Waterproof Pet Feeding Mats:** fragmento de marca ajena mal raspado + tablas HTML de
+  scraping — reescrita.
+- **Feather Teaser Cat Toy / 1 Teaspoon Measuring Spoon:** tablas HTML comparando SKUs
+  ajenos de Amazon — reescritas.
+
+### Flaggeado — sin tocar, requiere decisión de Brey
+- **1 Teaspoon Measuring Spoon ($5.25, sin imagen):** nicho ambiguo, candidato a archivar.
+- **Critter Nation ($404.82) y Original Elevated Dog Bed ($165.01):** precios ~10-25x el
+  resto del catálogo — confirmar si es error de importación (mismo patrón que el bug
+  DOP→USD ya visto con el Christmas Bandana) o intencional.
+- **Título "Critter Nation by [espacio vacío] Double Unit...":** título roto, falta el
+  nombre del fabricante donde debería ir texto — no corregido (cambio de título, no de
+  descripción, se dejó para no tocar más de lo pedido).
+- **Sección `dual-mode-split.liquid` está `disabled:true`** en `templates/index.json` —
+  no documentado como decisión intencional en el ESTADO, confirmar con Brey.
+- **Copy de envío gratis "desde $50"** en `announcement-bar.liquid` — no confirmado como
+  política real, no se tocó.
+- 5 productos con metafields OVL incompletos (falta `functional_benefit`/`visual_profile`
+  en Portable Hammock, Dog Leash, Grooming Gloves, Dog Poop Bags 280ct) — no corregido,
+  implica escribir copy nuevo.
+
+### Verified
+- Bug histórico "Agotado": `inventoryPolicy: CONTINUE` confirmado en variantes de
+  Anti-Splash Water Bowl, Dog Leash (17 variantes) y Critter Nation — sigue resuelto.
+- Locales (`es.default.json`/`en.json`): sin placeholders viejos tipo "€50" o cantidades
+  desactualizadas.
+- Los 22 templates JSON del theme apuntan a secciones existentes, sin referencias rotas.
+- El bullet de "highlights" genérico (ESTADO sección 6, tanda 19/07) no se repite en los
+  14 productos originales — ya estaba corregido de una sesión anterior.
+- Badges OVL (`ovl.dominant_emotion`/`ovl.emotional_benefit`) de los 25 productos activos
+  coinciden temáticamente con su descripción.
+
+## [Unreleased] - 2026-07-26 (tanda 11 — verificación visual del recorte de Hero mobile)
+
+### Verified — cierra pendiente de la tanda 10
+- **Recorte horizontal del Hero en mobile (pendiente desde la tanda anterior) confirmado
+  sin problema — no corta a las mascotas.** El browser pane, que había fallado toda la
+  sesión anterior, funcionó esta vez. Se navegó a `nimapets.com/?preview_theme_id=199060881489`
+  (Shopify mantiene el preview activo vía cookie aunque la URL visible se limpie a la raíz)
+  y se confirmó por inspección de estilos computados que ese duplicado sirve
+  `.hero-copy{padding:48px 24px}` en mobile — verificado también leyendo `assets/base.css`
+  directo de ambos themes vía Admin API (el MAIN publicado `198963363921` no tiene esa
+  regla, el duplicado `199060881489` sí). El screenshot del navegador (`computer` tool)
+  siguió fallando ("Browser pane is not displayed") — en su lugar se descargó la imagen
+  real del Hero (`01-hero.png`, 1400×933) y se recortó localmente con Pillow replicando
+  la matemática exacta de `object-fit:cover` a 375px de viewport (~20% recortado por lado).
+  El recorte simulado muestra al gato y al perro completos — solo se pierde fondo
+  decorativo (jarrón/planta a la izquierda, cortina a la derecha). Conclusión: no hace
+  falta ajustar `object-position`, el fix de padding de la tanda 10 es suficiente tal
+  como está.
+
+### Verified — cierra pendiente histórico
+- **Checkout real confirmado con el nombre "Nima" visible al cliente.** Se agregó un
+  producto de prueba al carrito (Anti-Splash Water Bowl) y se avanzó hasta la pantalla de
+  checkout sin llenar ni enviar ningún dato personal o de pago — título de pestaña
+  "Checkout - Nima", header "Nima Checkout", método de pago PayPal visible, sin rastro de
+  "PetDrop" ni "Atlas Commerce" en ningún punto del flujo.
+
+### Verified — cierra pendientes históricos adicionales
+- **"Adendas v3-v5" del protocolo confirmadas inexistentes** — grep completo de
+  `PROTOCOLO-comunicacion-actores.md` y de toda la carpeta `Atlas E-Commerce/` sin ningún
+  resultado. No hace falta seguir buscando salvo que Brey aporte una ubicación concreta.
+
+### Investigated
+- **Handle de Instagram `@nimapets` ya existe** — pertenece a una cuenta llamada "NIMA
+  PETS". No se pudo confirmar de quién es (Instagram bloqueó la carga completa sin sesión
+  iniciada). No se probaron más plataformas de forma automatizada para evitar scraping
+  contra los términos de servicio — queda para que Brey lo confirme manualmente.
+
+### Pending
+- Sigue pendiente que Brey publique manualmente el duplicado `199060881489` — ya no hay
+  ningún ajuste de código adicional bloqueando esa publicación.
+- Se preserva explícitamente la contraseña del sitio activa — Brey pidió no tocarla en
+  esta tanda (26/07).
+- Tratamiento de las 5 imágenes de producto crudas de AutoDS puesto en pausa — Brey va a
+  traer un plan propio antes de que se ejecute nada (`imagetoolkit` o `image-server/`).
+- Confirmar de quién es la cuenta `@nimapets` en Instagram.
+
 ## [Unreleased] - 2026-07-25 (tanda 10 — bug "Agotado" en catálogo + exploración de tratamiento de imagen)
 
 ### Fixed — rompe la experiencia de compra
