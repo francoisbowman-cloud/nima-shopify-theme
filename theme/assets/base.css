@@ -7,9 +7,20 @@
    Este archivo NO debe redeclarar --bg/--text/--green/--serif/--sans/etc.
    en :root: al cargarse después del <style> inline, sus valores
    pisarían siempre a los definidos por settings del Customizer.
+
+   Capa de fundamentos (29/07/2026, evolución vía Omni Design System):
+   radios, sombras y foco — no son parte de la config del Customizer,
+   por eso sí pueden vivir acá. No redeclaran color/tipografía.
    ============================================================ */
 
+:root{
+  --radius-sm:6px; --radius-md:8px; --radius-lg:12px; --radius-pill:999px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08); --shadow-md:0 8px 30px rgba(0,0,0,.10);
+  --focus-ring:0 0 0 3px color-mix(in srgb, var(--green) 35%, transparent);
+}
+
 *{box-sizing:border-box}
+:focus-visible{outline:none;box-shadow:var(--focus-ring)}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 a{color:inherit;text-decoration:none}
@@ -18,7 +29,7 @@ button{font-family:inherit}
 
 .container{width:min(var(--page-width),calc(100% - 40px));margin:auto}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.skip-to-content:focus{position:fixed;top:8px;left:8px;z-index:1000;background:#fff;color:#111;padding:10px 16px;border-radius:8px}
+.skip-to-content:focus{position:fixed;top:8px;left:8px;z-index:1000;background:#fff;color:#111;padding:10px 16px;border-radius:var(--radius-md)}
 
 /* ---- Announcement bar ---- */
 .topbar{font-size:12px;border-bottom:1px solid var(--line);padding:10px 0;text-align:center;color:var(--text)}
@@ -42,7 +53,7 @@ button{font-family:inherit}
 .hero-art img{width:100%;height:100%;object-fit:cover}
 
 /* ---- Buttons ---- */
-.btn{display:inline-flex;align-items:center;gap:14px;background:var(--text);color:var(--bg);padding:16px 24px;border-radius:999px;font-weight:700;margin-top:26px;border:0;cursor:pointer;font-size:15px}
+.btn{display:inline-flex;align-items:center;gap:14px;background:var(--text);color:var(--bg);padding:16px 24px;border-radius:var(--radius-pill);font-weight:700;margin-top:26px;border:0;cursor:pointer;font-size:15px}
 .btn--light{background:var(--bg);color:var(--text)}
 .btn--full{width:100%;justify-content:center}
 
@@ -66,7 +77,7 @@ button{font-family:inherit}
 .mag-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:28px;padding-bottom:80px}
 .mag-grid--blog{grid-template-columns:1fr 1fr}
 .feature{background:#f2f0eb;min-height:620px;padding:50px;display:flex;flex-direction:column;justify-content:flex-end}
-.feature h2{font-size:54px;line-height:1;margin:0 0 18px}
+.feature h2{font-size:clamp(32px,5vw,54px);line-height:1;margin:0 0 18px}
 .feature--image{background-size:cover;background-position:center;color:#fff}
 .feature--image .kicker{color:#fff}
 .side-story{border-top:1px solid var(--line);padding:24px 0}
@@ -78,20 +89,20 @@ button{font-family:inherit}
 .gallery img{max-height:76vh;object-fit:contain}
 .gallery__main{width:100%;display:grid;place-items:center}
 .gallery__thumbs{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
-.gallery__thumbs button{padding:0;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer;overflow:hidden}
+.gallery__thumbs button{padding:0;border:1px solid var(--line);border-radius:var(--radius-sm);background:none;cursor:pointer;overflow:hidden}
 .gallery__thumbs img{width:64px;height:64px;object-fit:cover}
 .buy{padding:70px 7vw;display:flex;flex-direction:column;justify-content:center}
-.buy h1{font-size:60px;line-height:.95;letter-spacing:-3px;margin:10px 0}
+.buy h1{font-size:clamp(36px,6vw,60px);line-height:.95;letter-spacing:-3px;margin:10px 0}
 .price{font-size:28px;margin:10px 0 24px}
 .price--sale{color:var(--green)}
 .price s{color:var(--muted);margin-right:10px}
 .muted{color:var(--muted)}
 .options{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 8px}
-.option{padding:12px 16px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:var(--bg);position:relative}
+.option{padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius-pill);cursor:pointer;background:var(--bg);position:relative}
 .option input{position:absolute;opacity:0;pointer-events:none}
 .option.active,.option:has(input:checked){border-color:var(--text);background:var(--text);color:var(--bg)}
 .option:has(input:disabled){opacity:.4;cursor:not-allowed;text-decoration:line-through}
-.add{width:100%;border:0;background:var(--green);color:#fff;padding:18px;border-radius:12px;font-size:16px;font-weight:800;margin-top:24px;cursor:pointer}
+.add{width:100%;border:0;background:var(--green);color:#fff;padding:18px;border-radius:var(--radius-lg);font-size:16px;font-weight:800;margin-top:24px;cursor:pointer}
 .add[disabled]{opacity:.5;cursor:not-allowed}
 .trust{display:flex;gap:20px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted)}
 
@@ -102,7 +113,7 @@ button{font-family:inherit}
 .story-grid>div:first-child{aspect-ratio:4/3;overflow:hidden;border-radius:2px}
 .story-grid img{width:100%;height:100%;object-fit:cover;border-radius:2px}
 .ovl-badges{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
-.ovl-badge{font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--green2);color:var(--green);padding:8px 12px;border-radius:999px;font-weight:700}
+.ovl-badge{font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--green2);color:var(--green);padding:8px 12px;border-radius:var(--radius-pill);font-weight:700}
 
 /* ---- Collection ---- */
 .collection-head{padding:60px 0 20px}
@@ -113,10 +124,10 @@ button{font-family:inherit}
 .cart{padding:60px 0 100px}
 .cart h1{font-size:clamp(40px,5vw,72px);letter-spacing:-2px;margin:0 0 30px}
 .cart-item{display:grid;grid-template-columns:90px 1fr auto;gap:20px;padding:24px 0;border-top:1px solid var(--line);align-items:center}
-.cart-item img{width:90px;height:90px;object-fit:cover;border-radius:6px;background:var(--soft)}
+.cart-item img{width:90px;height:90px;object-fit:cover;border-radius:var(--radius-sm);background:var(--soft)}
 .cart-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--text);padding-top:24px;margin-top:10px}
 .cart-total{font-size:24px;font-weight:700}
-.qty{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;align-items:center}
+.qty{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius-pill);overflow:hidden;align-items:center}
 .qty button{background:none;border:0;padding:6px 12px;cursor:pointer}
 .qty input{width:40px;border:0;text-align:center}
 
@@ -159,16 +170,16 @@ button{font-family:inherit}
 /* ---- Contact form (page.contact) ---- */
 .form-field{margin-bottom:18px;display:flex;flex-direction:column;gap:6px}
 .form-field label{font-size:13px;font-weight:700}
-.form-field input,.form-field textarea{padding:14px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:15px;background:#fff;color:var(--text)}
-.form-success{background:var(--green2);color:var(--green);padding:14px 18px;border-radius:8px;margin-bottom:20px;font-weight:700}
-.form-error{background:#fdeceb;color:#c0392b;padding:14px 18px;border-radius:8px;margin-bottom:20px}
+.form-field input,.form-field textarea{padding:14px;border:1px solid var(--line);border-radius:var(--radius-md);font-family:inherit;font-size:15px;background:#fff;color:var(--text)}
+.form-success{background:var(--green2);color:var(--green);padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px;font-weight:700}
+.form-error{background:#fdeceb;color:#c0392b;padding:14px 18px;border-radius:var(--radius-md);margin-bottom:20px}
 .contact-alt a{font-weight:700;text-decoration:underline}
 
 /* ---- Catálogo — Dirección B (grid 4 col, destacado 2x2) ---- */
 .collection-sub{max-width:520px;margin-top:10px;line-height:1.6}
 .product-grid--b{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;grid-auto-rows:1fr;padding:30px 0 80px}
 .pcard{border:1px solid var(--line);overflow:hidden;background:var(--bg);display:flex;flex-direction:column;transition:border-color .2s ease}
-.pcard:hover{border-color:var(--text)}
+.pcard:hover{border-color:var(--text);box-shadow:var(--shadow-sm)}
 .pcard__media{position:relative;aspect-ratio:1/1;background:var(--soft);overflow:hidden;flex-shrink:0}
 .pcard__media img{width:100%;height:100%;object-fit:cover}
 .pcard__tag{position:absolute;top:10px;left:10px;font-size:11px;letter-spacing:.03em;color:#fff;background:var(--green);padding:5px 12px}
@@ -208,16 +219,16 @@ button{font-family:inherit}
 .split--b__bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .split--b__scrim{position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb, var(--text) 15%, transparent),color-mix(in srgb, var(--text) 78%, transparent))}
 .split--b__content{position:relative;display:flex;flex-direction:column;gap:14px}
-.split--b__h{font-family:var(--serif);font-size:30px;line-height:1.2;margin:0}
+.split--b__h{font-family:var(--serif);font-size:clamp(22px,3vw,30px);line-height:1.2;margin:0}
 .split--b__divider{width:2px;background:var(--green);flex-shrink:0}
 .split--b__connector{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:var(--green);border:4px solid var(--bg);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px color-mix(in srgb, var(--text) 25%, transparent);color:#fff;font-size:16px}
 
 /* ---- Home — Teaser de Magazine (Dirección B) ---- */
-.mag-teaser{position:relative;border-radius:6px;overflow:hidden;min-height:420px;display:flex;align-items:flex-end;margin:48px 0 96px}
+.mag-teaser{position:relative;border-radius:var(--radius-sm);overflow:hidden;min-height:420px;display:flex;align-items:flex-end;margin:48px 0 96px}
 .mag-teaser__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .mag-teaser__scrim{position:absolute;inset:0;background:color-mix(in srgb, var(--text) 35%, transparent)}
 .mag-teaser__card{position:relative;background:color-mix(in srgb, var(--text) 55%, transparent);backdrop-filter:blur(10px);padding:32px 36px;border-radius:4px;max-width:440px;margin:48px}
-.mag-teaser__h{font-family:var(--serif);font-size:28px;color:var(--bg);line-height:1.25;margin:12px 0 14px}
+.mag-teaser__h{font-family:var(--serif);font-size:clamp(22px,3vw,28px);color:var(--bg);line-height:1.25;margin:12px 0 14px}
 
 @media(max-width:800px){
   .split--b__frame{flex-direction:column}
@@ -248,14 +259,14 @@ button{font-family:inherit}
 
 /* ---- Producto — Dirección B ---- */
 .gallery--b{background:none;padding:0;display:block}
-.gallery--b .gallery__main{background:var(--soft);border-radius:6px;overflow:hidden;aspect-ratio:1/1}
+.gallery--b .gallery__main{background:var(--soft);border-radius:var(--radius-sm);overflow:hidden;aspect-ratio:1/1}
 .gallery--b .gallery__main img{width:100%;height:100%;object-fit:cover}
 .gallery__thumbs--b{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
 .gallery__thumbs--b button{border:none;border-radius:4px;padding:0;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
 .gallery__thumbs--b img{width:100%;height:100%;object-fit:cover}
 
 .badge-row{display:flex;gap:8px;margin:16px 0 20px}
-.badge-pill{font-size:12px;color:var(--green);background:var(--green2);border:1px solid var(--line);padding:6px 12px;border-radius:12px}
+.badge-pill{font-size:12px;color:var(--green);background:var(--green2);border:1px solid var(--line);padding:6px 12px;border-radius:var(--radius-lg)}
 
 .swatch-label{font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin:20px 0 10px}
 .swatches{display:flex;gap:10px;margin-bottom:24px}
@@ -272,7 +283,7 @@ button{font-family:inherit}
 .story--b{padding-top:72px}
 .story-grid--b{grid-template-columns:1fr 1.1fr;gap:48px}
 .story-grid--b>div:first-child{aspect-ratio:4/5}
-.story--b__h{font-family:var(--serif);font-size:30px;line-height:1.2;margin:16px 0}
+.story--b__h{font-family:var(--serif);font-size:clamp(22px,3vw,30px);line-height:1.2;margin:16px 0}
 .ovl-badge--active{background:var(--green);color:#fff;border-color:var(--green)}
 
 @media(max-width:800px){

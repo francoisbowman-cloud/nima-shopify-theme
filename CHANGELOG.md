@@ -6,6 +6,65 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-29 (tanda 13 — evolución del sistema visual vía Omni, motor de composición no sirve para Liquid)
+
+**Actor:** Code.
+
+### Investigated — bug real en Omni, no aplicado
+- Se probó `preview_web_composition`/`apply_web_composition` (Omni Web Composition Engine)
+  apuntando al repo completo (`repository_url`): el motor necesita páginas HTML de un solo
+  archivo para poder "componer". Como este theme arma cada página desde
+  `templates/*.json` + `sections/*.liquid` + `snippets/*.liquid`, no encontró nada así y
+  cayó a usar los 3 únicos HTML monolíticos del repo — `prototype/index.html`,
+  `magazine.html`, `product.html` — que además siguen con la marca vieja "PetDrop" y la
+  paleta descartada (verde `#0c6b45`, fondo blanco puro). Confirmado el diagnóstico
+  repitiendo la llamada con `project_subdirectory:"theme"`: ahí no detecta ninguna página
+  parseable y colapsa Home/Magazine/Producto/Catálogo en un solo arquetipo genérico
+  "catalog" sobre `assets/base.css`. **No se aplicó ese change_set** — hubiera reescrito
+  solo archivos muertos (el prototipo, no el theme real) con datos de marca incorrectos,
+  cero efecto en `nimapets.com`.
+- `generate_web_design_system`/`audit_web_project` sí funcionan bien contra este repo
+  (leen los tokens reales desde `config/settings_data.json`) — la propuesta de evolución
+  que generaron se subió a Claude Design (proyecto "Nima") como referencia, sin tocar la
+  captura fiel existente del sistema real.
+
+### Changed — evolución manual del sistema visual (`theme/assets/base.css`)
+Ante la limitación de arriba, se aplicó a mano un alcance acotado y de bajo riesgo,
+verificado con `shopify theme check` (0 errores nuevos):
+- **Capa de fundamentos nueva**: `--radius-sm/md/lg/pill`, `--shadow-sm/md`,
+  `--focus-ring` — no redeclara ningún token de color/tipografía existente (respeta la
+  regla de `CLAUDE.md` sobre `:root` en `base.css`).
+- **Foco visible global** (`:focus-visible{box-shadow:var(--focus-ring)}`) — gap de
+  accesibilidad real que no existía antes (botones, inputs, swatches no tenían ningún
+  estado de foco explícito).
+- **19 valores de `border-radius` literales normalizados** a los tokens nuevos — mismo
+  valor visual exacto (6px→`--radius-sm`, 8px→`--radius-md`, 12px→`--radius-lg`,
+  999px→`--radius-pill`), cero cambio de layout.
+- **Tipografía fluida** (`clamp()`) en 5 títulos que seguían en `px` fijo: `.feature h2`,
+  `.buy h1`, `.mag-teaser__h`, `.split--b__h`, `.story--b__h` — el valor máximo del
+  `clamp()` es el mismo `px` original, así que en desktop se ve idéntico; solo mejora el
+  comportamiento en viewports intermedios.
+- Sombra sutil en hover de tarjetas de catálogo (`.pcard:hover`) — antes solo cambiaba
+  el color de borde, sin feedback de profundidad.
+- **No se tocaron** colores de marca, contenido, ni se recompuso el layout de ninguna
+  página — eso requiere QA visual página por página, no algo para hacer a ciegas contra
+  una tienda en producción.
+
+### Cómo se aplicó
+Subido vía Admin GraphQL API (`themeFilesUpsert`) a un **nuevo theme duplicado sin
+publicar**, "Nima — Evolucion fundamentos (Code)" (ID `199238025297`, duplicado del MAIN
+`198963363921`) — Shopify bloquea escritura por API sobre el theme publicado. Pendiente
+que Brey lo previsualice y publique.
+
+### Pending
+- Publicar (o no) el duplicado `199238025297`.
+- Sigue sin resolverse qué hacer con el theme `Nima_Cowork` (`199221641297`) de la tanda
+  anterior — ahora hay **tres** duplicados sin publicar en paralelo
+  (`199060881489` fix de padding, `199221641297` Nima_Cowork, `199238025297` esta tanda),
+  todos partiendo del mismo MAIN. Brey debe decidir cuál publicar y en qué orden, o si
+  conviene consolidarlos en uno solo antes de publicar — publicarlos fuera de orden podría
+  hacer que uno pise el trabajo de otro.
+
 ## [Unreleased] - 2026-07-29 (tanda 12 — Cowork, optimización integral, theme Nima_Cowork)
 
 **Actor:** Cowork. **No se hizo ningún `git commit`/`push`** (autoridad exclusiva de Code) —

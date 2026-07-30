@@ -93,6 +93,9 @@ se asuma lo contrario:**
 | 53 | **6 productos de la tanda nueva del 26/07 limpiados de contenido de scraping/marca de competidor real** (Bird Chewing Toy: marca "Kintor"; Dog Bed Crate Pad: marca "Mora Pets"; Pet Memorial Picture Frame: marca "KCRasan"; Critter Nation: branding de "MidWest Homes for Pets"; Waterproof Pet Feeding Mats: marca ajena mal raspada; Feather Teaser Cat Toy y 1 Teaspoon Measuring Spoon: tablas HTML de SKUs ajenos de Amazon) — mismo patrón que la limpieza de la decisión #23, aplicado directo en Shopify Admin | Cowork |
 | 54 | **Guía de estilo de imágenes por sección creada** (`GUIA-ESTILO-IMAGENES-NIMA.md`, raíz del repo) — ratios oficiales, object-fit y pesos objetivo por sección del sitio, verificados contra el CSS real del theme y basados en `skills/nima-image-art-direction/SKILL.md`. Responde al plan de imágenes que Brey delegó a Cowork en esta sesión — el tratamiento pipeline (decisión #37/#49) sigue en pausa, esta guía es el marco de referencia para cuando se retome | Cowork |
 | 55 | **Plan de ventas y de tráfico entregado** (`PLAN-VENTAS-Y-TRAFICO-NIMA.md`, raíz del repo) — incluye alerta de 2 precios atípicos sin confirmar (Critter Nation $404.82, Elevated Dog Bed $165.01, mismo patrón que el bug DOP→USD ya visto), mecánicas de upsell nativas de Shopify sin apps de pago, y prioridad de acciones de SEO/redes de bajo costo para operador único | Cowork |
+| 56 | **Fix de Omni confirmado en vivo**: `audit_web_project` y `generate_web_design_system` ahora leen el repo real vía `repository_url`/`repository_ref` (sin sandbox local) — probado contra `nima-shopify-theme`: 53 archivos, score 61/100, tokens reales extraídos correctamente desde `settings_data.json`. Propuesta de evolución (tokens semánticos, tipografía fluida, 10 contratos de componente) subida a Claude Design como sección nueva y separada en el proyecto "Nima" (`propuesta-evolucion-omni.html`) — sin tocar la captura fiel existente | Code |
+| 57 | **Bug real encontrado en el motor de composición de Omni (`preview_web_composition`/`apply_web_composition`): no sabe componer temas Shopify Liquid.** Necesita páginas HTML de un solo archivo; como este theme arma cada página desde `templates/*.json` + `sections/*.liquid` + `snippets/*.liquid`, el motor cayó a usar los 3 únicos HTML monolíticos del repo — `prototype/index.html`, `magazine.html`, `product.html` — que además conservan la marca vieja "PetDrop" y la paleta descartada (`#0c6b45`). Confirmado con `project_subdirectory:"theme"`: ahí no detecta ninguna página y colapsa Home/Magazine/Producto/Catálogo en un solo arquetipo genérico. No se aplicó ese change_set — hubiera reescrito solo archivos muertos con datos de marca incorrectos, sin ningún efecto en `nimapets.com` | Code (hallazgo) |
+| 58 | **Evolución del sistema visual aplicada a mano sobre `theme/assets/base.css`** (ya que el motor automático de Omni no sirve para Liquid — decisión #57), alcance acotado a fundamentos seguros: capa nueva de tokens `--radius-sm/md/lg/pill`, `--shadow-sm/md`, `--focus-ring` (no redeclara color/tipografía existente); anillo de foco visible global (`:focus-visible`) — gap real de accesibilidad que no existía antes; normalización de 19 valores de `border-radius` literales a los tokens nuevos (mismo valor visual, cero cambio de layout); tipografía fluida (`clamp()`) en 5 títulos que seguían en px fijo (`.feature h2`, `.buy h1`, `.mag-teaser__h`, `.split--b__h`, `.story--b__h` — el clamp usa el mismo valor máximo que el px original, así que en desktop se ve idéntico); sombra sutil en hover de tarjetas de catálogo (`.pcard:hover`). No se tocaron colores de marca, contenido, ni se recompuso el layout de ninguna página — eso requeriría QA visual página por página que no se puede hacer a ciegas contra una tienda en producción. `shopify theme check` local: 0 errores nuevos (solo los 2 warnings de fuentes deprecated ya conocidos). Subido vía Admin API a un **nuevo theme duplicado sin publicar** ("Nima — Evolucion fundamentos (Code)", ID `199238025297`, duplicado del MAIN `198963363921`) — **pendiente que Brey lo revise y publique** | Code |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -167,25 +170,34 @@ de la próxima importación.
 ---
 
 ## 7. Próximo paso
-**Prioridad actual: que Brey revise el theme `Nima_Cowork` (`199221641297`) — trae el fix
-de padding mobile del Hero YA fusionado (decisión #45/#52) más 4 fixes técnicos nuevos de
-esta sesión — y decida si lo publica (reemplazando al MAIN `198963363921`) o si prefiere
-que Code lo revise/fusione al repo primero.**
+**Prioridad actual: hay TRES themes duplicados sin publicar en paralelo, todos partiendo
+del mismo MAIN (`198963363921`) — no publicar ninguno todavía sin leer esto, porque
+publicar uno no incluye el trabajo de los otros dos.**
 
-Retomar así:
-1. **Brey**: previsualizar el theme `Nima_Cowork` (`199221641297`) en Shopify → Online
-   Store → Themes. Trae: fix de padding mobile del Hero, fix de atributo height en
-   tarjetas de producto, 2 scrims migrados a `color-mix()`, limpieza de comentario
-   "PetDrop"→"Nima". Si se ve bien, publicar (o pedirle a Code que lo revise/commitee
-   primero — el repo todavía no está resincronizado con este theme).
-2. **Brey**: confirmar si los precios de Critter Nation ($404.82) y Original Elevated
+| Duplicado | Contenido | Estado vs. los otros |
+|---|---|---|
+| `199060881489` ("Fix hero mobile padding") | Solo el fix de padding del Hero (decisión #45) | **Superado** — su único cambio ya está incluido en `199238025297`. No hace falta publicarlo aparte. |
+| `199221641297` ("Nima_Cowork") | Fix de padding del Hero + 4 fixes de Cowork: atributo `height` en `product-card.liquid`, comentario "PetDrop"→"Nima" en `global.js`, 2 scrims a `color-mix()` en `magazine-grid.liquid`/`main-blog.liquid` (decisión #52) | No se solapa con `199238025297` — toca archivos `.liquid`/`global.js` distintos a `base.css`. |
+| `199238025297` ("Evolucion fundamentos") | Fix de padding del Hero + evolución de fundamentos en `base.css`: tokens de radio/sombra/foco, foco visible global, tipografía fluida en 5 títulos (decisión #58) | No se solapa con `199221641297` — toca solo `assets/base.css`. |
+
+Como `Nima_Cowork` y `Evolucion fundamentos` tocan archivos distintos sin conflicto,
+**se pueden fusionar en un solo duplicado final** antes de publicar, para no perder
+ninguno de los dos. Retomar así:
+
+1. **Brey decide el camino:** (a) publicar `Nima_Cowork` y pedirle a Code que reaplique
+   la evolución de `base.css` sobre ese mismo theme después, o (b) pedirle a Code que
+   fusione los 4 fixes de Cowork sobre `199238025297` primero y publicar un solo
+   duplicado consolidado. La opción (b) evita publicar dos veces.
+2. **Brey**: previsualizar el duplicado elegido en Shopify → Online Store → Themes antes
+   de publicar — aplicar el checklist de coherencia de diseño completo (punto 5 de abajo).
+3. **Brey**: confirmar si los precios de Critter Nation ($404.82) y Original Elevated
    Dog Bed ($165.01) son correctos o error de importación (decisiones #51/#53).
-3. **Brey**: decidir qué hacer con "1 Teaspoon Measuring Spoon" (sin imagen, nicho
+4. **Brey**: decidir qué hacer con "1 Teaspoon Measuring Spoon" (sin imagen, nicho
    ambiguo) y si la sección `dual-mode-split` debe seguir `disabled` en el Home.
-4. Revisar `GUIA-ESTILO-IMAGENES-NIMA.md` y `PLAN-VENTAS-Y-TRAFICO-NIMA.md` (decisiones
+5. Revisar `GUIA-ESTILO-IMAGENES-NIMA.md` y `PLAN-VENTAS-Y-TRAFICO-NIMA.md` (decisiones
    #54/#55) — son insumos para retomar el tratamiento de imágenes (decisión #49) y las
    promociones/checkout cuando Brey esté listo.
-5. Aplicar el checklist de coherencia de diseño completo antes de publicar cualquier
+6. Aplicar el checklist de coherencia de diseño completo antes de publicar cualquier
    theme — falta siempre el paso de "publicar y verificar en vivo".
 
 **Ya cerrado en esta sesión** (no repetir):
@@ -195,6 +207,9 @@ Retomar así:
   solo publicar.
 - Recorte horizontal del Hero en mobile — verificado, no corta a las mascotas, cerrado
   sin necesidad de cambios adicionales (decisión #46).
+- Motor de composición automática de Omni probado y descartado para este theme (no sabe
+  componer Liquid) — evolución de fundamentos aplicada a mano en su lugar (decisiones
+  #57/#58).
 
 **Pendientes de tandas anteriores, todavía abiertos:**
 - Tratamiento de las 5 imágenes de producto crudas de AutoDS (decisión #37) — **en pausa,
