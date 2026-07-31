@@ -194,13 +194,14 @@ button{font-family:inherit}
 /* ---- Catálogo — Dirección B (grid 4 col, destacado 2x2) ---- */
 .collection-sub{max-width:520px;margin-top:var(--space-10);line-height:1.6}
 .product-grid--b{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-20);grid-auto-rows:1fr;padding:30px 0 var(--space-80)}
-.pcard{border:1px solid var(--line);overflow:hidden;background:var(--bg);display:flex;flex-direction:column;transition:border-color .2s ease}
-.pcard:hover{border-color:var(--text);box-shadow:var(--shadow-sm)}
+.pcard{border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--bg);display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.pcard:hover{border-color:var(--text);box-shadow:var(--shadow-md);transform:translateY(-2px)}
 .pcard__media{position:relative;aspect-ratio:1/1;background:var(--soft);overflow:hidden;flex-shrink:0}
 .pcard__media img{width:100%;height:100%;object-fit:cover}
-.pcard__tag{position:absolute;top:var(--space-10);left:var(--space-10);font-size:11px;letter-spacing:.03em;color:var(--white);background:var(--green);padding:5px var(--space-12)}
+.pcard__tag{position:absolute;top:var(--space-10);left:var(--space-10);font-size:11px;letter-spacing:.03em;color:var(--white);background:var(--green);padding:5px var(--space-12);border-radius:var(--radius-pill)}
 .pcard__body{padding:var(--space-16);display:flex;flex-direction:column;gap:4px}
 .pcard__category{font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;font-family:monospace}
+.pcard__emotion{font-size:11px;letter-spacing:.04em;color:var(--green);background:var(--green2);padding:3px var(--space-10);border-radius:var(--radius-pill);font-weight:700;width:fit-content}
 .pcard__body h3{font-family:var(--serif);font-size:17px;margin:4px 0;line-height:1.25}
 .pcard__body .price{font-size:15px;margin:0}
 

@@ -23,6 +23,10 @@
     {%- if product.type != blank -%}
       <span class="pcard__category">{{ product.type }}</span>
     {%- endif -%}
+    {%- assign ovl_emotion = product.metafields.ovl.dominant_emotion -%}
+    {%- if ovl_emotion != blank -%}
+      <span class="pcard__emotion">{{ ovl_emotion }}</span>
+    {%- endif -%}
     <h3>{{ product.title }}</h3>
     <div class="price{% if product.compare_at_price > product.price %} price--sale{% endif %}">
       {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
