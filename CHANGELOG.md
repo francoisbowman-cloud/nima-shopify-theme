@@ -6,6 +6,31 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-30 (tanda 15 — tokenización de colores/espaciados literales en `base.css`)
+
+**Actor:** Code. Brey confirmó avanzar con la decisión pendiente de la tanda 14.
+
+### Changed
+- **Nuevos tokens en el bloque `:root` "fundamentos" de `theme/assets/base.css`** (junto a los
+  de radio/sombra/foco de la decisión #58): 8 tokens de color literal (`--white`, `--ink`,
+  `--surface-hero`, `--surface-feature`, `--surface-gallery`, `--overlay-nav`, `--error-bg`,
+  `--error-text`) y 15 tokens de espaciado (`--space-6` a `--space-80`) para los valores en `px`
+  que se repetían 3 veces o más en `padding`/`margin`/`gap`. Ninguno redeclara `--bg`/`--text`/
+  `--green`/etc. (siguen viviendo solo en `theme.liquid`/`password.liquid`).
+- **~90 reemplazos 1:1** de literales por `var(--token)` en todo el archivo — mismos valores,
+  cero cambio visual. Alcance deliberadamente acotado: los valores de `px` que aparecían solo
+  1-2 veces (ej. `22px`, `56px`, `96px`, `120px`) se dejaron como número suelto a propósito —
+  tokenizar un valor sin repetición real no aporta consistencia, solo indirección. Tampoco se
+  tocaron `font-size`/`letter-spacing`/`line-height`/dimensiones de elemento (`width`/`height`
+  de thumbnails, swatches), que no son "espaciado" en el sentido del diagnóstico de la
+  decisión #59.
+- `shopify theme check` local: 0 errores/warnings nuevos (solo los 2 warnings de fuentes
+  deprecated ya conocidos).
+- Subido vía Admin API (`themeFilesUpsert`) al **mismo duplicado sin publicar de la decisión
+  #58** ("Nima — Evolucion fundamentos (Code)", ID `199238025297`) — no se creó un cuarto
+  duplicado. Contenido remoto verificado byte a byte contra el archivo del repo tras el
+  upsert. **Pendiente que Brey lo revise y publique.**
+
 ## [Unreleased] - 2026-07-29 (tanda 14 — diagnóstico formal del sistema de diseño vía Omni + OVKB)
 
 **Actor:** Code. Solo diagnóstico, no se implementó nada nuevo (instrucción explícita de
