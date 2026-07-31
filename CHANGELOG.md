@@ -6,6 +6,43 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-30 (tanda 16 — mockups de diseño de página vía Design + Omni, bug de Omni encontrado y corregido upstream)
+
+**Actor:** Code, a pedido de Brey ("crear un diseño profesional y estilizado de las
+diferentes páginas de la web, utilizando Omni + Design").
+
+### Added
+- **4 mockups por página (20 total)** generados con Canva (`generate-design`) para
+  Inicio, Catálogo, Magazine, Sobre Nima y Contacto, usando la paleta y tipografía
+  reales del theme (`#8a5a3b`/`#fbf8f3`/`#2b2621`, serif Georgia + sans Helvetica,
+  extraídos vía `generate_web_design_system`) y el contenido/estructura real de
+  cada página (secciones Liquid existentes), no genéricos. Organizados en la
+  carpeta de Canva "Nima — Diseño de Páginas Web". **Brey aprobó la dirección**,
+  con una condición explícita antes de implementar: **Catálogo y Producto deben
+  usar las fotos reales de los 25 productos del catálogo, no placeholders** — ver
+  pendiente en `ESTADO-tienda-mascotas.md` sección 8.
+- `plan_web_professionalization` ejecutado sobre `theme/` como insumo de dirección
+  (no de ejecución automática — su motor de aplicación sigue sin servir para
+  Liquid) — confirma que la capa de *planeación* de Omni sí resuelve las 15 rutas
+  del tema correctamente (a diferencia del motor de composición, ver abajo).
+
+### Fixed (upstream, en `image-toolkit`, no en este repo)
+- **Causa raíz real del bug de Omni de las decisiones #57/#59 encontrada y
+  corregida.** `preview_targeted_web_composition` devolvía 0 zonas con los 47
+  archivos del theme marcados `UNKNOWN` porque `classify_active_surface()` (en
+  `image_toolkit/web/targeted_composition.py`, repo
+  `github.com/francoisbowman-cloud/image-toolkit`) sólo reconocía un árbol activo
+  cuando los directorios marcador (`sections/`, `templates/`, `assets/`, etc.)
+  estaban un nivel *debajo* de una raíz envolvente (`theme/sections/...`) — pero
+  al escanear con `project_subdirectory` apuntando directo a la carpeta del theme,
+  las rutas llegan sin ese prefijo (`sections/hero.liquid`) y todo caía a
+  `UNKNOWN`. Corregido y generalizado (no sólo Shopify) en
+  [PR #27](https://github.com/francoisbowman-cloud/image-toolkit/pull/27), con
+  test de regresión y `"snippets"` agregado al set de marcadores (faltaba por
+  completo). Detalle técnico completo en el `CHANGELOG.md` de ese repo. **PR
+  abierto, no mergeado** — es el repo/proyecto de Brey, pero queda pendiente su
+  revisión antes de mergear a `main`.
+
 ## [Unreleased] - 2026-07-30 (tanda 15 — tokenización de colores/espaciados literales en `base.css`)
 
 **Actor:** Code. Brey confirmó avanzar con la decisión pendiente de la tanda 14.
