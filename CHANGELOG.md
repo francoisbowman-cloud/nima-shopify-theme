@@ -6,6 +6,47 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-29 (tanda 14 — diagnóstico formal del sistema de diseño vía Omni + OVKB)
+
+**Actor:** Code. Solo diagnóstico, no se implementó nada nuevo (instrucción explícita de
+Brey de no implementar salvo correcciones triviales) — el único cambio de código de esta
+tanda ya estaba commiteado antes de este diagnóstico (ver tanda 13).
+
+### Investigated
+- **Re-ejecutado `generate_web_design_system` sobre `theme/`** (ya con la evolución de la
+  tanda 13 empujada a GitHub): confirma que la paleta/tipografía real de Nima se lee
+  correctamente (`#8a5a3b`/`#fbf8f3`/`#2b2621`, confianza "high", trazado a
+  `settings_data.json`) — no hay drift entre lo que Omni detecta y lo que el theme
+  realmente usa. Detecta como brecha pendiente: **20 colores literales sin tokenizar**
+  (`#fff`×12, `rgba(0,0,0,.55)`×3, `#c0392b`×2, etc.) y **20 valores de spacing en `px`
+  crudo** (`40px`×20, `24px`×18, `16px`×17, `80px`×14...), ninguno con reemplazo
+  automático propuesto. Faltan también 3 componentes sin contrato de estados formal:
+  `Input`, `Feedback`, `Navigation`.
+- **Consultado `query_omni_knowledge`** (corpus `omni.professional-foundation` v1.0.0, 14
+  objetos): devolvió 9 principios/patrones de composición editorial general (jerarquía
+  antes que disrupción, grid roto controlado, stack editorial responsive, overlap
+  controlado) — el corpus es de composición visual genérica, no tiene dominio e-commerce
+  específico. Aplicables como criterio de revisión para Magazine/hero split, no como
+  checklist técnico.
+- **Probada la herramienta nueva `preview_targeted_web_composition`** (reportada por otro
+  canal como ya compatible con Shopify OS2, con 14 templates detectados y
+  Header/Collection/Product/Cart en `SAFE`): al ejecutarla acá contra `theme/` con
+  `authorized_surfaces:["index","collection","product","cart"]` el resultado real fue
+  **0 zonas de composición, 0 cambios, los 47 archivos del theme marcados `UNKNOWN`**
+  ("no evidence that this source participates in the active product"). Ya no confunde el
+  prototipo viejo (mejora real sobre el bug de la tanda 13), pero tampoco logra trazar qué
+  archivo arma qué página real — el `SAFE/SAFE/SAFE` que devuelve es consecuencia de no
+  haber compuesto nada, no de una composición validada. **No se pudo reproducir el reporte
+  de "14 templates READY"** con los parámetros probados — queda como hallazgo sin
+  verificar, no como hecho confirmado.
+
+### Pending — decisión de Brey, no bloqueante
+- Tokenizar los ~20 colores/spacing literales detectados arriba en `base.css` — mismo
+  patrón de riesgo bajo que la tanda 13 (normalización 1:1, sin cambio visual). Identificado
+  como el siguiente cambio de mayor impacto, pendiente de confirmación antes de ejecutar.
+- Sigue sin resolverse cuál de los tres duplicados de theme sin publicar priorizar (ver
+  ESTADO sección 7) — no cambia con esta tanda.
+
 ## [Unreleased] - 2026-07-29 (tanda 13 — evolución del sistema visual vía Omni, motor de composición no sirve para Liquid)
 
 **Actor:** Code.

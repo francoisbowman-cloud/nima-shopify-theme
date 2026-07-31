@@ -2,7 +2,7 @@
 Dominio: `nimapets.com` (comprado y conectado a Shopify — DNS verificado, SSL activo)
 Repo: `https://github.com/francoisbowman-cloud/nima-shopify-theme` (privado)
 Codename histórico: `PetDrop` (reemplazado — ver decisión #18)
-Última actualización: 29 de julio de 2026 — por: Cowork
+Última actualización: 29 de julio de 2026 — por: Code
 Nivel: **Producto**, dentro del sistema **Atlas Commerce** (ver `ESTADO-atlas-commerce.md`, Project Atlas-Commerce-Lab)
 
 ---
@@ -96,6 +96,7 @@ se asuma lo contrario:**
 | 56 | **Fix de Omni confirmado en vivo**: `audit_web_project` y `generate_web_design_system` ahora leen el repo real vía `repository_url`/`repository_ref` (sin sandbox local) — probado contra `nima-shopify-theme`: 53 archivos, score 61/100, tokens reales extraídos correctamente desde `settings_data.json`. Propuesta de evolución (tokens semánticos, tipografía fluida, 10 contratos de componente) subida a Claude Design como sección nueva y separada en el proyecto "Nima" (`propuesta-evolucion-omni.html`) — sin tocar la captura fiel existente | Code |
 | 57 | **Bug real encontrado en el motor de composición de Omni (`preview_web_composition`/`apply_web_composition`): no sabe componer temas Shopify Liquid.** Necesita páginas HTML de un solo archivo; como este theme arma cada página desde `templates/*.json` + `sections/*.liquid` + `snippets/*.liquid`, el motor cayó a usar los 3 únicos HTML monolíticos del repo — `prototype/index.html`, `magazine.html`, `product.html` — que además conservan la marca vieja "PetDrop" y la paleta descartada (`#0c6b45`). Confirmado con `project_subdirectory:"theme"`: ahí no detecta ninguna página y colapsa Home/Magazine/Producto/Catálogo en un solo arquetipo genérico. No se aplicó ese change_set — hubiera reescrito solo archivos muertos con datos de marca incorrectos, sin ningún efecto en `nimapets.com` | Code (hallazgo) |
 | 58 | **Evolución del sistema visual aplicada a mano sobre `theme/assets/base.css`** (ya que el motor automático de Omni no sirve para Liquid — decisión #57), alcance acotado a fundamentos seguros: capa nueva de tokens `--radius-sm/md/lg/pill`, `--shadow-sm/md`, `--focus-ring` (no redeclara color/tipografía existente); anillo de foco visible global (`:focus-visible`) — gap real de accesibilidad que no existía antes; normalización de 19 valores de `border-radius` literales a los tokens nuevos (mismo valor visual, cero cambio de layout); tipografía fluida (`clamp()`) en 5 títulos que seguían en px fijo (`.feature h2`, `.buy h1`, `.mag-teaser__h`, `.split--b__h`, `.story--b__h` — el clamp usa el mismo valor máximo que el px original, así que en desktop se ve idéntico); sombra sutil en hover de tarjetas de catálogo (`.pcard:hover`). No se tocaron colores de marca, contenido, ni se recompuso el layout de ninguna página — eso requeriría QA visual página por página que no se puede hacer a ciegas contra una tienda en producción. `shopify theme check` local: 0 errores nuevos (solo los 2 warnings de fuentes deprecated ya conocidos). Subido vía Admin API a un **nuevo theme duplicado sin publicar** ("Nima — Evolucion fundamentos (Code)", ID `199238025297`, duplicado del MAIN `198963363921`) — **pendiente que Brey lo revise y publique** | Code |
+| 59 | **Diagnóstico formal del sistema de diseño vía Omni (inspección + OVKB), sin implementar nada nuevo.** `generate_web_design_system` re-ejecutado sobre `theme/` (ya con la evolución de la decisión #58 empujada a GitHub): confirma paleta/tipografía reales (`#8a5a3b`/`#fbf8f3`/`#2b2621`, todos con confianza "high" trazados a `settings_data.json`) y detecta **20 colores literales sin tokenizar** (`#fff`×12, `rgba(0,0,0,.55)`×3, etc.) + **20 valores de spacing en `px` crudo** (`40px`×20, `24px`×18, `16px`×17...) como brecha pendiente — ninguno con reemplazo automático. Consulta a `query_omni_knowledge` (corpus `omni.professional-foundation` v1.0.0, 14 objetos) devolvió 9 principios/patrones de composición editorial general (jerarquía antes que disrupción, grid roto controlado, stack editorial responsive) — genéricos, el corpus no tiene dominio e-commerce específico. **Prueba real de la herramienta nueva `preview_targeted_web_composition`** (la que se había reportado como ya compatible con Shopify OS2): contra `theme/` con `authorized_surfaces:["index","collection","product","cart"]` devolvió **0 zonas de composición, 0 cambios, los 47 archivos marcados `UNKNOWN`** — ya no confunde el prototipo viejo (mejora real vs. la decisión #57), pero tampoco logra trazar qué archivos arman cada página real; el `SAFE/SAFE/SAFE` que devuelve es porque no hizo nada, no porque haya compuesto algo. **No coincide con un reporte previo de "14 templates, todos READY"** que había llegado por otro canal — no se pudo reproducir con los parámetros probados, queda sin verificar. Próximo paso de mayor impacto identificado y **no ejecutado todavía**: tokenizar los ~20 colores/spacing literales de arriba (mismo patrón de riesgo bajo que la decisión #58) — pendiente de que Brey confirme si avanzar | Code |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -210,6 +211,17 @@ ninguno de los dos. Retomar así:
 - Motor de composición automática de Omni probado y descartado para este theme (no sabe
   componer Liquid) — evolución de fundamentos aplicada a mano en su lugar (decisiones
   #57/#58).
+- Diagnóstico formal del sistema de diseño (inspección + OVKB) completado, sin implementar
+  nada nuevo — ver decisión #59.
+
+**Para retomar la próxima sesión — punto de entrada directo:**
+Queda pendiente una decisión simple de Brey antes de que Code siga: **¿tokenizar los ~20
+colores literales y valores de `px` sueltos que detectó el diagnóstico de la decisión #59
+en `theme/assets/base.css`?** Es el mismo patrón de riesgo bajo ya aplicado en la decisión
+#58 (normalización 1:1, sin cambio visual, verificado con `theme check`) — si Brey dice que
+sí, Code puede ejecutarlo directo sin nueva exploración. Si no hay respuesta, no es
+bloqueante: los tres duplicados de theme sin publicar (tabla arriba) siguen siendo la
+prioridad real.
 
 **Pendientes de tandas anteriores, todavía abiertos:**
 - Tratamiento de las 5 imágenes de producto crudas de AutoDS (decisión #37) — **en pausa,
