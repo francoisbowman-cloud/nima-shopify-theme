@@ -6,6 +6,61 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-07-31 (tanda 17 — imágenes IA purgadas del catálogo, tarjeta/grid corregidos, bug de Omni mergeado y verificado en producción)
+
+**Actor:** Code, a pedido de Brey ("las tarjetas de catálogo están poco atractivas, ¿se está
+usando Omni por completo?").
+
+### Fixed
+- **13 imágenes generadas por IA borradas del catálogo activo.** Auditoría vía Admin GraphQL
+  API encontró que 13 de los 25 productos activos tenían una imagen sintética ("— imagen
+  editorial Nima", filename `Producto_*.png`) subida en una sesión anterior, mezclada entre
+  las fotos reales del proveedor — en **Pet Grooming Gloves** esa imagen era la **destacada**,
+  visible en catálogo y en la Zona OVL Story del producto. No era un problema de falta de
+  fotos reales (ya existían, correctas) sino de imágenes IA sin auditar contaminando el set.
+  Borradas vía `productDeleteMedia`; verificado post-borrado que los 25 productos quedan
+  100% con fotos reales del proveedor.
+- **Token de radio/sombra definido pero nunca aplicado a la tarjeta de catálogo.** `.pcard`
+  en `base.css` tenía esquinas cuadradas pese a que `--radius-md`/`--shadow-sm`/`--shadow-md`
+  existen desde la evolución de fundamentos (tanda 14) — el token estaba disponible, el
+  componente no lo usaba.
+- **Metafield `ovl.dominant_emotion` nunca se renderizaba en la tarjeta de catálogo** —
+  solo se mostraba en la página de producto individual, pese a que el `README.md` del theme
+  ya documentaba "kicker en tarjetas" como uno de sus usos previstos.
+- **`.pagination` no tenía ningún CSS** — se renderizaba como links crudos del navegador,
+  visible en producción porque el catálogo activo (25 productos, 24 por página) sí dispara
+  una segunda página.
+
+### Changed
+- `snippets/product-card.liquid`: agregado kicker `.pcard__emotion` leyendo
+  `product.metafields.ovl.dominant_emotion`.
+- `assets/base.css`: `.pcard` con `border-radius`/`box-shadow` (+ `transform` sutil en
+  hover), gap del grid `--space-20`→`--space-24`, padding superior del grid a
+  `--space-32`, y bloque nuevo de estilos para `.pagination` (píldoras, estado activo,
+  hover).
+- **Skill `nima-image-art-direction` renombrado a `checklist-auditoria`** (evita un skill
+  redundante — se reusó el existente en vez de crear uno nuevo). Conserva toda la dirección
+  de arte de imágenes intacta y agrega un procedimiento *ejecutable* de auditoría: grep de
+  tokens definidos-vs-aplicados en CSS, consulta a la Admin API de Shopify para detectar
+  imágenes sintéticas/ajenas por patrón de filename/alt, y verificación de cobertura de
+  metafields OVL entre lo cargado y lo renderizado. Referencias actualizadas en `CLAUDE.md`
+  y `GUIA-ESTILO-IMAGENES-NIMA.md`.
+
+### Fixed (upstream, en `image-toolkit`, mergeado esta vez — no solo encontrado)
+- **[PR #27](https://github.com/francoisbowman-cloud/image-toolkit/pull/27) mergeado a
+  `main`** (commit `69564b3`), con autorización explícita de Brey. Suite verificada antes de
+  mergear (399 passed, 5 fallas preexistentes no relacionadas). Railway redesplegó
+  automáticamente. **Verificado en vivo post-deploy**: `plan_web_professionalization` contra
+  `nima-shopify-theme` con `project_subdirectory: "theme"` (el escenario exacto que rompía)
+  ahora devuelve las 15 páginas/templates en `READY` con evidencia real, en vez de marcar el
+  100% `UNKNOWN`. Bug cerrado de punta a punta: encontrado → PR → mergeado → verificado en
+  producción.
+
+### Deployment
+- Duplicado de theme `199238025297` ("Nima — Evolucion fundamentos") actualizado por Brey
+  vía `shopify theme push` con todos los cambios de esta tanda. Sigue `UNPUBLISHED` —
+  publicar queda pendiente (previsualizar + publicar manual desde el Admin).
+
 ## [Unreleased] - 2026-07-30 (tanda 16 — mockups de diseño de página vía Design + Omni, bug de Omni encontrado y corregido upstream)
 
 **Actor:** Code, a pedido de Brey ("crear un diseño profesional y estilizado de las

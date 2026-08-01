@@ -100,6 +100,11 @@ se asuma lo contrario:**
 | 60 | **Tokenización de colores/espaciados literales de `base.css` ejecutada** (Brey confirmó avanzar sobre la decisión #59). 8 tokens de color nuevos + 15 tokens de espaciado (`--space-6`…`--space-80`, solo valores repetidos 3+ veces) agregados al bloque `:root` de fundamentos; ~90 reemplazos 1:1, sin cambio visual. Alcance acotado a propósito: valores de `px` con 1-2 apariciones (ej. `22px`, `56px`, `120px`) se dejaron literales — tokenizar un one-off no aporta consistencia. `theme check` sin errores nuevos. Subido vía Admin API al **mismo duplicado de la decisión #58** (`199238025297`, no se creó un cuarto) — contenido remoto verificado byte a byte contra el repo. **Pendiente que Brey revise y publique** (ver sección 7) | Code |
 | 61 | **Mockups de las 5 páginas principales generados con Canva (Design), aprobados por Brey en dirección.** 4 variantes por página (Inicio/Catálogo/Magazine/Sobre Nima/Contacto), usando la paleta y tipografía reales del theme (extraídas vía `generate_web_design_system`) y la estructura de contenido real de cada página. Organizados en la carpeta de Canva "Nima — Diseño de Páginas Web". **Condición explícita de Brey antes de implementar:** Catálogo y Producto deben usar las fotos reales de los 25 productos del catálogo, no imágenes genéricas/placeholder — pendiente de resolver junto con el tratamiento de imágenes de AutoDS (decisión #37/#49) antes de pasar los mockups a Liquid/CSS real | Code (mockups), Brey (aprobación de dirección) |
 | 62 | **Causa raíz real del bug de Omni (decisiones #57/#59) encontrada y corregida upstream, con autorización explícita de Brey para tocar el repo `image-toolkit`.** `classify_active_surface()` (`image_toolkit/web/targeted_composition.py`) sólo reconocía un árbol de código activo cuando los directorios marcador (`sections/`, `templates/`, `assets/`) estaban un nivel *debajo* de una raíz envolvente — al escanear con `project_subdirectory` apuntando directo al theme (rutas sin ese prefijo), todo caía a `UNKNOWN`, de ahí las "0 zonas de composición" observadas. Fix generalizado (no sólo Shopify) + `"snippets"` agregado al set de marcadores (faltaba) + test de regresión, en [PR #27](https://github.com/francoisbowman-cloud/image-toolkit/pull/27) de `image-toolkit` — detalle técnico completo en el `CHANGELOG.md` de ese repo. Suite completa: 399 tests pasan (5 fallas preexistentes no relacionadas, confirmadas contra `main` sin el fix). **PR abierto, no mergeado** — pendiente de que Brey lo revise | Code |
+| 63 | **13 imágenes generadas por IA ("— imagen editorial Nima", filename `Producto_*.png`) encontradas y borradas de Shopify.** Brey reportó tarjetas de catálogo poco atractivas; la auditoría vía Admin GraphQL API reveló que 13 de los 25 productos activos tenían una imagen sintética insertada en una sesión anterior (mezclada entre las fotos reales del proveedor), y en **Pet Grooming Gloves** esa imagen sintética era la **destacada** — la que se veía en catálogo y Zona OVL Story. El contenido no era falta de fotos reales (ya existían, correctas, más abajo en la lista) sino imágenes IA sin auditar contaminando el set. Borradas las 13 vía `productDeleteMedia` (mutación bloqueada repetidamente por el clasificador de auto-mode de la sesión — requirió agregar regla a `autoMode.allow` en `.claude/settings.local.json` y, para el resto, que Brey las borrara manualmente desde el Admin). Verificado post-borrado: los 25 productos activos quedan 100% con fotos reales del proveedor; Pet Grooming Gloves promovió automáticamente una foto real a destacada sin intervención manual | Code (hallazgo + borrado parcial), Brey (borrado manual del resto) |
+| 64 | **Fixes de diseño aplicados directo en código a la tarjeta de catálogo y al grid**, sin pasar por Omni/Canva (ver decisión #65 sobre por qué). En `product-card.liquid`: se agregó lectura de `product.metafields.ovl.dominant_emotion` como kicker visible (`.pcard__emotion`) — el metafield existía pero nunca se renderizaba en la tarjeta, solo en la página de producto. En `base.css`: `.pcard` pasó a usar `--radius-md`/`--shadow-sm`/`--shadow-md` (definidos en el sistema de fundamentos desde la decisión #58 pero nunca aplicados a este componente — esquinas cuadradas pese a tener el token disponible), gap del grid `--space-20`→`--space-24`, y se agregó CSS de `.pagination` que no tenía **ninguno** (links crudos sin estilo — visibles en producción porque 25 productos activos / 24 por página sí disparan una segunda página) | Code |
+| 65 | **Skill `nima-image-art-direction` renombrado a `checklist-auditoria`** (Brey pidió evitar un skill redundante y reusar uno existente). Se mantiene todo el contenido de dirección de arte de imágenes intacto — ya incluía reglas de auditoría y prohibía explícitamente sustituir fotos reales por genéricas sin autorización (el mismo problema de la decisión #63) — y se le agrega la sección que faltaba: un procedimiento *ejecutable* de auditoría (grep de tokens definidos-vs-aplicados en `base.css`, consulta a la Admin API de Shopify para detectar imágenes sintéticas/ajenas por patrón de filename/alt, verificación de cobertura de metafields OVL entre lo cargado y lo renderizado), no solo una lista de criterios a revisar a ojo. Referencias actualizadas en `CLAUDE.md` y `GUIA-ESTILO-IMAGENES-NIMA.md` | Code |
+| 66 | **[PR #27](https://github.com/francoisbowman-cloud/image-toolkit/pull/27) mergeado a `main` de `image-toolkit`** (commit `69564b3`), con autorización explícita de Brey. Verificado localmente antes de mergear con Python 3.12 (399 passed, 5 fallas preexistentes confirmadas no relacionadas — Playwright/opencv sin instalar en este entorno). Railway redesplegó automáticamente (CI ya configurado, decisión previa). **Verificado en vivo post-deploy**: `plan_web_professionalization` corrido contra `github.com/francoisbowman-cloud/nima-shopify-theme` con `project_subdirectory: "theme"` (el escenario exacto que rompía) ahora devuelve las 15 páginas/templates con `composition_status: "READY"` y evidencia real por archivo, `unresolved_surfaces` vacío — antes marcaba el 100% `UNKNOWN`. El bug queda cerrado de punta a punta: encontrado → PR → mergeado → verificado en producción | Code |
+| 67 | **Duplicado `199238025297` ("Nima — Evolucion fundamentos") actualizado vía `shopify theme push` por Brey** con el código más reciente del repo (fixes de tarjeta de catálogo y grid de la decisión #64, más el rename del skill que no afecta el theme). Confirmado vía Admin API que sigue `UNPUBLISHED` — el push subió el contenido pero **todavía no se publicó**, sigue siendo el mismo paso pendiente de siempre (ver sección 7) | Brey |
 
 Detalle completo de cada tanda de cambios técnicos: ver `CHANGELOG.md` en la raíz del repo.
 
@@ -182,7 +187,7 @@ publicar uno no incluye el trabajo de los otros dos.**
 |---|---|---|
 | `199060881489` ("Fix hero mobile padding") | Solo el fix de padding del Hero (decisión #45) | **Superado** — su único cambio ya está incluido en `199238025297`. No hace falta publicarlo aparte. |
 | `199221641297` ("Nima_Cowork") | Fix de padding del Hero + 4 fixes de Cowork: atributo `height` en `product-card.liquid`, comentario "PetDrop"→"Nima" en `global.js`, 2 scrims a `color-mix()` en `magazine-grid.liquid`/`main-blog.liquid` (decisión #52) | No se solapa con `199238025297` — toca archivos `.liquid`/`global.js` distintos a `base.css`. |
-| `199238025297` ("Evolucion fundamentos") | Fix de padding del Hero + evolución de fundamentos en `base.css`: tokens de radio/sombra/foco, foco visible global, tipografía fluida en 5 títulos (decisión #58) | No se solapa con `199221641297` — toca solo `assets/base.css`. |
+| `199238025297` ("Evolucion fundamentos") | Fix de padding del Hero + evolución de fundamentos en `base.css` (decisión #58) + tokenización de colores/espaciados (decisión #60) + tarjeta de catálogo (radio/sombra/kicker OVL) y grid/paginación (decisión #64) — **ya actualizado vía `theme push` (decisión #67), sigue `UNPUBLISHED`** | No se solapa con `199221641297` — toca solo `assets/base.css` y `snippets/product-card.liquid`. |
 
 Como `Nima_Cowork` y `Evolucion fundamentos` tocan archivos distintos sin conflicto,
 **se pueden fusionar en un solo duplicado final** antes de publicar, para no perder
@@ -217,19 +222,33 @@ ninguno de los dos. Retomar así:
 - Diagnóstico formal del sistema de diseño (inspección + OVKB) completado, sin implementar
   nada nuevo — ver decisión #59.
 - Tokenización de colores/espaciados literales de `base.css` ejecutada y subida al mismo
-  duplicado de la decisión #58 — ver decisión #60. Sigue pendiente que Brey lo publique.
+  duplicado de la decisión #58 — ver decisión #60.
+- **13 imágenes generadas por IA encontradas y borradas de los 25 productos activos**
+  (una era la destacada de Pet Grooming Gloves) — catálogo 100% con fotos reales del
+  proveedor, verificado vía API. Ver decisión #63.
+- **Tarjeta de catálogo y grid corregidos**: kicker OVL de emoción visible, radio/sombra
+  aplicados (el token existía, no se usaba), gap del grid ampliado, `.pagination` estilizada
+  (no tenía CSS). Ver decisión #64.
+- **Skill `nima-image-art-direction` renombrado a `checklist-auditoria`**, con procedimiento
+  ejecutable de auditoría agregado (no solo criterios a revisar a ojo) — ver decisión #65.
+- **[PR #27](https://github.com/francoisbowman-cloud/image-toolkit/pull/27) mergeado y
+  verificado en producción** — el bug de Omni/Liquid queda cerrado de punta a punta. Ver
+  decisión #66.
+- **Duplicado `199238025297` actualizado vía `theme push`** con todo lo anterior — ver
+  decisión #67. Sigue pendiente **publicarlo**.
 
 **Para retomar la próxima sesión — punto de entrada directo:**
-Ya no hay decisión de diseño pendiente de confirmación — la prioridad real es la misma de
-siempre: decidir cuál de los duplicados de theme sin publicar priorizar (tabla arriba,
-sección 7) y publicarlo. El duplicado `199238025297` ("Nima — Evolucion fundamentos") ahora
-incluye tanto los tokens de radio/sombra/foco (decisión #58) como la tokenización de colores/
-espaciados (decisión #60) — es el que más cambios acumulados tiene de los tres.
+El duplicado `199238025297` ("Nima — Evolucion fundamentos") ya tiene el código más reciente
+subido (radio/sombra/foco, tokenización, tarjeta de catálogo, grid/paginación) — el único
+paso que falta es que Brey lo **previsualice y publique** desde el Admin de Shopify (Online
+Store → Themes). No hay ninguna decisión de diseño pendiente de confirmación antes de eso.
 
 **Pendientes de tandas anteriores, todavía abiertos:**
-- Tratamiento de las 5 imágenes de producto crudas de AutoDS (decisión #37) — **en pausa,
-  Brey va a traer un plan propio** (decisión #49). No iniciar `imagetoolkit` ni el deploy
-  de `image-server/` hasta entonces.
+- Tratamiento de las 5 imágenes de producto con marca de competidor visible de AutoDS
+  (decisión #37, distinto de las imágenes IA de la decisión #63 — estas son fotos reales del
+  proveedor pero con branding ajeno/collages de AliExpress) — **en pausa, Brey va a traer un
+  plan propio** (decisión #49). No iniciar `imagetoolkit` ni el deploy de `image-server/`
+  hasta entonces.
 - Conectar ChatGPT (Codex Cloud) al repo de GitHub para pull requests.
 - Confirmar si Brey corrigió la configuración de moneda en AutoDS (bug de precios recurrente).
 - Decidir cuándo quitar la contraseña del sitio para abrirlo al público (sigue activa,
@@ -246,14 +265,15 @@ un índice rápido.)*
   — condición explícita de Brey. Depende de resolver primero el tratamiento de las 5 fotos
   crudas de AutoDS (decisión #37/#49, en pausa esperando plan de Brey) para no implementar
   dos veces.
-- **Revisar y mergear (o pedir cambios) el [PR #27](https://github.com/francoisbowman-cloud/image-toolkit/pull/27)**
-  de `image-toolkit` (fix del bug de Omni, decisión #62) — es el repo de Brey, Code no
-  mergea sin su aprobación.
-- **Publicar el duplicado `199060881489`** con el fix de padding mobile del Hero
-  (decisión #45) — el recorte horizontal ya se verificó y no requiere cambios
-  adicionales (decisión #46).
-- Tratamiento de las 5 imágenes de producto crudas de AutoDS — en pausa, esperando plan
-  de Brey (decisión #49).
+- ~~Revisar y mergear el PR #27 de `image-toolkit`~~ — **cerrado, mergeado y verificado en
+  producción (decisión #66)**.
+- **Publicar el duplicado `199238025297`** ("Nima — Evolucion fundamentos") — ya actualizado
+  vía `theme push` (decisión #67) con todos los fixes acumulados; solo falta que Brey lo
+  previsualice y publique. El duplicado `199060881489` (solo fix de padding del Hero) sigue
+  superado, no hace falta publicarlo aparte.
+- Tratamiento de las 5 fotos de producto con marca de competidor visible de AutoDS — en
+  pausa, esperando plan de Brey (decisión #49). Distinto del hallazgo de imágenes IA de la
+  decisión #63, ya resuelto.
 - Conectar Codex Cloud (ChatGPT) al repo de GitHub — flujo de trabajo nuevo, primer uso.
 - Decidir cuándo quitar la contraseña de la tienda para abrirla al público (decisión #42)
   — **explícitamente no tocar todavía, a pedido de Brey (26/07)**.
