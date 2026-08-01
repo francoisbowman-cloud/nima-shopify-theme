@@ -193,7 +193,7 @@ button{font-family:inherit}
 
 /* ---- Catálogo — Dirección B (grid 4 col, destacado 2x2) ---- */
 .collection-sub{max-width:520px;margin-top:var(--space-10);line-height:1.6}
-.product-grid--b{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-20);grid-auto-rows:1fr;padding:30px 0 var(--space-80)}
+.product-grid--b{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-24);grid-auto-rows:1fr;padding:var(--space-32) 0 var(--space-80)}
 .pcard{border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--bg);display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
 .pcard:hover{border-color:var(--text);box-shadow:var(--shadow-md);transform:translateY(-2px)}
 .pcard__media{position:relative;aspect-ratio:1/1;background:var(--soft);overflow:hidden;flex-shrink:0}
@@ -210,6 +210,12 @@ button{font-family:inherit}
 .pcard--featured .pcard__body{padding:22px}
 .pcard--featured .pcard__body h3{font-size:24px;margin:var(--space-8) 0}
 .pcard--featured .pcard__tag{font-size:12px;padding:var(--space-6) var(--space-14)}
+
+.pagination{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:var(--space-8);padding:var(--space-20) 0 var(--space-80)}
+.pagination a,.pagination span{min-width:40px;height:40px;padding:0 var(--space-14);display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-pill);font-size:14px;font-weight:600;text-decoration:none;line-height:1}
+.pagination a{border:1px solid var(--line);color:var(--text);transition:background-color .2s ease,border-color .2s ease}
+.pagination a:hover{background:var(--soft);border-color:var(--text)}
+.pagination span{background:var(--text);color:var(--bg);border:1px solid var(--text)}
 
 @media(max-width:1000px){
   .product-grid--b{grid-template-columns:repeat(3,1fr)}
