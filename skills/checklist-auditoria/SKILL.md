@@ -1,16 +1,72 @@
 ---
-name: nima-image-art-direction
+name: checklist-auditoria
 description: >
-  Dirección de arte, tratamiento visual, sistema de diseño e implementación técnica de imágenes para
-  catálogos web y e-commerce, con énfasis en Nima Pets. Usa esta habilidad para
-  auditar, diseñar o implementar un sistema fotográfico profesional, coherente,
-  responsive, accesible y escalable sin romper la interfaz existente.
-version: 2.0.0
+  Auditoría de coherencia de diseño y dirección de arte para Nima — CSS/tokens del theme,
+  imágenes de producto y metafields OVL. Úsala cuando el usuario pida "correr auditoría",
+  "correr checklist de diseño", "auditoría OMNI", o antes de cerrar cualquier tarea de
+  diseño/frontend/imágenes. No es solo una guía de estilo fotográfico: define el
+  procedimiento concreto (qué comandos correr, qué API consultar) para verificar que la
+  tienda en vivo coincide con el sistema de diseño — no una lista de criterios a ojo.
+version: 2.1.0
 author: Francois Bowman
 language: es
 ---
 
-# Nima Image Art Direction
+# Checklist de Auditoría — Nima (ex Nima Image Art Direction)
+
+## Por qué existe esta skill con este nombre (léelo antes de auditar)
+
+El 31/07/2026 se descubrió en producción: (1) un token de radio (`--radius-md`) definido
+en `base.css` pero nunca aplicado a `.pcard` — esquinas cuadradas en todo el catálogo
+pese a que el sistema de fundamentos ya lo soportaba; y (2) 13 imágenes generadas por IA
+("— imagen editorial Nima", filename `Producto_*.png`) subidas a productos reales en
+Shopify en una sesión anterior, una de ellas incluso como imagen destacada, sin que nadie
+las auditara antes de publicarlas. Esta misma skill (antes `nima-image-art-direction`) ya
+prohibía exactamente esto — ver "Restricciones estrictas" más abajo, ya decía "no
+sustituir imágenes reales por genéricas sin autorización" — y la sección "Auditoría
+automática" ya listaba qué revisar. **El contenido no fallaba. Fallaba que nadie la
+corría como comando contra el estado real de la tienda.** Por eso se renombró a
+`checklist-auditoria` y se le agregó la sección siguiente: el procedimiento ejecutable,
+no solo el criterio.
+
+## Procedimiento ejecutable de auditoría (correr esto, no solo leerlo)
+
+Cuando el usuario pida "correr auditoría", "checklist de diseño" o "auditoría OMNI",
+ejecutar estos pasos en orden — son verificaciones automatizables, no una revisión visual
+a ojo:
+
+1. **Tokens definidos vs. aplicados.** Grep de cada variable custom-property declarada en
+   `:root` de `theme/assets/base.css` (`--radius-*`, `--shadow-*`, `--space-*`) contra su
+   uso real en selectores de componentes concretos (`.pcard`, `.btn`, `.gallery__main`,
+   etc.). Un token que existe pero no aparece en ningún selector de componente es una
+   bandera roja — probablemente un fundamento se agregó al sistema pero nunca se propagó.
+
+2. **Imágenes sintéticas o ajenas en productos reales.** Consultar la Admin GraphQL API
+   de Shopify (`products(first: 50, query: "status:active") { media(first: 6) { alt } }`)
+   y revisar cada `alt`/filename de imagen contra patrones sospechosos: texto genérico
+   tipo "— imagen editorial [marca]", filenames que no siguen el patrón de hash del
+   proveedor (ej. `Producto_*.png` en vez del hash típico de AliExpress/AutoDS como
+   `16f50db9a79da16d24adca97ec68a043.jpg`), o cualquier imagen cuyo estilo visual no
+   coincide con el resto de las fotos del mismo producto. Cualquier hallazgo se reporta
+   antes de tocar nada — no se genera reemplazo con IA sin foto real de base.
+
+3. **Cobertura de metafields OVL.** Para cada metafield `ovl.*` definido en
+   `theme/README.md`, greppear en qué snippets/sections se renderiza realmente
+   (`product.metafields.ovl.*` en `.liquid`). Si un metafield tiene datos cargados en
+   Shopify pero ningún template lo lee, es contenido invisible — inútil aunque esté bien
+   cargado.
+
+4. **Checklist de coherencia general.** Recién después de 1–3, aplicar
+   `checklist-coherencia-diseno.md` (raíz del repo) punto por punto — cobertura completa
+   de secciones vía código/API (nunca de memoria), estados cubiertos, responsive real,
+   consistencia entre pantallas, y el cierre obligatorio de publicar + verificar en vivo.
+
+Reportar los 4 puntos como una lista concreta de hallazgos (archivo, línea, qué falta),
+no como una narrativa general de "todo se ve bien".
+
+---
+
+# Nima Image Art Direction (dirección de arte de imágenes — se mantiene sin cambios)
 
 ## Propósito
 

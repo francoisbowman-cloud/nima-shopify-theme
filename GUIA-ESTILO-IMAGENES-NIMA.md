@@ -1,6 +1,6 @@
 # Guía de estilo de imágenes — Nima
 
-Guía profesional de tamaños, ratios y tratamiento fotográfico por sección del sitio, basada en el sistema real del theme (`assets/base.css`, tema "Nima_Cowork") y en la skill `nima-image-art-direction` ya definida en el repo (`skills/nima-image-art-direction/SKILL.md`). Esta guía no inventa reglas nuevas — traduce esa dirección de arte a specs concretas por sección, verificadas contra el CSS real.
+Guía profesional de tamaños, ratios y tratamiento fotográfico por sección del sitio, basada en el sistema real del theme (`assets/base.css`, tema "Nima_Cowork") y en la skill `checklist-auditoria` (ex `nima-image-art-direction`) ya definida en el repo (`skills/checklist-auditoria/SKILL.md`). Esta guía no inventa reglas nuevas — traduce esa dirección de arte a specs concretas por sección, verificadas contra el CSS real.
 
 Paleta y luz de referencia (ver skill completa para el detalle por categoría de producto): tonos cálidos — crema, marfil, arena, terracota suave — luz difusa lateral, evitar blanco clínico, negro puro y saturación alta.
 
@@ -106,4 +106,4 @@ Paleta y luz de referencia (ver skill completa para el detalle por categoría de
 
 ---
 
-*Basada en `skills/nima-image-art-direction/SKILL.md` (dirección de arte completa, ADN visual por categoría de producto, pipeline Omni, tokens) y en `assets/base.css` del theme Nima_Cowork (verificado 29/07/2026). Referencia complementaria, no reemplaza el `checklist-coherencia-diseno.md` de la raíz del repo.*
+*Basada en `skills/checklist-auditoria/SKILL.md` (dirección de arte completa, ADN visual por categoría de producto, pipeline Omni, tokens) y en `assets/base.css` del theme Nima_Cowork (verificado 29/07/2026). Referencia complementaria, no reemplaza el `checklist-coherencia-diseno.md` de la raíz del repo.*
