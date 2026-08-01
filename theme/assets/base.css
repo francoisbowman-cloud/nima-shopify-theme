@@ -193,6 +193,12 @@ button{font-family:inherit}
 
 /* ---- Catálogo — Dirección B (grid 4 col, destacado 2x2) ---- */
 .collection-sub{max-width:520px;margin-top:var(--space-10);line-height:1.6}
+.filterbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-20);flex-wrap:wrap;padding:var(--space-20) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:var(--space-24)}
+.filterbar__chips{display:flex;gap:var(--space-10);flex-wrap:wrap}
+.filterbar__chip{font-size:13px;font-weight:600;padding:var(--space-8) var(--space-16);border-radius:var(--radius-pill);border:1px solid var(--line);background:transparent;cursor:pointer;color:var(--text);transition:background .15s ease,color .15s ease,border-color .15s ease}
+.filterbar__chip--active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.filterbar__meta{display:flex;align-items:center;gap:var(--space-14);font-size:13px;color:var(--muted)}
+.filterbar__select{border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-8) var(--space-16);font-size:13px;color:var(--text);background:var(--bg);cursor:pointer}
 .product-grid--b{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-24);grid-auto-rows:1fr;padding:var(--space-32) 0 var(--space-80)}
 .pcard{border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--bg);display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
 .pcard:hover{border-color:var(--text);box-shadow:var(--shadow-md);transform:translateY(-2px)}

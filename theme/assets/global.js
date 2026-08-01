@@ -83,4 +83,31 @@
   });
 
   document.addEventListener('DOMContentLoaded', refreshCartCount);
+
+  /* ---- Catálogo: filtro por categoría (chips) ---- */
+  document.addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-filter-chip]');
+    if (!chip) return;
+    var bar = chip.closest('[data-catalog-filter]');
+    if (!bar) return;
+    var grid = bar.parentElement.querySelector('[data-product-grid]');
+    if (!grid) return;
+
+    bar.querySelectorAll('[data-filter-chip]').forEach(function (c) {
+      c.classList.remove('filterbar__chip--active');
+    });
+    chip.classList.add('filterbar__chip--active');
+
+    var category = chip.getAttribute('data-category');
+    var cards = grid.querySelectorAll('[data-category]');
+    var visible = 0;
+    cards.forEach(function (card) {
+      var match = category === 'all' || card.getAttribute('data-category') === category;
+      card.style.display = match ? '' : 'none';
+      if (match) visible += 1;
+    });
+
+    var count = bar.querySelector('[data-filter-count]');
+    if (count) count.textContent = visible + ' ' + (count.getAttribute('data-label') || 'productos');
+  });
 })();

@@ -42,7 +42,14 @@
   "collections": {
     "shop": "Shop",
     "all": "Collections",
-    "empty": "There are no products in this collection yet."
+    "empty": "There are no products in this collection yet.",
+    "filter_by_category": "Filter by category",
+    "all_category": "All",
+    "products_count": "products",
+    "sort_by": "Sort by",
+    "sort_featured": "Featured",
+    "sort_price_asc": "Price: low to high",
+    "sort_price_desc": "Price: high to low"
   },
   "cart": {
     "title": "Your bag",

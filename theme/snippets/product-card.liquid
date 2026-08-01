@@ -8,7 +8,7 @@
   {%- assign tag_label = 'Nuevo' -%}
 {%- endif -%}
 
-<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}">
+<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}" data-category="{{ product.type | escape }}">
   <div class="pcard__media">
     {%- if product.featured_image != blank -%}
       <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="400" height="500">

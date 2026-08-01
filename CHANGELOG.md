@@ -6,6 +6,42 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-08-01 (tanda 18 — filtro por categoría + orden en Catálogo, primera prueba de DesignSync)
+
+**Actor:** Code, a pedido de Brey (comparó el mockup de Design `Nima.zip` contra el theme real
+y priorizó implementar la brecha de filtro/orden en Catálogo).
+
+### Added
+- **Filtro por categoría (chips) + orden por precio en el Catálogo.** `main-collection.liquid`
+  genera las categorías desde `product.type` real de la colección (`collection.products | map:
+  'type' | uniq`); el filtrado es client-side sobre la grilla ya renderizada (`global.js`, sin
+  apps ni Search & Discovery — limitado a la página actual, no cruza paginación). El orden
+  ("Destacados" / precio asc / precio desc) usa el `sort_by` nativo de Shopify vía link, así que
+  sí funciona correctamente con la paginación.
+- Strings nuevos en `es.default.json`/`en.json` bajo `collections.*`
+  (`filter_by_category`, `all_category`, `products_count`, `sort_by`, `sort_featured`,
+  `sort_price_asc`, `sort_price_desc`) — nada de texto hardcodeado.
+- CSS nuevo `.filterbar*` en `base.css`, siguiendo los tokens de fundamentos ya existentes
+  (`--space-*`, `--radius-pill`, `--line`, `--muted`) — mismo patrón que el resto del theme,
+  sin redeclarar color/tipografía.
+- `data-category` agregado a la tarjeta de producto (`product-card.liquid`) para que el JS de
+  filtro pueda identificar la categoría de cada tarjeta.
+
+### Investigated (sin cambio de código en el theme)
+- **Primera prueba de la herramienta `DesignSync`** (MCP de Claude Design) contra el proyecto
+  "Nima": se escribió un componente de prueba (`PriceTag`) directo al proyecto de Design vía
+  `write_files` para validar si alcanza con escribir archivos para que el componente quede
+  disponible en el sistema de diseño. No alcanza — la recompilación del bundle (`_ds_bundle.js`)
+  necesita un trigger dentro de la app de Design, no se dispara solo por escribir vía MCP.
+  Documentado como decisión #68 en `ESTADO-tienda-mascotas.md`. No bloquea nada, Brey decidió no
+  perseguirlo por ahora.
+
+### Deferred
+- Rating por estrellas en la tarjeta de producto (del mockup de Design) — no hay fuente de datos
+  real; Shopify no tiene reseñas nativas. Queda para evaluar más adelante si se instala una app
+  de reseñas.
+- Quick-add y wishlist al hover en la tarjeta de producto — no se implementó esta sesión.
+
 ## [Unreleased] - 2026-07-31 (tanda 17 — imágenes IA purgadas del catálogo, tarjeta/grid corregidos, bug de Omni mergeado y verificado en producción)
 
 **Actor:** Code, a pedido de Brey ("las tarjetas de catálogo están poco atractivas, ¿se está

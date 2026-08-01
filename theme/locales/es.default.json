@@ -42,7 +42,14 @@
   "collections": {
     "shop": "Comprar",
     "all": "Colecciones",
-    "empty": "No hay productos en esta colección todavía."
+    "empty": "No hay productos en esta colección todavía.",
+    "filter_by_category": "Filtrar por categoría",
+    "all_category": "Todo",
+    "products_count": "productos",
+    "sort_by": "Ordenar por",
+    "sort_featured": "Destacados",
+    "sort_price_asc": "Precio: menor a mayor",
+    "sort_price_desc": "Precio: mayor a menor"
   },
   "cart": {
     "title": "Tu bolsa",

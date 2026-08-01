@@ -10,8 +10,29 @@
 
 <div class="container">
   {%- if collection.products.size > 0 -%}
+    {%- assign product_types = collection.products | map: 'type' | uniq -%}
+    {%- if product_types.size > 0 -%}
+      <div class="filterbar" data-catalog-filter>
+        <div class="filterbar__chips" role="tablist" aria-label="{{ 'collections.filter_by_category' | t }}">
+          <button type="button" class="filterbar__chip filterbar__chip--active" data-filter-chip data-category="all">{{ 'collections.all_category' | t }}</button>
+          {%- for type in product_types -%}
+            {%- unless type == blank -%}
+              <button type="button" class="filterbar__chip" data-filter-chip data-category="{{ type | escape }}">{{ type }}</button>
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+        <div class="filterbar__meta">
+          <span data-filter-count data-label="{{ 'collections.products_count' | t }}">{{ collection.products.size }} {{ 'collections.products_count' | t }}</span>
+          <select class="filterbar__select" aria-label="{{ 'collections.sort_by' | t }}" onchange="location.href=this.value">
+            <option value="{{ collection.url }}?sort_by=manual"{% if collection.sort_by == 'manual' or collection.sort_by == blank %} selected{% endif %}>{{ 'collections.sort_featured' | t }}</option>
+            <option value="{{ collection.url }}?sort_by=price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>{{ 'collections.sort_price_asc' | t }}</option>
+            <option value="{{ collection.url }}?sort_by=price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>{{ 'collections.sort_price_desc' | t }}</option>
+          </select>
+        </div>
+      </div>
+    {%- endif -%}
     {%- paginate collection.products by section.settings.products_per_page -%}
-      <div class="product-grid product-grid--b">
+      <div class="product-grid product-grid--b" data-product-grid>
         {%- for product in collection.products -%}
           {% render 'product-card', product: product %}
         {%- endfor -%}
