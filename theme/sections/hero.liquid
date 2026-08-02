@@ -9,12 +9,22 @@
   </div>
   <div class="hero-art">
     {%- if section.settings.image != blank -%}
+      {%- assign hero_alt = section.settings.image.alt | default: section.settings.heading | strip_html -%}
       <img
         src="{{ section.settings.image | image_url: width: 1400 }}"
-        alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+        srcset="
+          {{ section.settings.image | image_url: width: 640 }} 640w,
+          {{ section.settings.image | image_url: width: 960 }} 960w,
+          {{ section.settings.image | image_url: width: 1200 }} 1200w,
+          {{ section.settings.image | image_url: width: 1400 }} 1400w,
+          {{ section.settings.image | image_url: width: 1800 }} 1800w"
+        sizes="(min-width: 801px) 54vw, 100vw"
+        alt="{{ hero_alt | escape }}"
         width="{{ section.settings.image.width }}"
         height="{{ section.settings.image.height }}"
-        loading="eager">
+        loading="eager"
+        fetchpriority="high"
+        decoding="async">
     {%- endif -%}
   </div>
 </section>

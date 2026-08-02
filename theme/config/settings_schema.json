@@ -4,8 +4,8 @@
     "theme_name": "Nima OVL — Dirección B",
     "theme_version": "2.0.0",
     "theme_author": "Atlas Commerce",
-    "theme_documentation_url": "https://github.com/",
-    "theme_support_url": "https://github.com/"
+    "theme_documentation_url": "https://github.com/francoisbowman-cloud/nima-shopify-theme",
+    "theme_support_url": "https://github.com/francoisbowman-cloud/nima-shopify-theme/issues"
   },
   {
     "name": "Colores",
@@ -22,8 +22,8 @@
   {
     "name": "Tipografía",
     "settings": [
-      { "type": "font_picker", "id": "heading_font", "label": "Fuente de titulares (serif)", "default": "georgia_pro_n4" },
-      { "type": "font_picker", "id": "body_font", "label": "Fuente de cuerpo (sans)", "default": "helvetica_n4" }
+      { "type": "font_picker", "id": "heading_font", "label": "Fuente de titulares (serif)", "default": "libre_baskerville_n4" },
+      { "type": "font_picker", "id": "body_font", "label": "Fuente de cuerpo (sans)", "default": "work_sans_n4" }
     ]
   },
   {

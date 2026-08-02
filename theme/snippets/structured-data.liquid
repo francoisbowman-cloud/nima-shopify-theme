@@ -1,0 +1,60 @@
+{%- comment -%}
+  Datos estructurados mínimos y verificables. No inventa reseñas, puntuaciones,
+  disponibilidad ni políticas: todo se deriva de objetos reales de Shopify.
+{%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ shop.url | json }}
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "url": {{ shop.url | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ shop.url | append: routes.search_url | append: '?q={search_term_string}' | json }},
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+{%- elsif request.page_type == 'product' -%}
+  {%- assign schema_variant = product.selected_or_first_available_variant -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ shop.url | append: product.url | json }},
+      {%- if product.featured_image != blank -%}
+        "image": [{{ product.featured_image | image_url: width: 1600 | prepend: 'https:' | json }}],
+      {%- endif -%}
+      "description": {{ product.description | strip_html | strip_newlines | json }},
+      {%- if schema_variant.sku != blank -%}
+        "sku": {{ schema_variant.sku | json }},
+      {%- endif -%}
+      "brand": {
+        "@type": "Brand",
+        "name": {{ product.vendor | default: shop.name | json }}
+      },
+      "offers": [
+        {%- for variant in product.variants -%}
+          {
+            "@type": "Offer",
+            "url": {{ shop.url | append: variant.url | json }},
+            "priceCurrency": {{ cart.currency.iso_code | default: shop.currency | json }},
+            "price": {{ variant.price | divided_by: 100.0 | json }},
+            "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+            "itemCondition": "https://schema.org/NewCondition"
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}

@@ -3,7 +3,18 @@
     <div class="split--b__side split--b__side--light">
       <div class="split--b__step">01 / UTILITY</div>
       {%- if section.settings.left_image != blank -%}
-        <img class="split--b__img" src="{{ section.settings.left_image | image_url: width: 900 }}" alt="{{ section.settings.left_image.alt | default: section.settings.left_heading | escape }}" width="{{ section.settings.left_image.width }}" height="{{ section.settings.left_image.height }}" loading="lazy">
+        {%- assign left_alt = section.settings.left_image.alt | default: section.settings.left_heading | strip_html -%}
+        {{
+          section.settings.left_image
+          | image_url: width: 1200
+          | image_tag:
+            widths: '480, 720, 900, 1200',
+            sizes: '(min-width: 801px) 50vw, 100vw',
+            loading: 'lazy',
+            decoding: 'async',
+            class: 'split--b__img',
+            alt: left_alt
+        }}
       {%- endif -%}
       <span class="kicker">{{ section.settings.left_kicker }}</span>
       <h2 class="split--b__h">{{ section.settings.left_heading }}</h2>
@@ -15,7 +26,18 @@
     <div class="split--b__divider"></div>
     <div class="split--b__side split--b__side--dark">
       {%- if section.settings.right_image != blank -%}
-        <img class="split--b__bgimg" src="{{ section.settings.right_image | image_url: width: 1200 }}" alt="{{ section.settings.right_image.alt | default: section.settings.right_heading | escape }}" width="{{ section.settings.right_image.width }}" height="{{ section.settings.right_image.height }}" loading="lazy">
+        {%- assign right_alt = section.settings.right_image.alt | default: section.settings.right_heading | strip_html -%}
+        {{
+          section.settings.right_image
+          | image_url: width: 1400
+          | image_tag:
+            widths: '480, 720, 960, 1200, 1400',
+            sizes: '(min-width: 801px) 50vw, 100vw',
+            loading: 'lazy',
+            decoding: 'async',
+            class: 'split--b__bgimg',
+            alt: right_alt
+        }}
       {%- endif -%}
       <div class="split--b__scrim"></div>
       <div class="split--b__content">

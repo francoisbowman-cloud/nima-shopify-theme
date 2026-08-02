@@ -4,7 +4,7 @@
   {%- if collection.description != blank -%}
     <div class="rte muted">{{ collection.description }}</div>
   {%- else -%}
-    <p class="muted collection-sub">Objetos pensados para comer, descansar y cuidar — sin vueltas.</p>
+    <p class="muted collection-sub">{{ 'collections.default_description' | t }}</p>
   {%- endif -%}
 </div>
 
@@ -13,11 +13,11 @@
     {%- assign product_types = collection.products | map: 'type' | uniq -%}
     {%- if product_types.size > 0 -%}
       <div class="filterbar" data-catalog-filter>
-        <div class="filterbar__chips" role="tablist" aria-label="{{ 'collections.filter_by_category' | t }}">
-          <button type="button" class="filterbar__chip filterbar__chip--active" data-filter-chip data-category="all">{{ 'collections.all_category' | t }}</button>
+        <div class="filterbar__chips" role="group" aria-label="{{ 'collections.filter_by_category' | t }}">
+          <button type="button" class="filterbar__chip filterbar__chip--active" data-filter-chip data-category="all" aria-pressed="true">{{ 'collections.all_category' | t }}</button>
           {%- for type in product_types -%}
             {%- unless type == blank -%}
-              <button type="button" class="filterbar__chip" data-filter-chip data-category="{{ type | escape }}">{{ type }}</button>
+              <button type="button" class="filterbar__chip" data-filter-chip data-category="{{ type | escape }}" aria-pressed="false">{{ type }}</button>
             {%- endunless -%}
           {%- endfor -%}
         </div>
@@ -37,6 +37,7 @@
           {% render 'product-card', product: product %}
         {%- endfor -%}
       </div>
+      <p class="empty-state" data-filter-empty hidden>{{ 'collections.no_filter_results' | t }}</p>
       {%- if paginate.pages > 1 -%}
         <nav class="pagination" aria-label="{{ 'general.pagination' | t }}">
           {%- for part in paginate.parts -%}

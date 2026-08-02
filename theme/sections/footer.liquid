@@ -15,6 +15,22 @@
           </ul>
         </div>
       {%- endfor -%}
+      {%- if shop.policies.size > 0 -%}
+        <div>
+          <h4>{{ 'footer.policies' | t }}</h4>
+          <ul>
+            {%- for policy in shop.policies -%}
+              {%- if policy != blank -%}
+                <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+      <span>{{ 'footer.secure_checkout' | t }}</span>
     </div>
   </div>
 </footer>
