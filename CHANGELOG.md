@@ -42,6 +42,46 @@ y priorizó implementar la brecha de filtro/orden en Catálogo).
   de reseñas.
 - Quick-add y wishlist al hover en la tarjeta de producto — no se implementó esta sesión.
 
+### Published
+- **Filtro/orden del Catálogo confirmado en producción** — Brey subió el `.zip` de `theme/`
+  manualmente vía Admin y lo publicó directo (theme MAIN nuevo: `199352680529`, "nima-theme"),
+  sin pasar por el duplicado que Code había preparado vía API. Verificado en vivo en
+  `nimapets.com/collections/all`.
+
+### Fixed
+- **Zip generado con `Compress-Archive` de PowerShell rechazado por Shopify** ("missing template
+  layout/theme.liquid") — `Compress-Archive` escribe las rutas internas con backslash
+  (`layout\theme.liquid`) en vez de `/`, que es lo que exige el formato zip y lo que Shopify
+  busca. Reconstruido a mano con `System.IO.Compression.ZipArchive` de .NET forzando `/` en cada
+  entrada. Nota para el futuro: no usar `Compress-Archive` para zips de temas Shopify.
+
+## [Unreleased] - 2026-08-01 (tanda 19 — auditoría de 2 fotos de catálogo reportadas por Brey, nueva operación `extend-canvas` en Omni)
+
+**Actor:** Code, a pedido de Brey (2 capturas de pantalla: una franja de animales recortada en
+"16Pcs Timothy Hay Treats" y una tarjeta sin foto en "1 Teaspoon Measuring Spoon").
+
+### Investigated
+- **Ninguno de los 2 reportes era un bug de tema.** "16Pcs Timothy Hay Treats": `audit_image`
+  confirmó una foto cruda de proveedor sin tratar (score 79/100, sujeto pegado a los bordes
+  izq/der con 0% de margen, 25% de luces quemadas) — mismo patrón ya documentado en la decisión
+  #37 del `ESTADO`. Las 5 imágenes del producto puntúan 63-79/100, ninguna es utilizable tal
+  cual. "1 Teaspoon Measuring Spoon": confirmado vía Admin API que el producto **no tiene
+  ninguna imagen cargada** — no hay nada que un fix de código pueda arreglar.
+- No se pudo revisar si AutoDS tiene una foto real del producto sin importar — no hay conector
+  de AutoDS disponible en esta sesión. Queda bloqueado.
+
+### Added (en `image-toolkit`, repo separado)
+- **Operación nueva `extend-canvas`**: cierra un gap real del toolkit — `audit_image` ya
+  detectaba el hallazgo `edge-contact` (sujeto pegado al borde) pero no había ninguna operación
+  para corregirlo (`autotrim` solo hace lo opuesto). Recorta al contenido real y lo recentra en
+  un lienzo nuevo dimensionado por `target_occupancy`, con el margen relleno como
+  transparente/color/degradado/imagen. Expuesta en CLI, operación núcleo y tool MCP. 4 tests
+  nuevos, suite completa 403 passed (5 fallas preexistentes no relacionadas).
+  [PR #28](https://github.com/francoisbowman-cloud/image-toolkit/pull/28) abierto, no mergeado.
+- Tratamiento de prueba (remove-bg + replace-bg con `#F3ECE1`, el `--soft` de la marca) aplicado
+  a la foto de Timothy Hay Treats — resultado guardado localmente en Omni, todavía no subido a
+  Shopify. Pendiente de terminarlo con `extend-canvas` una vez mergeado el PR #28.
+
 ## [Unreleased] - 2026-07-31 (tanda 17 — imágenes IA purgadas del catálogo, tarjeta/grid corregidos, bug de Omni mergeado y verificado en producción)
 
 **Actor:** Code, a pedido de Brey ("las tarjetas de catálogo están poco atractivas, ¿se está
