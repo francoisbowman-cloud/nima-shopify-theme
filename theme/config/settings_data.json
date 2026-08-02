@@ -16,8 +16,8 @@
     "color_soft": "#F3ECE1",
     "color_accent": "#8A5A3B",
     "color_accent_soft": "#EDE0D0",
-    "heading_font": "georgia_pro_n4",
-    "body_font": "helvetica_n4",
+    "heading_font": "libre_baskerville_n4",
+    "body_font": "work_sans_n4",
     "page_width": 1180
   },
   "presets": {
@@ -29,8 +29,8 @@
       "color_soft": "#F3ECE1",
       "color_accent": "#8A5A3B",
       "color_accent_soft": "#EDE0D0",
-      "heading_font": "georgia_pro_n4",
-      "body_font": "helvetica_n4",
+      "heading_font": "libre_baskerville_n4",
+      "body_font": "work_sans_n4",
       "page_width": 1180
     }
   }

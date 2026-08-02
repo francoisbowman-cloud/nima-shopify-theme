@@ -17,7 +17,7 @@
           "settings": {
             "number": "01",
             "label": "MISIÓN",
-            "text": "Diseñar objetos de cuidado diario que resuelvan lo esencial sin perder calidez — para las mascotas, y para quienes las cuidan."
+            "text": "Seleccionar objetos de cuidado diario que resuelvan lo esencial sin perder calidez — para las mascotas, y para quienes las cuidan."
           }
         },
         "p2": {
@@ -33,7 +33,7 @@
           "settings": {
             "number": "03",
             "label": "VALORES",
-            "text": "Simplicidad útil, calma compartida y calidad sin exceso — en cada objeto que elegimos hacer."
+            "text": "Simplicidad útil, calma compartida y calidad sin exceso — en cada objeto que elegimos ofrecer."
           }
         },
         "v1": {
@@ -47,21 +47,21 @@
           "type": "value",
           "settings": {
             "heading": "Calma compartida",
-            "text": "Diseñamos para bajar la ansiedad del momento — la de ellos, y la nuestra."
+            "text": "Seleccionamos pensando en bajar la ansiedad del momento — la de ellos, y la nuestra."
           }
         },
         "v3": {
           "type": "value",
           "settings": {
             "heading": "Calidad sin exceso",
-            "text": "Materiales que duran, sin sobreproducir ni encarecer."
+            "text": "Priorizamos materiales funcionales y una relación honesta entre calidad y precio."
           }
         },
         "v4": {
           "type": "value",
           "settings": {
             "heading": "Cuidado real",
-            "text": "Nada aspiracional: objetos probados en el ritmo de todos los días."
+            "text": "Objetos elegidos para resolver necesidades reales del día a día."
           }
         }
       },

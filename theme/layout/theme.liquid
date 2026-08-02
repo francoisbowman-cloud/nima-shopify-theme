@@ -9,6 +9,22 @@
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
 
+    {%- liquid
+      assign meta_description = page_description
+      if meta_description == blank
+        case template.name
+          when 'index'
+            assign meta_description = 'seo.home_description' | t
+          when 'collection'
+            assign meta_description = 'seo.collection_description' | t: collection: collection.title
+          when 'search'
+            assign meta_description = 'seo.search_description' | t
+          else
+            assign meta_description = 'seo.default_description' | t
+        endcase
+      endif
+    -%}
+
     <title>
       {{ page_title }}
       {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
@@ -16,11 +32,16 @@
       {%- unless page_title contains shop.name %} &middot; {{ shop.name }}{% endunless -%}
     </title>
 
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
+    <meta name="description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
+    <meta property="og:site_name" content="{{ shop.name | escape }}">
+    <meta property="og:title" content="{{ page_title | escape }}">
+    <meta property="og:description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:type" content="{% if request.page_type == 'product' %}product{% else %}website{% endif %}">
+    <meta name="twitter:card" content="summary_large_image">
 
     {{ content_for_header }}
+    {% render 'structured-data' %}
 
     {%- style -%}
       :root{

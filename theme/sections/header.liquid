@@ -19,7 +19,7 @@
     <a href="{{ routes.search_url }}" aria-label="{{ 'accessibility.search' | t }}">⌕</a>
     <a href="{{ routes.account_url }}" aria-label="{{ 'accessibility.account' | t }}">♡</a>
     <a href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
-      {{ 'general.cart' | t }} <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+      {{ 'general.cart' | t }} <span class="cart-count" data-cart-count aria-live="polite" aria-atomic="true">{{ cart.item_count }}</span>
     </a>
   </div>
 </header>

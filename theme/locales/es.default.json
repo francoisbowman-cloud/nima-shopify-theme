@@ -34,10 +34,22 @@
   },
   "products": {
     "variants": "Variantes",
+    "color": "Color",
     "add_to_cart": "Añadir al carrito",
     "adding": "Añadiendo…",
     "added": "Añadido ✓",
-    "sold_out": "Agotado"
+    "add_error": "No pudimos añadir este producto. Inténtalo de nuevo.",
+    "sold_out": "Agotado",
+    "in_stock": "Disponible",
+    "bestseller": "Más vendido",
+    "new": "Nuevo",
+    "details": "Detalles del producto",
+    "visual_profile": "Perfil visual",
+    "view_image": "Ver imagen {{ index }}",
+    "image_unavailable": "Imagen no disponible",
+    "image_unavailable_for": "Imagen no disponible para {{ product }}",
+    "shipping_us": "Envíos disponibles en Estados Unidos",
+    "returns_30_days": "Devoluciones en 30 días"
   },
   "collections": {
     "shop": "Comprar",
@@ -49,7 +61,9 @@
     "sort_by": "Ordenar por",
     "sort_featured": "Destacados",
     "sort_price_asc": "Precio: menor a mayor",
-    "sort_price_desc": "Precio: mayor a menor"
+    "sort_price_desc": "Precio: mayor a menor",
+    "default_description": "Objetos pensados para comer, descansar y cuidar — sin vueltas.",
+    "no_filter_results": "No hay productos disponibles en esta categoría."
   },
   "cart": {
     "title": "Tu bolsa",
@@ -70,5 +84,15 @@
     "email": "Correo electrónico",
     "message": "Mensaje",
     "send": "Enviar mensaje"
+  },
+  "footer": {
+    "policies": "Políticas",
+    "secure_checkout": "Checkout seguro alojado por Shopify"
+  },
+  "seo": {
+    "home_description": "Objetos seleccionados para el cuidado diario y el bienestar de las mascotas.",
+    "collection_description": "Compra {{ collection }} en Nima: artículos seleccionados para mascotas con una experiencia clara y confiable.",
+    "search_description": "Busca productos de cuidado diario para mascotas en Nima.",
+    "default_description": "Nima selecciona objetos prácticos para el cuidado y bienestar diario de las mascotas."
   }
 }

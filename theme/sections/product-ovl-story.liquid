@@ -1,6 +1,7 @@
 {%- liquid
   assign e1 = product.metafields.ovl.dominant_emotion
   assign e2 = product.metafields.ovl.emotional_benefit
+  assign visual_profile = product.metafields.ovl.visual_profile
 -%}
 
 <section class="container story story--b">
@@ -9,14 +10,28 @@
   <div class="story-grid story-grid--b">
     <div>
       {%- if section.settings.image != blank -%}
-        <img
-          src="{{ section.settings.image | image_url: width: 1200 }}"
-          alt="{{ section.settings.image.alt | default: product.title | escape }}"
-          width="{{ section.settings.image.width }}"
-          height="{{ section.settings.image.height }}"
-          loading="lazy">
+        {%- assign story_alt = section.settings.image.alt | default: product.title -%}
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag:
+            widths: '480, 720, 960, 1200, 1400',
+            sizes: '(min-width: 801px) 48vw, 100vw',
+            loading: 'lazy',
+            decoding: 'async',
+            alt: story_alt
+        }}
       {%- elsif product.images[1] != blank -%}
-        <img src="{{ product.images[1] | image_url: width: 1200 }}" alt="{{ product.title | escape }}" width="{{ product.images[1].width }}" height="{{ product.images[1].height }}" loading="lazy">
+        {{
+          product.images[1]
+          | image_url: width: 1400
+          | image_tag:
+            widths: '480, 720, 960, 1200, 1400',
+            sizes: '(min-width: 801px) 48vw, 100vw',
+            loading: 'lazy',
+            decoding: 'async',
+            alt: product.title
+        }}
       {%- endif -%}
     </div>
     <div>
@@ -35,6 +50,10 @@
             {%- endif -%}
           {%- endfor -%}
         </div>
+      {%- endif -%}
+
+      {%- if visual_profile != blank -%}
+        <p class="visual-profile"><span>{{ 'products.visual_profile' | t }}:</span> {{ visual_profile }}</p>
       {%- endif -%}
 
       {%- if section.settings.button_label != blank -%}

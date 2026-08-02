@@ -1,7 +1,18 @@
 <div class="container">
   <section class="mag-teaser">
     {%- if section.settings.image != blank -%}
-      <img class="mag-teaser__img" src="{{ section.settings.image | image_url: width: 1600 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}" width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}" loading="lazy">
+      {%- assign teaser_alt = section.settings.image.alt | default: section.settings.heading | strip_html -%}
+      {{
+        section.settings.image
+        | image_url: width: 1800
+        | image_tag:
+          widths: '640, 960, 1200, 1600, 1800',
+          sizes: '(min-width: 1180px) 1180px, 100vw',
+          loading: 'lazy',
+          decoding: 'async',
+          class: 'mag-teaser__img',
+          alt: teaser_alt
+      }}
     {%- endif -%}
     <div class="mag-teaser__scrim"></div>
     <div class="mag-teaser__card">

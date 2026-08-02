@@ -1,12 +1,28 @@
 <section class="container mag-grid">
-  <article class="feature{% if section.settings.feature_image != blank %} feature--image{% endif %}"
-    {% if section.settings.feature_image != blank %}style="background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.55)),url('{{ section.settings.feature_image | image_url: width: 1400 }}')"{% endif %}>
-    <span class="kicker">{{ section.settings.feature_kicker }}</span>
-    <h2>{{ section.settings.feature_heading }}</h2>
-    <p>{{ section.settings.feature_text }}</p>
-    {%- if section.settings.feature_button_label != blank -%}
-      <a class="btn" href="{{ section.settings.feature_button_url | default: '#' }}">{{ section.settings.feature_button_label }} →</a>
+  <article class="feature{% if section.settings.feature_image != blank %} feature--image{% endif %}">
+    {%- if section.settings.feature_image != blank -%}
+      {%- assign feature_alt = section.settings.feature_image.alt | default: section.settings.feature_heading | strip_html -%}
+      {{
+        section.settings.feature_image
+        | image_url: width: 1400
+        | image_tag:
+          widths: '480, 720, 960, 1200, 1400',
+          sizes: '(min-width: 801px) 58vw, 100vw',
+          loading: 'lazy',
+          decoding: 'async',
+          class: 'feature__media',
+          alt: feature_alt
+      }}
+      <span class="mag-media-scrim" aria-hidden="true"></span>
     {%- endif -%}
+    <div class="feature__content">
+      <span class="kicker">{{ section.settings.feature_kicker }}</span>
+      <h2>{{ section.settings.feature_heading }}</h2>
+      <p>{{ section.settings.feature_text }}</p>
+      {%- if section.settings.feature_button_label != blank -%}
+        <a class="btn" href="{{ section.settings.feature_button_url | default: '#' }}">{{ section.settings.feature_button_label }} →</a>
+      {%- endif -%}
+    </div>
   </article>
 
   <aside>
