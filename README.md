@@ -18,6 +18,9 @@ OVL significa **Omni Visual Language**: un sistema de inteligencia visual y narr
 - `skills/omni-visual-language/SKILL.md` — Skill completo para Claude.
 - `prototype/` — prototipo navegable de landing, producto y magazine.
 - `theme/` — theme Shopify Online Store 2.0 que porta el prototipo (ver `theme/README.md`).
+- `tools/` — generadores seguros de propuestas de copy y lotes de imágenes.
+- `omni-presets/` — reglas de proyecto Nima para OMNI Image Toolkit.
+- `docs/08_FLUJO_CATALOGO_Y_OMNI.md` — operación revisable de títulos, descripciones e imágenes.
 - `references/` — referencias visuales y ejemplos.
 
 ## Cómo abrir el prototipo

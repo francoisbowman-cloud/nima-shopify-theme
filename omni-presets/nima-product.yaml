@@ -1,0 +1,33 @@
+id: nima-product
+version: "1.0.0"
+schema_version: "1.0.0"
+description: Tratamiento de catálogo Nima sobre las reglas neutrales y de productos para mascotas de OMNI.
+scope: project
+status: active
+extends:
+  - id: catalog-neutral
+    version: "1.0.0"
+  - id: pet-product
+    version: "1.0.0"
+omni_compat: ">=1.0.0"
+operations: []
+parameters:
+  aspect-normalize.target_ratio: "1:1"
+limits: {}
+quality_gates:
+  outcome_default: review
+derivatives:
+  catalog:
+    max_dimension_px: 2000
+    format: webp
+  square:
+    max_dimension_px: 1600
+    format: webp
+review_policy:
+  require_review_on_soft_silhouette: true
+storage_policy:
+  namespace: nima/products
+publish_policy:
+  replace_existing_media: false
+  publish_channel: nima-catalog
+  forbid_adding_animals_or_people: true
