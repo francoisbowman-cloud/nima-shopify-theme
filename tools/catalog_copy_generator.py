@@ -22,6 +22,7 @@ TITLE_NOISE = (
 )
 SPACE_RE = re.compile(r"\s+")
 SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
+BLOCK_TAGS = {"p", "li", "h1", "h2", "h3", "h4", "br"}
 
 
 class _TextExtractor(HTMLParser):
@@ -31,6 +32,20 @@ class _TextExtractor(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         self.parts.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in BLOCK_TAGS:
+            self.parts.append(". ")
+
+
+def truncate_words(value: str, limit: int) -> str:
+    """Shorten text without cutting a word or leaving trailing punctuation."""
+
+    value = SPACE_RE.sub(" ", value).strip()
+    if len(value) <= limit:
+        return value.rstrip(" ,;:-|")
+    shortened = value[: limit + 1].rsplit(" ", 1)[0]
+    return shortened.rstrip(" ,;:-|")
 
 
 def html_to_text(value: str) -> str:
@@ -43,9 +58,10 @@ def clean_title(value: str) -> str:
     title = html_to_text(value)
     for pattern in TITLE_NOISE:
         title = re.sub(pattern, "", title, flags=re.IGNORECASE)
-    title = re.sub(r"\s*[-–—,:;]+\s*$", "", title)
+    title = title.split("|", 1)[0]
+    title = re.sub(r"^[\s'\"-]+|\s*[-–—,:;]+\s*$", "", title)
     title = SPACE_RE.sub(" ", title).strip()
-    return title[:70].rstrip()
+    return truncate_words(title, 70)
 
 
 def evidence_sentences(body_html: str, limit: int = 4) -> list[str]:
@@ -59,7 +75,7 @@ def evidence_sentences(body_html: str, limit: int = 4) -> list[str]:
             continue
         if re.search(r"\b(?:guaranteed|best|perfect|miracle|cure|100%)\b", candidate, re.I):
             continue
-        sentences.append(candidate[:240].rstrip())
+        sentences.append(truncate_words(candidate, 240))
         if len(sentences) == limit:
             break
     return sentences
@@ -88,7 +104,7 @@ def seo_description(title: str, body_html: str) -> str:
     if not facts:
         return ""
     value = f"{title}: {facts[0]}"
-    return value[:155].rstrip(" ,;:-")
+    return truncate_words(value, 155)
 
 
 def proposal_for(row: dict[str, str]) -> dict[str, str]:
