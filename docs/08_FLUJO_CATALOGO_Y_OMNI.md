@@ -20,7 +20,15 @@ El generador elimina ruido evidente de proveedores, reorganiza únicamente frase
 
 ## 2. Imágenes con OMNI
 
-Descargar las imágenes originales autorizadas a una carpeta local. Preparar el lote:
+Se puede preparar un piloto directamente desde la exportación de Shopify
+(una imagen principal por producto, sin descargar ni modificar la fuente):
+
+```bash
+python tools/prepare_omni_batch.py products_export.csv \
+  --primary-only --output build/omni-primary-batch.json
+```
+
+Para un lote basado en archivos ya descargados, usar una carpeta local:
 
 ```bash
 python tools/prepare_omni_batch.py build/source-images --output build/omni-batch.json
