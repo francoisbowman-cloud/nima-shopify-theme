@@ -3,6 +3,7 @@
   disponibilidad ni políticas: todo se deriva de objetos reales de Shopify.
 {%- endcomment -%}
 {%- if request.page_type == 'index' -%}
+  {%- capture schema_search_target -%}{{ shop.url }}{{ routes.search_url }}?q={search_term_string}{%- endcapture -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -19,7 +20,7 @@
       "url": {{ shop.url | json }},
       "potentialAction": {
         "@type": "SearchAction",
-        "target": {{ shop.url | append: routes.search_url | append: '?q={search_term_string}' | json }},
+        "target": {{ schema_search_target | json }},
         "query-input": "required name=search_term_string"
       }
     }
