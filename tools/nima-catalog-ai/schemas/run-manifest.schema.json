@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "run-manifest.schema.json",
+  "title": "RunManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handle",
+    "run_started_at",
+    "run_finished_at",
+    "dry_run",
+    "input_hash",
+    "brief_hash",
+    "config",
+    "outputs",
+    "stop_reason"
+  ],
+  "properties": {
+    "handle": {"type": "string", "minLength": 1},
+    "run_started_at": {"type": "string"},
+    "run_finished_at": {"type": ["string", "null"]},
+    "dry_run": {"type": "boolean"},
+    "input_hash": {"type": "string"},
+    "overrides_hash": {"type": "string"},
+    "combined_hash": {"type": "string"},
+    "brief_hash": {"type": "string"},
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_attempts", "max_cost_usd", "outputs_requested", "model"],
+      "properties": {
+        "max_attempts": {"type": "integer", "minimum": 1, "maximum": 3},
+        "max_cost_usd": {"type": "number", "minimum": 0},
+        "outputs_requested": {"type": "array", "items": {"type": "string"}},
+        "model": {"type": "string"}
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "state", "attempts"],
+        "properties": {
+          "type": {"type": "string", "enum": ["refined", "lifestyle", "in-use"]},
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "generated",
+              "approved_candidate",
+              "review",
+              "rejected",
+              "omitted",
+              "failed"
+            ]
+          },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "attempt",
+                "model",
+                "parameters",
+                "request_id",
+                "date",
+                "duration_seconds",
+                "usage",
+                "estimated_cost_usd",
+                "diagnostics"
+              ],
+              "properties": {
+                "attempt": {"type": "integer", "minimum": 1},
+                "model": {"type": "string"},
+                "parameters": {"type": "object"},
+                "request_id": {"type": ["string", "null"]},
+                "date": {"type": "string"},
+                "duration_seconds": {"type": "number"},
+                "usage": {"type": ["object", "null"]},
+                "estimated_cost_usd": {"type": "number"},
+                "diagnostics": {"type": ["object", "null"]}
+              }
+            }
+          }
+        }
+      }
+    },
+    "stop_reason": {"type": ["string", "null"]}
+  }
+}

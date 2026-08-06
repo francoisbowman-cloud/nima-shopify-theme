@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "product-overrides.schema.json",
+  "title": "ProductOverrides",
+  "description": "Optional, human-authored corrections for one product. Lives at <input_dir>/product-overrides.json, next to manifest.json. Combined with product-analysis.json at generation-plan build time — never written into product-analysis.json itself, so the model's original analysis stays intact and auditable.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "wordmark_exact_text": {
+      "type": "string",
+      "description": "Exact text of any embossed/printed wordmark or logo text, confirmed by a human against the reference photos."
+    },
+    "part_counts": {
+      "type": "object",
+      "description": "Confirmed exact counts of small critical parts, e.g. {\"paw_tab_toe_pads\": 4}.",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "confirmed_colors": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Confirmed exact color names/values for the targeted variant."
+    },
+    "functional_constraints": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Human-confirmed functional rules (e.g. correct contact surface, orientation)."
+    },
+    "human_corrections": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Free-form corrections found by a human reviewing a rejected candidate — e.g. \"wordmark misspelled 'Hoki Found' in v1, must read 'Moki Found'\"."
+    }
+  }
+}

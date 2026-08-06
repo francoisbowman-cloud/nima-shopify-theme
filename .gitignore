@@ -5,3 +5,10 @@ node_modules/
 .shopify/
 __pycache__/
 *.py[cod]
+
+# nima-catalog-ai (tools/nima-catalog-ai)
+.env
+tools/nima-catalog-ai/.env
+tools/nima-catalog-ai/.venv/
+tools/nima-catalog-ai/output/
+.pytest_cache/

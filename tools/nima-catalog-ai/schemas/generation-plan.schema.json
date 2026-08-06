@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "generation-plan.schema.json",
+  "title": "GenerationPlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["handle", "outputs"],
+  "properties": {
+    "handle": {"type": "string", "minLength": 1},
+    "outputs": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "primary_reference",
+          "secondary_references",
+          "goal",
+          "composition",
+          "background",
+          "lighting",
+          "aspect_ratio",
+          "mandatory_rules",
+          "risks",
+          "rejection_criteria",
+          "strategy",
+          "mask_strategy",
+          "framing_rules"
+        ],
+        "properties": {
+          "type": {"type": "string", "enum": ["refined", "lifestyle", "in-use"]},
+          "primary_reference": {"type": "string", "minLength": 1},
+          "secondary_references": {"type": "array", "items": {"type": "string"}},
+          "goal": {"type": "string", "minLength": 1},
+          "composition": {"type": "string"},
+          "background": {"type": "string"},
+          "lighting": {"type": "string"},
+          "aspect_ratio": {"type": "string"},
+          "mandatory_rules": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "risks": {"type": "array", "items": {"type": "string"}},
+          "rejection_criteria": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "strategy": {"type": "string", "enum": ["full-generate", "product-preserving"]},
+          "mask_strategy": {"type": "string", "enum": ["none", "background-only"]},
+          "framing_rules": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target_occupancy_pct_min",
+              "target_occupancy_pct_max",
+              "margins",
+              "centering",
+              "card_aspect_ratio"
+            ],
+            "properties": {
+              "target_occupancy_pct_min": {"type": "number", "minimum": 0, "maximum": 100},
+              "target_occupancy_pct_max": {"type": "number", "minimum": 0, "maximum": 100},
+              "margins": {"type": "string"},
+              "centering": {"type": "string"},
+              "card_aspect_ratio": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}
