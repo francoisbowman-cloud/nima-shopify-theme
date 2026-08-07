@@ -11,4 +11,6 @@ __pycache__/
 tools/nima-catalog-ai/.env
 tools/nima-catalog-ai/.venv/
 tools/nima-catalog-ai/output/
+tools/nima-catalog-ai/demo-output/
+tools/nima-catalog-ai/catalog-review/
 .pytest_cache/

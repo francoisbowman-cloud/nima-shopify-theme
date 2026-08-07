@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "background-request.schema.json",
+  "title": "BackgroundRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "environment",
+    "lighting",
+    "camera",
+    "reserved_zone",
+    "negative_objects",
+    "interaction_constraints",
+    "canvas"
+  ],
+  "properties": {
+    "environment": {"type": "string", "minLength": 1},
+    "lighting": {"type": "string", "minLength": 1},
+    "camera": {"type": "string", "minLength": 1},
+    "reserved_zone": {"type": "string", "minLength": 1},
+    "negative_objects": {"type": "array", "items": {"type": "string"}},
+    "interaction_constraints": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

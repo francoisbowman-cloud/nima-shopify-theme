@@ -202,3 +202,163 @@ Confirmed against the two real generation runs on `waterproof-pet-feeding-mats-.
 
 Shopify upload/reorder/delete, AutoDS, theme changes, prices/variants/inventory, the rest of
 the catalog beyond one product at a time, OMNI's general architecture, a database, a dashboard.
+
+## Nima Catalog AI v0.2 — Protected Lifestyle Composition
+
+v0.2 lives alongside v0.1 in the same `src/` tree (v0.1's own modules and tests are
+untouched — see "Known limitations of v0.1" above, this section exists to fix exactly
+those points). It does not replace `src/cli.py`; it is a second, independent pipeline
+entered via `src/composition_pipeline.py` / `src/composition_batch.py` /
+`src/demo_v02.py`.
+
+### Why: what v0.1's `lifestyle` output actually got wrong
+
+v0.1's `lifestyle`/`in-use` outputs ask an image model to redraw the entire scene,
+product included, from a hardened text prompt. Confirmed failures from the real run
+(see above): the product's scale drifted (~25–30" generated vs. 19" real), and a
+supposedly passive scene generated active use instead. Both failures are inherent to
+asking a generative model to reproduce a specific object's exact geometry from
+description alone — no amount of prompt hardening closes that gap completely.
+
+### What changed
+
+```
+Before (v0.1 lifestyle/in-use):
+    AI regenerates product + AI regenerates scenario, together, from text
+
+Now (v0.2):
+    real product pixels (segmented from the source photo)
+    + AI-generated scenario (product-free)
+    + deterministic local compositor
+    = final image
+```
+
+The product is never redrawn. The only thing an image model is asked to produce is the
+*environment* — with an explicitly reserved empty region where the real product gets
+pasted in afterward, locally, by `src/compositor.py`.
+
+### Pipeline
+
+```
+source photo
+  -> segmentation (src/segmentation.py)         product-cutout.png, product-mask.png,
+                                                  segmentation-metadata.json
+  -> placement (src/placement.py)                placement-spec.json — deterministic
+                                                  bbox/occupancy math, no API call
+  -> scene (src/scene.py)                        scene-spec.json — lifestyle (interaction_level=0)
+                                                  vs in-use (>=1), explicit and mutually exclusive
+  -> background request (src/background.py)      structured prompt asking ONLY for the
+                                                  environment, product's zone reserved empty
+  -> background provider (src/background_provider.py)
+                                                  BackgroundProvider interface; v0.2 only
+                                                  ever runs FixtureBackgroundProvider
+  -> compositor (src/compositor.py)               pastes the real cutout into the
+                                                  background at the planned bbox — a single
+                                                  uniform (never distorting) scale, no redraw
+  -> shadow (src/shadow.py)                       soft offset+blurred contact shadow under
+                                                  the product, first-pass grounding only
+  -> composition gate (src/composition_gates.py)  deterministic geometry + scene checks
+  -> [existing Fidelity Gate, unchanged]          visual-identity authority, still last word
+  -> review package (src/composition_review.py)   composition + generation_strategy fields
+```
+
+Orchestrated end to end by `src/composition_pipeline.run_composition_for_image()` for a
+single image, and `src/composition_batch.run_batch()` for a product list (Block 14 —
+writes `catalog-review/<handle>/` + `catalog-composition-summary.json`).
+
+### Segmentation
+
+`src/segmentation.py` exposes one function, `segment_product()`, with a pluggable
+`backend` argument. v0.2 ships and uses only `"heuristic"` — it reuses v0.1's
+`masking.py` background-color + largest-connected-component approach, so it inherits
+the same known limitation (only reliable when the product is the frame's largest
+distinct-colored region). `register_backend()` is the extension point for `rembg`, SAM,
+or a manually supplied mask later — no caller of `segment_product()` needs to change
+when that happens.
+
+### Interaction model — why lifestyle can never become in-use silently
+
+`src/scene.py` defines `interaction_level` 0-3 (passive presence / proximity / active
+use / close manipulation) and enforces at construction time that
+`scene_type="lifestyle"` **requires** `interaction_level=0` and all three
+`*_contact_allowed` flags `False` — the exact combination that failed in v0.1's real
+run (a "passive" lifestyle scene that generated a dog drinking) is now a
+`SceneSpecError` at spec-build time, not just a Fidelity Gate rejection after the fact.
+v0.2's compositor only ever produces `interaction_level=0` scenes
+(`scene.MAX_SUPPORTED_INTERACTION_LEVEL = 0`); levels 1-3 are modeled in the schema so a
+future in-use-composition version doesn't need a schema break, but nothing in v0.2 can
+produce or approve one.
+
+### Composition Gate vs. Fidelity Gate
+
+```
+Composition Gate  ->  Fidelity Gate  ->  Human Review
+(deterministic,        (unchanged from       (unchanged —
+ no model call)         v0.1, model call)      still mandatory)
+```
+
+The Composition Gate (`src/composition_gates.py`) catches what's computable from the
+specs alone and needs no judgment call: product outside the canvas, safe-zone
+violation, non-uniform aspect-ratio distortion, occupancy outside the plausible
+0.05-0.60 range, or (for a `bottom-center` anchor) a product not resting on the ground
+plane. The Fidelity Gate remains the sole authority on visual identity — whether the
+composited result still *looks like* the real product — and is untouched by v0.2.
+
+### Review package additions
+
+`src/composition_review.py` adds a `composition` block (`occupancy`, `clipping`,
+`interaction_level`, `scale_status`, `placement_status`) and a `generation_strategy` /
+`generation_kind` field to each candidate's review entry. `generation_kind` is always
+one of `REFINED` / `LIFESTYLE COMPOSITE` / `IN-USE` — a candidate built by the v0.2
+compositor is always labeled `generation_strategy: "protected-product-composition"`, so
+a reviewer never has to guess which pipeline produced a given image.
+
+### Visual debug output — the point of v0.2 you can actually look at
+
+Every composition run writes a `visual-debug/` folder (`01-source.jpg` through
+`08-gate-overlay.png`) plus a single `composition-contact-sheet.jpg` (SOURCE / CUTOUT /
+BACKGROUND / PLACEMENT / FINAL / GATE RESULT, labeled). This is deliberately not
+optional or test-only — see `src/visual_debug.py` and `src/demo_v02.py`.
+
+### Offline demo
+
+```bash
+cd tools/nima-catalog-ai
+python -m src.demo_v02              # writes to tools/nima-catalog-ai/demo-output/ (gitignored)
+python -m src.demo_v02 --out /tmp/x # or any other output path
+```
+
+Builds a synthetic product photo and a synthetic background fixture in-process (no
+dependency on `nima-catalog-images/`, which is untracked, or on v0.1's `output/`, which
+only exists after a real v0.1 run) and runs the full pipeline above end to end. No
+network call happens anywhere in this path — `demo_v02.py` only ever constructs a
+`FixtureBackgroundProvider`.
+
+### Future API wiring (interface only — not connected)
+
+`src/background_provider.py` defines the `BackgroundProvider` seam: anything with a
+`generate_background(request) -> Image` method. `OpenAIBackgroundProvider` exists to
+prove the interface fits a real backend, but its `generate_background()` always raises
+`NotImplementedError` — it is inert by construction, not just by convention, so it
+cannot be accidentally wired into an offline run or test. Connecting it for real is
+future work requiring explicit authorization (see the v0.2 phase's safety rules) —
+not part of this phase.
+
+### Known limitations of v0.2
+
+- Segmentation is the same heuristic as v0.1's masking — a busy, low-contrast, or
+  multi-object source photo can still produce a poor cutout. `edge_confidence` in
+  `segmentation-metadata.json` is a rough proxy, not a real segmentation confidence
+  score; it's not wired to any automatic reject.
+- The contact shadow is a single soft blob (offset + Gaussian blur), not a physically
+  modeled shadow — no perspective, no light-direction awareness. Good enough to avoid a
+  "pasted-on" look at a glance, not a substitute for real relighting.
+- No 3D perspective: the compositor places the product at a single anchor
+  (`bottom-center` or `center`) with a flat ground plane — a background with strong
+  perspective (e.g. a hallway shot) can still look geometrically off even when every
+  Composition Gate check passes.
+- In-use composition (interaction_level >= 1) is modeled in the schema but not
+  implemented — `scene.MAX_SUPPORTED_INTERACTION_LEVEL = 0` is the hard ceiling for
+  this version.
+- `OpenAIBackgroundProvider` has never been exercised against a real background — its
+  first real call is explicitly deferred (see "Next step" in the v0.2 final report).
