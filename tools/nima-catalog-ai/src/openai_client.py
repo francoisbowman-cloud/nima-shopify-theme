@@ -66,6 +66,34 @@ class OpenAIClient:
         )
         return _extract_json_output(response)
 
+    def generate_image(
+        self,
+        *,
+        model: str,
+        prompt: str,
+        size: str,
+        quality: str,
+    ) -> ImageEditResult:
+        """Text-to-image generation (images.generate) — no reference image, no
+        mask, no product involved. Used only for v0.2 background generation:
+        the caller is responsible for never asking this for anything but an
+        empty environment (see background.py's reserved-zone contract)."""
+        started = time.monotonic()
+        response = self._client.images.generate(model=model, prompt=prompt, size=size, quality=quality, n=1)
+        duration = time.monotonic() - started
+        b64 = response.data[0].b64_json
+        usage = None
+        if getattr(response, "usage", None) is not None:
+            usage = response.usage.model_dump() if hasattr(response.usage, "model_dump") else dict(response.usage)
+        request_id = getattr(response, "id", None) or getattr(response, "_request_id", None)
+        return ImageEditResult(
+            image_bytes=base64.b64decode(b64),
+            request_id=request_id,
+            usage=usage,
+            model=model,
+            duration_seconds=duration,
+        )
+
     def edit_image(
         self,
         *,

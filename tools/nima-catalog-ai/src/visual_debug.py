@@ -79,7 +79,17 @@ def build_step_outputs(
 
 
 def _thumb(img: Image.Image) -> Image.Image:
-    img = img.convert("RGB").copy()
+    if img.mode == "RGBA":
+        # Composite onto white first — a bare .convert("RGB") on RGBA just
+        # drops the alpha channel and lets whatever RGB values sit under a
+        # transparent pixel show through (e.g. a segmented-out background
+        # region reappearing in a cutout's thumbnail even though it was
+        # correctly made transparent).
+        opaque = Image.new("RGB", img.size, "white")
+        opaque.paste(img, (0, 0), img)
+        img = opaque
+    else:
+        img = img.convert("RGB").copy()
     img.thumbnail(THUMB_SIZE)
     canvas = Image.new("RGB", THUMB_SIZE, "white")
     offset = ((THUMB_SIZE[0] - img.width) // 2, (THUMB_SIZE[1] - img.height) // 2)
