@@ -3,108 +3,111 @@ Pegar como primer mensaje en la sesión nueva de Code, junto con
 `ESTADO-tienda-mascotas.md` (ya actualizado en el repo, no hace falta
 adjuntarlo aparte si la sesión abre con acceso a la carpeta).
 
-## Estado al cierre de esta sesión (23 de julio de 2026)
+## Estado al cierre de esta sesión (6 de agosto de 2026)
 
 Repo: `C:\Users\user\Claude\Projects\OVL_PetDrop`, sincronizado con
-`github.com/francoisbowman-cloud/nima-shopify-theme` (privado), rama
-`main`, working tree limpio. Último commit: `e250563`.
+`github.com/francoisbowman-cloud/nima-shopify-theme` (privado). Rama
+`feat/nima-catalog-api-pipeline-v01`, con el commit `ccc4b6b` del
+pipeline de IA — **pusheada a `origin` al cierre de esta sesión, no
+mergeada a `main`**. Directorio sin trackear: `nima-catalog-images/`
+(203 imágenes + índices, ~150MB — sigue sin decidirse si se commitea o
+se deja fuera del repo vía `.gitignore`).
 
 ### Lo más importante para entender antes de tocar nada
 **El theme publicado (MAIN) en Shopify puede divergir del código de este
-repo.** Ya pasó una vez: Design reemplazó el MAIN por un theme nuevo
-("Nima — Dirección B") sin avisar, y este repo seguía trackeando el
-theme viejo (`PetDrop_OVL`), que ya no existía. Antes de auditar o
-tocar cualquier archivo de `theme/`, verificar contra la API real cuál
-es el theme `MAIN` actual y confirmar que coincide con lo que dice
-`ESTADO-tienda-mascotas.md`. El procedimiento exacto (queries GraphQL
-de solo lectura, cómo resincronizar, cómo aplicar fixes sin romper el
-theme publicado) está documentado en `CLAUDE.md`, sección "⚠️ El theme
-publicado puede divergir del repo".
+repo.** Antes de auditar o tocar cualquier archivo de `theme/`, verificar
+contra la API real cuál es el theme `MAIN` actual (procedimiento en
+`CLAUDE.md`, sección "⚠️ El theme publicado puede divergir del repo").
+
+### Punto de entrada más reciente: pipeline de imágenes por API de OpenAI — cerrado técnicamente
+**Implementado, testeado (49 tests) y validado con dos corridas reales ($0.09 USD de gasto
+total) sobre `waterproof-pet-feeding-mats-...`.** Ver decisión #77 de
+`ESTADO-tienda-mascotas.md` para el detalle completo. Resumen de lo que importa para retomar:
+
+- **`refined`**: validado técnicamente (llegó a `review`, score 92, usando una máscara de
+  preservación de píxeles + recorte determinista). **No publicado en Shopify** — el encuadre
+  quedó con ocupación 59.8%, por debajo del rango objetivo 75-88%, porque la foto fuente no
+  tiene margen lateral suficiente (no es un bug del código, es un límite de la foto original).
+  Brey decidió no reintentar con la misma fuente.
+- **`lifestyle`**: rechazado (escala del mat incorrecta, perro en interacción activa en vez de
+  presencia pasiva). Brey decidió no reintentar con el mismo método — es un límite conocido de
+  v0.1 (sin máscara posible cuando cambia toda la escena, el endurecimiento de prompt solo no
+  alcanza para controlar escala/tipo de interacción). Documentado en
+  `tools/nima-catalog-ai/README.md`.
+- **No consumir más API de OpenAI en esta rama** — instrucción explícita de Brey al cierre.
+- Nada tocado en Shopify. Rama sin mergear a `main` — pendiente autorización explícita para
+  cualquiera de las dos cosas (merge, o retomar con presupuesto nuevo).
 
 ### Completado en esta sesión
-1. **Repo movido a GitHub** (privado) + `gh` CLI instalado y
-   autenticado en la máquina de Brey, para que ChatGPT/Codex Cloud
-   pueda trabajar sobre el código y entregar PRs.
-2. **`AGENTS.md` creado** — equivalente de `CLAUDE.md` para Codex
-   Cloud, con el protocolo v2 completo embebido (Codex no puede leer
-   archivos fuera de este repo).
-3. **Corrección ortográfica "Atlas Comerce" → "Atlas Commerce"**
-   aplicada en todo el repo y a nivel sistema (archivo renombrado a
-   `ESTADO-atlas-commerce.md` en el Project Atlas E-Commerce,
-   referencias corregidas en `ESTADO-aromia.md`, protocolo actualizado
-   a v2). Pendiente solo el renombrado del Project de claude.ai en la
-   UI (acción manual, no de código).
-4. **Detectado y resincronizado: el theme publicado ya no era
-   `PetDrop_OVL`.** Design lo había reemplazado por "Nima — Dirección
-   B" (ID `198916800593`), con paleta cálida propia, páginas nuevas
-   (Sobre Nima, Contacto) y una sección de teaser de Magazine. Se leyó
-   el theme real vía Admin GraphQL API (`theme.files`) y se
-   sobreescribió `theme/` en el repo para reflejar la realidad.
-5. **Auditoría técnica completa de "Nima — Dirección B"**, en orden de
-   prioridad (rompe-compra → responsive → navegación → consistencia
-   visual → limpieza). Bugs reales encontrados y corregidos:
-   - Selector de color roto en productos con Color + otra opción (Dog
-     Leash 17 variantes, Portable Pet Grooming Hammock 9 variantes) —
-     mostraba círculos duplicados sin indicar talla.
-   - Galería de producto sin forma de volver a la imagen principal.
-   - Formulario de contacto en inglés mostraba las claves de
-     traducción sin resolver (faltaba el bloque `contact` en
-     `en.json`).
-   - Logo del header con `height="auto"` inválido (regresión) + 3
-     imágenes nuevas sin `width`/`height`.
-   - Grid del blog no colapsaba a 1 columna en mobile (un `style`
-     inline pisaba el breakpoint responsive).
-   - Swatches/pills sin estado visual para "sin stock".
-   - Consolidado el CSS duplicado de tarjetas (Catálogo/Búsqueda/
-     Colecciones ahora usan el mismo patrón).
-   - Colores hardcodeados que coincidían con la paleta (footer,
-     botones, paneles oscuros) migrados a variables de tema — antes
-     no seguían el color elegido en el Customizer.
-   - Limpieza: metadata del theme desactualizada, copy con datos
-     incorrectos.
-   - `shopify theme check`: 0 errores (antes 7), 2 warnings ya
-     conocidos (fuentes deprecated, sin urgencia).
-6. **Los fixes se subieron a un theme duplicado sin publicar**
-   ("Nima — Dirección B (Auditoría Code)", ID `198934265937`) — Shopify
-   bloquea escritura por API sobre el theme MAIN. Todo documentado en
-   `CHANGELOG.md` (tanda 9) y `ESTADO-tienda-mascotas.md` (decisiones
-   #31-33, sección 9 con la checklist de qué revisar).
+1. **`tools/nima-catalog-ai/` implementado de punta a punta**: análisis de producto (Fase 1,
+   `gpt-5.6-sol`), plan de generación determinístico (Fase 2), generación de imagen
+   (`gpt-image-2` vía `images.edit`, Fase 3), fidelity gate automático (Fase 4, nunca aprueba
+   Shopify ni `in-use` automáticamente), control de coste/intentos (Fase 5), paquete de
+   revisión local (Fase 6). CLI: `python -m src.cli --input <carpeta> --outputs
+   refined,lifestyle,in-use [--dry-run] [--yes] [--force]`.
+2. **Estrategia `product-preserving` agregada a pedido de Brey tras la primera corrida real**
+   (que salió `reject` en ambas salidas): máscara de preservación a nivel de píxel para
+   `refined` (`src/masking.py`, heurística de color de fondo, sin ML), recorte determinista
+   hacia el rango de ocupación 75-88% (verificado contra `theme/assets/base.css:221`, sin
+   nunca cortar el producto), endurecimiento de reglas de prompt para `lifestyle`/`in-use`
+   (sin máscara — la escena cambia por completo).
+3. **`product-overrides.json` agregado**: capa separada para correcciones humanas verificadas
+   (texto exacto de wordmark, conteos de piezas) que se combina con el análisis automático
+   solo al construir el plan — nunca edita `product-analysis.json`. Caché en dos niveles
+   (overrides invalidan el plan/outputs, no fuerzan un nuevo análisis).
+4. **49 tests**, todos con mocks — ninguna llamada real a la API en los tests.
+5. **Dos corridas reales autorizadas por Brey** (ver arriba) — $0.09 USD total, dentro de los
+   topes de presupuesto autorizados en cada corrida ($1 c/u).
+6. **Commit `ccc4b6b`** en `feat/nima-catalog-api-pipeline-v01` — sin mergear a `main`.
 
 ### Pendiente exacto al momento de migrar
-1. **Brey debe previsualizar el duplicado `198934265937` en Shopify y
-   publicarlo manualmente** si aprueba los cambios (Online Store →
-   Themes → ese theme → Publicar). Checklist de qué mirar:
-   `ESTADO-tienda-mascotas.md`, sección 9.
-2. Conectar Codex Cloud (ChatGPT) al repo de GitHub — primer uso, sin
-   hacer todavía.
-3. Confirmar si existen las "adendas v3-v5" del protocolo
-   (`PROTOCOLO-adendas-completas.md`) mencionadas en un mensaje de
-   Chat — no se encontraron en ninguna carpeta de proyecto verificada.
-   Si no existen, aclarar de dónde salió la referencia.
-4. Verificar en el checkout real que el nombre visible al cliente sea
-   "Nima" (no "Atlas Commerce" ni "PetDrop").
-5. Confirmar si Brey corrigió la configuración de moneda en AutoDS
-   (causa raíz de un bug de precios DOP→USD que se repitió más de una
-   vez en el catálogo).
-6. Quitar la contraseña de la tienda para abrirla al público —
-   decisión de timing de Brey, no técnica.
-7. Renombrar el Project de claude.ai "Atlas-Comerce-Lab" en la UI
-   (única parte manual que falta de la corrección ortográfica).
+1. **Brey decide próximo paso del pipeline de IA**: mergear la rama a `main`, retomar con
+   presupuesto nuevo (mejorar `lifestyle`, o probar `refined` con una foto fuente con más
+   margen lateral), o dejarlo en pausa. Ninguna imagen de este pipeline está lista para
+   publicarse en Shopify todavía.
+2. **21 de los 24 productos con imágenes siguen sin pasar por ningún pipeline visual**
+   (3 de `pilot-01` tienen imágenes IA aprobadas en Shopify vía el flujo manual con ChatGPT;
+   el producto de prueba del pipeline de API, `waterproof-pet-feeding-mats-...`, tiene
+   candidatos generados pero no publicados) — no avanzar sobre el resto del catálogo sin que
+   Brey lo pida explícitamente.
+3. **5 productos sin ninguna imagen en el CSV** (Premium Cat Litter Mat, Dog Clothes Puppy
+   Shirts, Dog Birthday Hat, Dog Water Bottle, Dog Car Seat Cover) necesitan una fuente de
+   imagen distinta antes de poder trabajarse — no resuelto, no bloqueante para el resto.
+4. **Decidir qué hacer con `nima-catalog-images/` en git** (150MB sin trackear) — commitear,
+   mover a un remote separado, o `.gitignore`. No decidido esta sesión.
+5. Sigue pendiente de sesiones anteriores (no tocado esta sesión, ver
+   `ESTADO-tienda-mascotas.md` sección 7/8 para el detalle completo): publicar el duplicado de
+   theme `199238025297` ("Nima — Evolucion fundamentos"), tratamiento de las 5 fotos de AutoDS
+   con marca de competidor (decisión #37/#49, en pausa), conectar Codex Cloud al repo,
+   confirmar moneda en AutoDS, decidir cuándo quitar la contraseña del sitio.
 
 ## Reglas de esta sesión, ya en memoria (no hace falta repetirlas)
 - **Verificar contra el repo/API real antes de reportar algo como
-  pendiente o roto** — no asumir desde memoria de sesión ni desde una
-  copia vieja de un documento (regla del protocolo v2, sección 8).
+  pendiente o roto** — no asumir desde memoria de sesión.
 - **Nunca escribir directo sobre el theme MAIN/publicado vía API** —
   Shopify lo bloquea. Flujo seguro: duplicar → aplicar fixes en el
   duplicado → Brey revisa y publica manualmente.
-- `shopify theme pull`/`push` no son viables en este entorno (requieren
-  login OAuth interactivo) — todo lo que Code hace contra Shopify es
-  vía Admin GraphQL API (lectura y, en duplicados, escritura).
+- **Nunca mutar Shopify (subir imágenes, reordenar, etc.) sin
+  autorización explícita y punto por punto** — el flujo de `pilot-01`
+  (revisión humana → confirmación → ejecución → validación → registro
+  de rollback) es el patrón a repetir para cualquier escritura futura
+  a Shopify, no solo para imágenes.
+- **No dar por hecho nombres de modelo/endpoints de APIs externas
+  (OpenAI, etc.) desde memoria de entrenamiento** — verificar contra
+  documentación oficial vigente antes de programar, con fecha de
+  verificación anotada (regla explícita de Brey para el pipeline de
+  IA, decisión #76/#77).
+- **Correcciones humanas verificadas sobre un producto van en
+  `product-overrides.json`, nunca editando `product-analysis.json` a
+  mano** — patrón nuevo de esta sesión (decisión #77), para no perder
+  el rastro de qué generó el modelo vs. qué corrigió un humano.
+- **Un pipeline de generación de imagen puede quedar "cerrado
+  técnicamente" (validado, funcionando) sin que ninguna imagen esté
+  lista para publicar** — no asumir que "el pipeline funciona" implica
+  autorización para subir nada a Shopify; son decisiones separadas.
 - Autoridad exclusiva de `git commit`/`push` es de Code, sin excepción.
 - Numeración de decisiones nuevas en `ESTADO`: la asigna quien commitea
-  (Code), nunca quien la propone — evita colisiones entre sesiones que
-  no se vieron entre sí.
+  (Code), nunca quien la propone.
 - Español neutro, sin coloquialismos. Brey es principiante en
   programación — explicar conceptos técnicos con contexto, sin asumir
   jerga previa.
