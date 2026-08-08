@@ -18,7 +18,9 @@
     "back_home": "Volver al inicio",
     "password": "Contraseña",
     "password_error": "Contraseña incorrecta.",
+    "password_coming_soon": "Estamos preparando algo especial. Vuelve pronto.",
     "enter": "Entrar",
+    "results_count": "{{ count }} resultado(s) para “{{ terms }}”.",
     "meta": {
       "tags": "Etiquetas: {{ tags }}",
       "page": "Página {{ page }}"
@@ -63,7 +65,13 @@
     "sort_price_asc": "Precio: menor a mayor",
     "sort_price_desc": "Precio: mayor a menor",
     "default_description": "Objetos pensados para comer, descansar y cuidar — sin vueltas.",
-    "no_filter_results": "No hay productos disponibles en esta categoría."
+    "no_filter_results": "No hay productos disponibles en esta categoría.",
+    "category": {
+      "feeding": "Comederos",
+      "rest": "Descanso",
+      "walking": "Paseo",
+      "grooming": "Grooming"
+    }
   },
   "cart": {
     "title": "Tu bolsa",
@@ -82,6 +90,7 @@
   "contact": {
     "name": "Nombre",
     "email": "Correo electrónico",
+    "hours_label": "Horario",
     "message": "Mensaje",
     "send": "Enviar mensaje"
   },

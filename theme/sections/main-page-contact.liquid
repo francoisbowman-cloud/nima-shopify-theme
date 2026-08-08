@@ -39,13 +39,13 @@
     <div class="contact-alt" style="margin-top:40px;border-top:1px solid var(--line);padding-top:28px;display:flex;flex-direction:column;gap:18px">
       {%- if section.settings.email != blank -%}
         <div>
-          <div style="font-size:11px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Email</div>
+          <div style="font-size:11px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">{{ 'contact.email' | t }}</div>
           <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
         </div>
       {%- endif -%}
       {%- if section.settings.hours != blank -%}
         <div>
-          <div style="font-size:11px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Horario</div>
+          <div style="font-size:11px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">{{ 'contact.hours_label' | t }}</div>
           <span>{{ section.settings.hours }}</span>
         </div>
       {%- endif -%}

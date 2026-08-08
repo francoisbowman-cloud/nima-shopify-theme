@@ -72,7 +72,7 @@
 
   <div class="buy">
     {%- if product.type != blank -%}
-      <span class="kicker">{{ product.type }}</span>
+      <span class="kicker">{% render 'product-type-label', type: product.type %}</span>
     {%- endif -%}
 
     <h1>{{ product.title }}</h1>
