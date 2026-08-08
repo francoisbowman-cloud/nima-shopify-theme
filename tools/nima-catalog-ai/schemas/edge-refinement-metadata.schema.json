@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "edge-refinement-metadata.schema.json",
+  "title": "EdgeRefinementMetadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["feather_radius", "background_color_rgb", "decontamination_applied"],
+  "properties": {
+    "feather_radius": {"type": "number", "minimum": 0},
+    "background_color_rgb": {
+      "type": "array",
+      "items": {"type": "integer", "minimum": 0, "maximum": 255},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "decontamination_applied": {"type": "boolean"}
+  }
+}

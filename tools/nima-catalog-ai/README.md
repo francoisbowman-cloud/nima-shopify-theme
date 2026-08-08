@@ -362,3 +362,184 @@ not part of this phase.
   this version.
 - `OpenAIBackgroundProvider` has never been exercised against a real background — its
   first real call is explicitly deferred (see "Next step" in the v0.2 final report).
+
+## Nima Catalog AI v0.3 — Scene Intelligence + Perspective Match + Edge Integration
+
+v0.3 lives alongside v0.1 and v0.2 in the same `src/` tree, entered via
+`composition_pipeline_v03.run_composition_v03_for_image()` /
+`src/demo_v03.py`. **v0.1's and v0.2's own modules are untouched** (all
+120 of their tests still pass unmodified) — v0.3 only adds new modules
+plus small, additive extensions to `shadow.py`, `background.py`, and
+`composition_gates.py` (new functions alongside the existing v0.2 ones,
+nothing removed or changed in place).
+
+### Why: what Real Pilot 01 (v0.2) actually got wrong
+
+Real Pilot 01 (decision #79) confirmed v0.2's Composition Gate passing
+doesn't mean the result looks integrated. Three concrete defects, all
+visible in that pilot's output:
+
+1. **Perspective mismatch.** The product photo was shot top-down/frontal;
+   the AI background was shot at eye level. v0.2 only ever applied a
+   uniform scale, so the product read as a flat card leaning upright
+   against the scene, not a mat lying on the floor.
+2. **Scene mismatch.** v0.2 asked for "a nice-looking environment" with no
+   reasoning about commercial fit — a living room is plausible for a
+   *feeding* mat, but a kitchen feeding corner or covered patio is the
+   better commercial context, and nothing in v0.2 could make that call.
+3. **Edge integration.** v0.2's mask is a hard 0/255 binary cutoff, with no
+   anti-aliasing and no removal of the studio background's color bleeding
+   into edge pixels — visible as a faint white halo around the product.
+
+### What changed
+
+```
+Before (v0.2):
+    real product pixels, uniformly scaled, pasted onto any decent-looking AI background
+
+Now (v0.3):
+    real product pixels, geometrically perspective-matched to the scene's ground plane,
+    edge-refined, shadow tuned to the product's own physical geometry,
+    placed into a scene chosen because it fits the product commercially
+```
+
+### Pipeline
+
+```
+product-analysis.json (reused, no new API call)
+  -> scene intelligence (src/scene_intelligence.py)   scene-intelligence.json — product_role,
+                                                        ranked environments, placement_plane,
+                                                        geometry_class, from a local keyword
+                                                        taxonomy over Nima's real catalog vocabulary
+  -> surface model (src/surface.py)                    surface-model.json — is this product
+                                                        perspective-match eligible? (only
+                                                        surface_plane=ground + geometry_class=flat)
+  -> segmentation (v0.2, reused)                       product-cutout.png, product-mask.png
+  -> edge refinement (src/edge_refinement.py)          feathered alpha + background-color
+                                                        decontamination — same product pixels,
+                                                        cleaner edges, no visible blur
+  -> scene-aware background request (src/background.py's
+     build_scene_aware_background_request)             environment = scene intelligence's top
+                                                        pick; reserved zone phrased in relative
+                                                        frame percentages, not raw pixel coords
+  -> background provider (v0.2, reused)                still only ever FixtureBackgroundProvider
+                                                        in offline runs; OpenAIBackgroundProvider
+                                                        still inert by construction
+  -> perspective match (src/perspective.py)             IF eligible: geometric warp of the real
+                                                        product pixels onto a floor-perspective
+                                                        trapezoid — no redraw, no numpy/opencv
+                                                        dependency (pure-Python 8x8 solver)
+  -> surface-aware shadow (shadow.py's
+     build_surface_aware_shadow_params)                 blur/opacity/offset tuned by geometry_class
+                                                        + surface_plane instead of one generic preset
+  -> Composition Gate v0.3 (composition_gates.py's
+     run_composition_gate_v03)                          v0.2's checks + scene-product fit,
+                                                        perspective plausibility, edge/shadow
+                                                        pass confirmation
+  -> [existing Fidelity Gate, unchanged]
+  -> visual debug (9 files, 01-09) + composition-contact-sheet.jpg
+  -> benchmark comparison (src/benchmark.py)             comparison-v02-v03.jpg — the same
+                                                        background run through both pipelines,
+                                                        side by side
+```
+
+### Scene Intelligence — a local taxonomy, not a new LLM call
+
+`src/scene_intelligence.py` matches `product-analysis.json`'s
+title/category/features against a small keyword taxonomy covering Nima's
+real catalog vocabulary (feeding, bedding, walking/leash, grooming, toys,
+sanitation), each entry carrying its own ranked environment list,
+preferred surfaces, `placement_plane`, and `geometry_class`. No API call —
+deterministic and free. A product that matches nothing falls back to a
+generic profile with a `warnings` entry rather than guessing; extending
+coverage for a new category is one new taxonomy entry, not a new prompt.
+
+### Perspective Match Engine — the core of v0.3
+
+`src/perspective.py` is the piece that actually fixes the "pasted-on
+sticker" look. For a product classified `surface_plane=ground` +
+`geometry_class=flat` (see `surface.py` — a feeding mat, not a bowl or a
+leash), `compute_ground_quad()` derives a floor-perspective trapezoid from
+the placement bbox (narrower/higher top edge, full-width bottom edge,
+vertical foreshortening), and `apply_perspective_match()` warps the real
+product pixels onto that trapezoid with a standard 4-point homography.
+
+**No numpy or OpenCV dependency** — `find_coeffs()` solves the 8x8
+perspective-coefficient linear system with a small pure-Python Gaussian
+elimination (same approach as the well-known PIL "quad transform" cookbook
+recipe), keeping this an isolated tool like `masking.py`. Verified visually
+during development: a synthetic flat rectangle warped through this path
+reads immediately as "lying on the floor, receding into the scene" instead
+of "flat card standing upright."
+
+**Stated plainly, this is a heuristic, not a measured homography** — v0.3
+has no camera calibration or vanishing-point detection on the *background*
+image, so `compute_ground_quad`'s tilt/foreshorten parameters are a
+plausible approximation, not derived from the actual scene geometry. See
+"Known limitations of v0.3" below.
+
+### Edge Integration Engine
+
+`src/edge_refinement.py` is a second, optional pass over an existing
+cutout+mask (never re-derives the mask): `refine_alpha()` feathers the hard
+binary edge with a small (~1.2px, capped at 3px) Gaussian blur — enough to
+remove jagged pixel-stair edges, nowhere near enough to visibly soften the
+product itself. `decontaminate_color()` then removes the sampled studio
+background color's contribution from the now-semi-transparent edge band
+(standard alpha-unpremultiply color decontamination), removing the white
+halo a light studio backdrop leaves around a darker product edge.
+
+### Surface-aware shadow
+
+`shadow.build_surface_aware_shadow_params()` selects blur/opacity/offset
+from a small preset table keyed on `(surface_plane, geometry_class)`
+instead of v0.2's one-size-fits-all default — a flat mat flush on the
+ground gets a tighter, more perimeter-only contact shadow; a soft bed gets
+a larger, softer one. The shadow's *shape* was already free: v0.2's
+`build_shadow_layer()` derives its silhouette from whatever image it's
+given, so passing it the perspective-warped product (not the
+axis-aligned original) makes the shadow inherit the same trapezoid
+footprint automatically, with no change to `build_shadow_layer()` itself.
+
+### Composition Gate v0.3
+
+`composition_gates.run_composition_gate_v03()` runs all of v0.2's checks
+(geometry, scene) plus four new ones: does the chosen environment actually
+appear in the product's own scene-intelligence taxonomy; if perspective
+match was eligible, was it actually applied, and is the warped area
+plausible relative to the un-warped placement bbox (catches a degenerate
+or wildly wrong warp); was perspective applied to something *not* eligible
+(would itself be the bug); and were the edge-refinement and surface-aware
+shadow passes actually run. Still strictly additive to v0.2's checks — a
+v0.3 result never gets a pass that a v0.2-only check would have failed.
+
+### Benchmark comparison mode
+
+`src/benchmark.py` runs the *same* AI-generated background through both
+the v0.2 and v0.3 compositors and renders them side by side
+(`comparison-v02-v03.jpg`) — using the same background isolates what v0.3
+actually changed (perspective, edges, shadow, scene choice) rather than
+confounding the comparison with a different random background each time.
+
+### Known limitations of v0.3
+
+- `compute_ground_quad`'s trapezoid is a plausible heuristic, not a
+  measured homography — v0.3 has no vanishing-point or camera-angle
+  detection on the background image itself. A background shot at a very
+  different angle than the default assumption can still look geometrically
+  off even after the warp.
+- Perspective match only applies to `surface_plane=ground` +
+  `geometry_class=flat` products (mats, placemats). Bowls, beds, leashes,
+  and everything else fall back to v0.2's uniform-scale placement
+  unchanged — this is deliberate (warping a volumetric or soft object's
+  2D photo the same way would distort it, not integrate it), but it means
+  v0.3's biggest visual improvement is scoped to one geometry class so far.
+- Edge decontamination assumes a roughly uniform sampled background color
+  (same corner-sampling heuristic as `masking.py`) — a gradient or textured
+  studio backdrop will decontaminate less accurately.
+- No in-use composition, same as v0.2 — `scene.MAX_SUPPORTED_INTERACTION_LEVEL`
+  is still 0.
+- Scene Intelligence's taxonomy is hand-authored and covers Nima's current
+  catalog vocabulary — a genuinely novel product category falls back to a
+  generic profile rather than failing, but won't get a tailored environment
+  list until the taxonomy is extended.

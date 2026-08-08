@@ -78,7 +78,8 @@ def build_step_outputs(
     return paths
 
 
-def _thumb(img: Image.Image) -> Image.Image:
+def thumb(img: Image.Image, size: tuple[int, int] = THUMB_SIZE) -> Image.Image:
+    """Public since v0.3 — reused by benchmark.py for the v0.2/v0.3 comparison sheet."""
     if img.mode == "RGBA":
         # Composite onto white first — a bare .convert("RGB") on RGBA just
         # drops the alpha channel and lets whatever RGB values sit under a
@@ -90,11 +91,14 @@ def _thumb(img: Image.Image) -> Image.Image:
         img = opaque
     else:
         img = img.convert("RGB").copy()
-    img.thumbnail(THUMB_SIZE)
-    canvas = Image.new("RGB", THUMB_SIZE, "white")
-    offset = ((THUMB_SIZE[0] - img.width) // 2, (THUMB_SIZE[1] - img.height) // 2)
+    img.thumbnail(size)
+    canvas = Image.new("RGB", size, "white")
+    offset = ((size[0] - img.width) // 2, (size[1] - img.height) // 2)
     canvas.paste(img, offset)
     return canvas
+
+
+_thumb = thumb  # internal alias, kept so existing call sites in this module read unchanged
 
 
 def build_composition_contact_sheet(

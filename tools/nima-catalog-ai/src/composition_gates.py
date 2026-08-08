@@ -67,3 +67,105 @@ def save_composition_gate_report(report: dict, path: Path, *, schemas_dir: Path 
         schema = file_utils.load_schema(schemas_dir, SCHEMA_NAME)
         file_utils.validate_against_schema(report, schema)
     file_utils.write_json(path, report)
+
+
+# v0.3 Block 7 — extends the gate with checks the v0.2 gate had no concept
+# of: does the chosen scene actually fit the product (Scene Intelligence),
+# is the perspective warp geometrically sane, is the product actually
+# grounded (not floating) in its warped footprint, and were the edge/shadow
+# refinement passes actually applied where they should have been. Runs
+# strictly in addition to the v0.2 checks — never relaxes them.
+SCHEMA_NAME_V03 = "composition-gate-report-v03.schema.json"
+
+_PLAUSIBLE_WARPED_AREA_RATIO = (0.4, 1.6)  # vs. the un-warped placement bbox area
+
+
+def check_scene_product_fit(scene_intel: dict, top_environment: str) -> dict:
+    checks = {
+        "environment_not_in_taxonomy": top_environment not in (
+            scene_intel["primary_environments"] + scene_intel["secondary_environments"]
+        ),
+        "used_fallback_taxonomy": bool(scene_intel["warnings"]),
+    }
+    violations = [name for name, is_bad in checks.items() if is_bad]
+    # used_fallback_taxonomy is informational, not disqualifying — a
+    # fallback profile is still coherent, just not category-specific.
+    passed = not checks["environment_not_in_taxonomy"]
+    return {"checks": checks, "violations": violations, "passed": passed}
+
+
+def check_perspective(*, surface_model: dict, perspective_applied: bool, placement_bbox_area: float, warped_area: float | None) -> dict:
+    checks: dict[str, bool] = {}
+    if surface_model["perspective_match_eligible"]:
+        checks["perspective_eligible_but_not_applied"] = not perspective_applied
+        if perspective_applied and warped_area is not None and placement_bbox_area > 0:
+            ratio = warped_area / placement_bbox_area
+            checks["warped_area_implausible"] = not (
+                _PLAUSIBLE_WARPED_AREA_RATIO[0] <= ratio <= _PLAUSIBLE_WARPED_AREA_RATIO[1]
+            )
+        else:
+            checks["warped_area_implausible"] = False
+    else:
+        # Not eligible (e.g. a volumetric bowl) — applying a planar warp
+        # here would itself be the bug, not skipping it.
+        checks["perspective_applied_when_ineligible"] = perspective_applied
+    violations = [name for name, is_bad in checks.items() if is_bad]
+    return {"checks": checks, "violations": violations, "passed": not violations}
+
+
+def check_edge_and_shadow(*, edge_refinement_applied: bool, shadow_is_surface_aware: bool) -> dict:
+    checks = {
+        "edge_refinement_missing": not edge_refinement_applied,
+        "shadow_not_surface_aware": not shadow_is_surface_aware,
+    }
+    violations = [name for name, is_bad in checks.items() if is_bad]
+    return {"checks": checks, "violations": violations, "passed": not violations}
+
+
+def run_composition_gate_v03(
+    *,
+    scene_spec: dict,
+    placement_spec: dict,
+    scene_intel: dict,
+    top_environment: str,
+    surface_model: dict,
+    perspective_applied: bool,
+    warped_area: float | None,
+    edge_refinement_applied: bool,
+    shadow_is_surface_aware: bool,
+) -> dict:
+    base = run_composition_gate(scene_spec=scene_spec, placement_spec=placement_spec)
+
+    placement_bbox = placement_spec["product"]["final_bbox"]
+    placement_bbox_area = (placement_bbox["right"] - placement_bbox["left"]) * (
+        placement_bbox["bottom"] - placement_bbox["top"]
+    )
+
+    scene_fit = check_scene_product_fit(scene_intel, top_environment)
+    perspective = check_perspective(
+        surface_model=surface_model,
+        perspective_applied=perspective_applied,
+        placement_bbox_area=placement_bbox_area,
+        warped_area=warped_area,
+    )
+    edge_shadow = check_edge_and_shadow(
+        edge_refinement_applied=edge_refinement_applied, shadow_is_surface_aware=shadow_is_surface_aware
+    )
+
+    passed = base["passed"] and scene_fit["passed"] and perspective["passed"] and edge_shadow["passed"]
+    return {
+        "passed": passed,
+        "status": "pass" if passed else "fail",
+        "geometry": base["geometry"],
+        "scene": base["scene"],
+        "scene_product_fit": scene_fit,
+        "perspective": perspective,
+        "edge_and_shadow": edge_shadow,
+    }
+
+
+def save_composition_gate_report_v03(report: dict, path: Path, *, schemas_dir: Path | None = None) -> None:
+    if schemas_dir is not None:
+        schema = file_utils.load_schema(schemas_dir, SCHEMA_NAME_V03)
+        file_utils.validate_against_schema(report, schema)
+    file_utils.write_json(path, report)

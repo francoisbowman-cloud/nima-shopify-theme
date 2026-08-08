@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "composition-gate-report-v03.schema.json",
+  "title": "CompositionGateReportV03",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["passed", "status", "geometry", "scene", "scene_product_fit", "perspective", "edge_and_shadow"],
+  "properties": {
+    "passed": {"type": "boolean"},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "geometry": {"type": "object"},
+    "scene": {"type": "object"},
+    "scene_product_fit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "violations", "passed"],
+      "properties": {
+        "checks": {"type": "object"},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "perspective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "violations", "passed"],
+      "properties": {
+        "checks": {"type": "object"},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "edge_and_shadow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "violations", "passed"],
+      "properties": {
+        "checks": {"type": "object"},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "passed": {"type": "boolean"}
+      }
+    }
+  }
+}
