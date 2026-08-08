@@ -9,6 +9,15 @@ class CommerceBackgroundGateError(ValueError):
     pass
 
 
+def _mask_alpha(product_mask: Image.Image) -> Image.Image:
+    """Return a single-channel product-opacity mask for common PIL modes."""
+    if product_mask.mode == "L":
+        return product_mask
+    if product_mask.mode in {"RGBA", "LA"}:
+        return product_mask.split()[-1]
+    return product_mask.convert("L")
+
+
 def evaluate_commerce_white_background(
     image: Image.Image,
     product_mask: Image.Image,
@@ -20,9 +29,10 @@ def evaluate_commerce_white_background(
     """Measure whether known background pixels are consistently pure white.
 
     `product_mask` follows the Catalog AI convention: product pixels are opaque
-    and background pixels transparent/zero-alpha. Only confidently-background
-    pixels (alpha <= background_alpha_max) are scored, so anti-aliased product
-    edges do not create false failures.
+    and background pixels transparent/zero. Grayscale (`L`) and alpha-bearing
+    masks are accepted. Only confidently-background pixels (value <=
+    background_alpha_max) are scored, so anti-aliased product edges do not
+    create false failures.
     """
     if image.size != product_mask.size:
         raise CommerceBackgroundGateError("image and product_mask must have the same size")
@@ -34,7 +44,7 @@ def evaluate_commerce_white_background(
         raise CommerceBackgroundGateError("background_alpha_max must be within [0, 64]")
 
     rgb = image.convert("RGB")
-    alpha = product_mask.convert("RGBA").split()[-1]
+    alpha = _mask_alpha(product_mask)
     rgb_px = rgb.load()
     alpha_px = alpha.load()
 
