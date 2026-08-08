@@ -1,4 +1,4 @@
-"""v0.3 Block 3 — Perspective Match Engine.
+"""v0.3/v0.3.1 — Perspective Match Engine.
 
 v0.2's compositor only ever applied a uniform scale — correct for occupancy,
 but wrong for a product photographed top-down/frontal once it's placed into
@@ -8,6 +8,14 @@ warps the product's real pixels with a planar perspective transform instead
 of a uniform scale, for products classified `surface_plane=ground` +
 `geometry_class=flat` (see surface.py) — never redraws anything, only
 geometrically remaps the same pixels.
+
+v0.3.1 hardens the warp against post-transform halos. Pillow resamples RGBA
+channels independently when given straight-alpha pixels; semi-transparent
+edge colors can therefore bleed into the result during a bicubic perspective
+warp even when the cutout was clean beforehand. We now premultiply RGB by
+alpha before resampling and unpremultiply afterwards. Fully transparent
+pixels are normalized to transparent black, so hidden studio-white RGB can
+never be interpolated back into the visible edge.
 
 No numpy/opencv dependency (keeps this tool isolated, same philosophy as
 masking.py) — `find_coeffs` solves the 8x8 perspective-coefficient system
@@ -30,9 +38,6 @@ Point = tuple[float, float]
 
 DEFAULT_TILT = 0.22
 DEFAULT_FORESHORTEN = 0.62
-# Guard rails — outside this range the trapezoid reads as a geometry error,
-# not a plausible camera angle, so apply_perspective_match refuses instead
-# of producing a visibly broken warp.
 _TILT_RANGE = (0.0, 0.45)
 _FORESHORTEN_RANGE = (0.35, 1.0)
 
@@ -64,9 +69,7 @@ def _solve_linear_system(matrix: list[list[float]], rhs: list[float]) -> list[fl
 
 
 def find_coeffs(dst_quad: list[Point], src_quad: list[Point]) -> list[float]:
-    """8 coefficients for PIL's Image.transform(..., Image.PERSPECTIVE, coeffs) —
-    dst_quad are 4 points in OUTPUT space, src_quad the corresponding 4 points
-    in the SOURCE image, both ordered the same way (e.g. TL, TR, BR, BL)."""
+    """8 coefficients for PIL's perspective transform."""
     if len(dst_quad) != 4 or len(src_quad) != 4:
         raise PerspectiveError("Both quads must have exactly 4 points")
 
@@ -87,16 +90,7 @@ def compute_ground_quad(
     tilt: float = DEFAULT_TILT,
     foreshorten: float = DEFAULT_FORESHORTEN,
 ) -> list[Point]:
-    """Heuristic floor-perspective trapezoid for a flat object resting on the
-    ground, viewed at roughly eye level: the far (top) edge is narrower and
-    higher, the near (bottom) edge stays the bbox's full width — mimicking
-    the visual convergence a flat mat shows when photographed from a
-    standing height instead of top-down.
-
-    tilt: how much narrower the top edge is vs. the bottom (0 = no taper).
-    foreshorten: vertical compression of the whole shape (1 = no compression,
-    lower = flatter-looking, as a plane receding away from the camera would).
-    """
+    """Heuristic floor-perspective trapezoid for a flat object on the ground."""
     if not (_TILT_RANGE[0] <= tilt <= _TILT_RANGE[1]):
         raise PerspectiveError(f"tilt {tilt} outside plausible range {_TILT_RANGE}")
     if not (_FORESHORTEN_RANGE[0] <= foreshorten <= _FORESHORTEN_RANGE[1]):
@@ -114,11 +108,55 @@ def compute_ground_quad(
     new_top = bottom - new_height
 
     return [
-        (cx - top_width / 2, new_top),  # top-left
-        (cx + top_width / 2, new_top),  # top-right
-        (right, bottom),  # bottom-right
-        (left, bottom),  # bottom-left
+        (cx - top_width / 2, new_top),
+        (cx + top_width / 2, new_top),
+        (right, bottom),
+        (left, bottom),
     ]
+
+
+def _premultiply_rgba(image: Image.Image) -> Image.Image:
+    """Return RGBA with RGB multiplied by alpha.
+
+    Transparent pixels are forced to (0,0,0,0), eliminating hidden source
+    background colors before geometric resampling.
+    """
+    out = Image.new("RGBA", image.size)
+    src = image.load()
+    dst = out.load()
+    for y in range(image.height):
+        for x in range(image.width):
+            r, g, b, a = src[x, y]
+            if a == 0:
+                dst[x, y] = (0, 0, 0, 0)
+                continue
+            dst[x, y] = (
+                round(r * a / 255),
+                round(g * a / 255),
+                round(b * a / 255),
+                a,
+            )
+    return out
+
+
+def _unpremultiply_rgba(image: Image.Image) -> Image.Image:
+    """Convert premultiplied RGBA back to straight alpha after resampling."""
+    out = Image.new("RGBA", image.size)
+    src = image.load()
+    dst = out.load()
+    for y in range(image.height):
+        for x in range(image.width):
+            r, g, b, a = src[x, y]
+            if a == 0:
+                dst[x, y] = (0, 0, 0, 0)
+                continue
+            dst[x, y] = (
+                min(255, round(r * 255 / a)),
+                min(255, round(g * 255 / a)),
+                min(255, round(b * 255 / a)),
+                a,
+            )
+    return out
 
 
 def apply_perspective_match(
@@ -127,22 +165,22 @@ def apply_perspective_match(
     *,
     canvas_size: tuple[int, int],
 ) -> Image.Image:
-    """Warps `cutout` (RGBA) so its own rectangle maps onto `dst_quad` in a
-    `canvas_size` output canvas — real pixels remapped geometrically, never
-    redrawn. Returns a canvas-sized RGBA image, transparent outside the
-    warped region, ready to be alpha-composited onto a background."""
+    """Warp a real RGBA product cutout onto `dst_quad` without edge halos."""
     if cutout.mode != "RGBA":
         raise PerspectiveError("apply_perspective_match requires an RGBA cutout with real alpha")
 
     src_quad = [(0, 0), (cutout.width, 0), (cutout.width, cutout.height), (0, cutout.height)]
     coeffs = find_coeffs(dst_quad, src_quad)
-    return cutout.transform(
+
+    premultiplied = _premultiply_rgba(cutout)
+    warped_premultiplied = premultiplied.transform(
         canvas_size,
         Image.PERSPECTIVE,
         coeffs,
         resample=Image.BICUBIC,
         fillcolor=(0, 0, 0, 0),
     )
+    return _unpremultiply_rgba(warped_premultiplied)
 
 
 def warped_bbox(dst_quad: list[Point]) -> tuple[float, float, float, float]:
