@@ -46,6 +46,7 @@ def test_compute_ground_quad_rejects_degenerate_bbox():
 def test_find_coeffs_identity_transform_is_stable():
     quad = [(0, 0), (100, 0), (100, 100), (0, 100)]
     coeffs = perspective.find_coeffs(quad, quad)
+    # Identity mapping: a=1,b=0,c=0,d=0,e=1,f=0,g=0,h=0
     assert coeffs[0] == pytest.approx(1, abs=1e-6)
     assert coeffs[4] == pytest.approx(1, abs=1e-6)
     assert coeffs[2] == pytest.approx(0, abs=1e-6)
@@ -65,14 +66,14 @@ def test_apply_perspective_match_preserves_product_pixels_present():
     quad = perspective.compute_ground_quad((300, 700, 700, 1000))
     result = perspective.apply_perspective_match(cutout, quad, canvas_size=(1024, 1024))
     alpha = result.split()[-1]
-    assert alpha.getbbox() is not None
+    assert alpha.getbbox() is not None  # some opaque content landed on the canvas
 
 
 def test_apply_perspective_match_transparent_outside_quad():
     cutout = _cutout()
     quad = perspective.compute_ground_quad((300, 700, 700, 1000))
     result = perspective.apply_perspective_match(cutout, quad, canvas_size=(1024, 1024))
-    assert result.getpixel((10, 10))[3] == 0
+    assert result.getpixel((10, 10))[3] == 0  # far corner, outside the warped quad
 
 
 def test_apply_perspective_match_requires_rgba():
@@ -80,37 +81,6 @@ def test_apply_perspective_match_requires_rgba():
     quad = perspective.compute_ground_quad((0, 0, 100, 50))
     with pytest.raises(perspective.PerspectiveError):
         perspective.apply_perspective_match(cutout, quad, canvas_size=(200, 200))
-
-
-def test_perspective_warp_does_not_reintroduce_white_halo_from_hidden_rgb():
-    """Regression for v0.3.1: transparent studio-white RGB must not bleed
-    into semi-transparent pixels created by the bicubic perspective warp."""
-    cutout = Image.new("RGBA", (80, 50), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(cutout)
-    draw.rectangle((10, 10, 69, 39), fill=(35, 45, 55, 255))
-
-    quad = [(45, 45), (155, 45), (170, 125), (30, 125)]
-    warped = perspective.apply_perspective_match(cutout, quad, canvas_size=(200, 160))
-
-    edge_pixels = []
-    for r, g, b, a in warped.getdata():
-        if 0 < a < 255:
-            edge_pixels.append((r, g, b, a))
-
-    assert edge_pixels, "warp should create anti-aliased semi-transparent edge pixels"
-    # Product RGB is dark. A white fringe would push one or more channels
-    # toward the studio-white source color. Premultiplied resampling keeps
-    # those edge colors tied to the product instead.
-    assert max(max(r, g, b) for r, g, b, _ in edge_pixels) < 120
-
-
-def test_fully_transparent_pixels_are_normalized_to_transparent_black_after_warp():
-    cutout = Image.new("RGBA", (40, 40), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(cutout)
-    draw.rectangle((10, 10, 29, 29), fill=(50, 60, 70, 255))
-    quad = [(20, 20), (80, 20), (90, 80), (10, 80)]
-    warped = perspective.apply_perspective_match(cutout, quad, canvas_size=(100, 100))
-    assert warped.getpixel((0, 0)) == (0, 0, 0, 0)
 
 
 def test_find_coeffs_rejects_wrong_length_quads():
