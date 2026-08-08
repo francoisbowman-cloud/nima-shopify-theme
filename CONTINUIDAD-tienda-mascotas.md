@@ -3,78 +3,90 @@ Pegar como primer mensaje en la sesión nueva de Code, junto con
 `ESTADO-tienda-mascotas.md` (ya actualizado en el repo, no hace falta
 adjuntarlo aparte si la sesión abre con acceso a la carpeta).
 
-## Estado al cierre de esta sesión (6 de agosto de 2026)
+## Estado al cierre de esta sesión (7 de agosto de 2026)
 
 Repo: `C:\Users\user\Claude\Projects\OVL_PetDrop`, sincronizado con
 `github.com/francoisbowman-cloud/nima-shopify-theme` (privado). Rama
-`feat/nima-catalog-api-pipeline-v01`, con el commit `ccc4b6b` del
-pipeline de IA — **pusheada a `origin` al cierre de esta sesión, no
-mergeada a `main`**. Directorio sin trackear: `nima-catalog-images/`
-(203 imágenes + índices, ~150MB — sigue sin decidirse si se commitea o
-se deja fuera del repo vía `.gitignore`).
+`feat/nima-catalog-ai-v02-lifestyle-composition`, HEAD `71cc6f2` —
+**pusheada a `origin` al cierre de esta sesión, sin PR, no mergeada a
+`main`** (`main` sigue en `6a48a20`). Directorio sin trackear:
+`nima-catalog-images/` (sigue sin decidirse si se commitea o se deja
+fuera del repo vía `.gitignore` — no tocado esta sesión).
 
 ### Lo más importante para entender antes de tocar nada
 **El theme publicado (MAIN) en Shopify puede divergir del código de este
 repo.** Antes de auditar o tocar cualquier archivo de `theme/`, verificar
 contra la API real cuál es el theme `MAIN` actual (procedimiento en
 `CLAUDE.md`, sección "⚠️ El theme publicado puede divergir del repo").
+No se tocó nada de `theme/` ni de Shopify en esta sesión — todo el
+trabajo fue en `tools/nima-catalog-ai/`.
 
-### Punto de entrada más reciente: pipeline de imágenes por API de OpenAI — cerrado técnicamente
-**Implementado, testeado (49 tests) y validado con dos corridas reales ($0.09 USD de gasto
-total) sobre `waterproof-pet-feeding-mats-...`.** Ver decisión #77 de
-`ESTADO-tienda-mascotas.md` para el detalle completo. Resumen de lo que importa para retomar:
+### Punto de entrada más reciente: Nima Catalog AI v0.2 implementado + 1 pilot real — y v0.3 ya solicitado, sin empezar
+Ver decisiones #78/#79 de `ESTADO-tienda-mascotas.md` para el detalle completo. Resumen de lo
+que importa para retomar:
 
-- **`refined`**: validado técnicamente (llegó a `review`, score 92, usando una máscara de
-  preservación de píxeles + recorte determinista). **No publicado en Shopify** — el encuadre
-  quedó con ocupación 59.8%, por debajo del rango objetivo 75-88%, porque la foto fuente no
-  tiene margen lateral suficiente (no es un bug del código, es un límite de la foto original).
-  Brey decidió no reintentar con la misma fuente.
-- **`lifestyle`**: rechazado (escala del mat incorrecta, perro en interacción activa en vez de
-  presencia pasiva). Brey decidió no reintentar con el mismo método — es un límite conocido de
-  v0.1 (sin máscara posible cuando cambia toda la escena, el endurecimiento de prompt solo no
-  alcanza para controlar escala/tipo de interacción). Documentado en
-  `tools/nima-catalog-ai/README.md`.
-- **No consumir más API de OpenAI en esta rama** — instrucción explícita de Brey al cierre.
-- Nada tocado en Shopify. Rama sin mergear a `main` — pendiente autorización explícita para
-  cualquiera de las dos cosas (merge, o retomar con presupuesto nuevo).
+- **v0.2 ("Protected Lifestyle Composition") implementado y testeado (120/120 tests)** —
+  resuelve el límite de v0.1 (decisión #77) componiendo el producto real, segmentado, sobre un
+  fondo generado por IA que nunca ve el producto, en vez de regenerar todo desde texto.
+- **1 pilot real ejecutado** sobre `waterproof-pet-feeding-mats-...` (mismo producto de v0.1):
+  1 llamada real a `images.generate` (~$0.03, sin reintentos), Composition Gate: PASS. Bug real
+  de visualización encontrado y corregido en el mismo pilot (`visual_debug._thumb()` perdía
+  alfa). **Hallazgo principal**: el producto se ve "pegado"/parado, no apoyado en el piso — la
+  foto fuente es una toma cenital y v0.2 no tiene transformación de perspectiva.
+- **Instrucción explícita recibida al cierre de esta sesión: construir v0.3** ("Scene
+  Intelligence + Perspective Match + Edge Integration") — prompt maestro completo ya recibido,
+  **todavía no ejecutado, cero código escrito**. Objetivo: (1) elegir escena coherente con el
+  producto (para una feeding mat: cocina/mudroom/patio, no living room), (2) transformar
+  geométricamente el producto real para que coincida con la perspectiva del fondo (sin
+  redibujarlo), (3) mejorar integración de bordes (halo blanco actual), (4) sombra
+  surface-aware. Nueva rama sugerida: `feat/nima-catalog-ai-v03-scene-intelligence-perspective`,
+  base = `71cc6f2` (HEAD actual de v0.2). Autoriza 1 sola llamada real de generación de fondo al
+  final, mismas reglas de seguridad que v0.2 (no Shopify, no `main`, no PR/merge automático).
+  **El prompt completo del usuario para v0.3 debe pegarse en la sesión nueva** — no está
+  resumido en ningún archivo del repo todavía, solo en esta conversación que se va a cerrar.
+- **Instrucción adicional recibida en el mismo mensaje, también sin empezar**: auditoría
+  completa de traducción EN/ES del theme (`BLOCK — GLOBAL TRANSLATION & LOCALE AUDIT`) — ya se
+  detectó que en locale EN el catálogo muestra filtros de categoría en español ("Comederos",
+  "Descanso", "Paseo" en vez de sus equivalentes en inglés). Alcance: solo consistencia EN/ES
+  del theme (nav, catálogo, filtros, product cards/page, Magazine, About, Contact, footer,
+  cart, search, aria-labels) — explícitamente NO autoriza traducción automática de
+  descripciones vía API, ni cambios de contenido de producto, ni publicación en Shopify.
 
 ### Completado en esta sesión
-1. **`tools/nima-catalog-ai/` implementado de punta a punta**: análisis de producto (Fase 1,
-   `gpt-5.6-sol`), plan de generación determinístico (Fase 2), generación de imagen
-   (`gpt-image-2` vía `images.edit`, Fase 3), fidelity gate automático (Fase 4, nunca aprueba
-   Shopify ni `in-use` automáticamente), control de coste/intentos (Fase 5), paquete de
-   revisión local (Fase 6). CLI: `python -m src.cli --input <carpeta> --outputs
-   refined,lifestyle,in-use [--dry-run] [--yes] [--force]`.
-2. **Estrategia `product-preserving` agregada a pedido de Brey tras la primera corrida real**
-   (que salió `reject` en ambas salidas): máscara de preservación a nivel de píxel para
-   `refined` (`src/masking.py`, heurística de color de fondo, sin ML), recorte determinista
-   hacia el rango de ocupación 75-88% (verificado contra `theme/assets/base.css:221`, sin
-   nunca cortar el producto), endurecimiento de reglas de prompt para `lifestyle`/`in-use`
-   (sin máscara — la escena cambia por completo).
-3. **`product-overrides.json` agregado**: capa separada para correcciones humanas verificadas
-   (texto exacto de wordmark, conteos de piezas) que se combina con el análisis automático
-   solo al construir el plan — nunca edita `product-analysis.json`. Caché en dos niveles
-   (overrides invalidan el plan/outputs, no fuerzan un nuevo análisis).
-4. **49 tests**, todos con mocks — ninguna llamada real a la API en los tests.
-5. **Dos corridas reales autorizadas por Brey** (ver arriba) — $0.09 USD total, dentro de los
-   topes de presupuesto autorizados en cada corrida ($1 c/u).
-6. **Commit `ccc4b6b`** en `feat/nima-catalog-api-pipeline-v01` — sin mergear a `main`.
+1. **`tools/nima-catalog-ai/` v0.2 implementado de punta a punta** (Blocks 1-15 del prompt
+   maestro v0.2): segmentación (`src/segmentation.py`), placement (`src/placement.py`), scene
+   spec (`src/scene.py`), background contract + provider (`src/background.py`,
+   `src/background_provider.py`), compositor (`src/compositor.py`), sombra (`src/shadow.py`),
+   Composition Gate (`src/composition_gates.py`), visual debug (`src/visual_debug.py`), review
+   package extendido (`src/composition_review.py`), orquestador (`src/composition_pipeline.py`),
+   batch (`src/composition_batch.py`), demo offline (`src/demo_v02.py`). v0.1 queda intacto y
+   congelado (49/49 tests siguen pasando sin tocarse).
+2. **71 tests nuevos** (120 total, todos pasando).
+3. **Checkpoint verificado y rama pusheada a `origin`** antes del pilot real (branch, HEAD,
+   tests, `main` intacto, Shopify intacto).
+4. **1 pilot real autorizado y ejecutado** sobre `waterproof-pet-feeding-mats-...`: segmentación
+   real correcta (excluyó automáticamente la grilla de swatches), 1 llamada real a
+   `images.generate` (sin reintentos), Composition Gate: PASS, evaluación visual honesta
+   (perspectiva es el cuello de botella real).
+5. **Bug real encontrado y corregido en el pilot**: `visual_debug._thumb()` perdía el canal
+   alfa (`.convert("RGB")` sin componer sobre blanco primero) — corregido, 120/120 tests
+   siguen pasando.
+6. **Commits `91c1cd4` (v0.2) y `71cc6f2` (fix + `generate_image`)**, pusheados a `origin` —
+   sin PR, sin merge a `main`.
+7. **`ESTADO-tienda-mascotas.md` y `CHANGELOG.md` actualizados** con decisiones #78/#79 y
+   tanda 22 — este archivo (`CONTINUIDAD`) reescrito para el cierre de sesión.
 
 ### Pendiente exacto al momento de migrar
-1. **Brey decide próximo paso del pipeline de IA**: mergear la rama a `main`, retomar con
-   presupuesto nuevo (mejorar `lifestyle`, o probar `refined` con una foto fuente con más
-   margen lateral), o dejarlo en pausa. Ninguna imagen de este pipeline está lista para
-   publicarse en Shopify todavía.
-2. **21 de los 24 productos con imágenes siguen sin pasar por ningún pipeline visual**
-   (3 de `pilot-01` tienen imágenes IA aprobadas en Shopify vía el flujo manual con ChatGPT;
-   el producto de prueba del pipeline de API, `waterproof-pet-feeding-mats-...`, tiene
-   candidatos generados pero no publicados) — no avanzar sobre el resto del catálogo sin que
-   Brey lo pida explícitamente.
-3. **5 productos sin ninguna imagen en el CSV** (Premium Cat Litter Mat, Dog Clothes Puppy
-   Shirts, Dog Birthday Hat, Dog Water Bottle, Dog Car Seat Cover) necesitan una fuente de
-   imagen distinta antes de poder trabajarse — no resuelto, no bloqueante para el resto.
-4. **Decidir qué hacer con `nima-catalog-images/` en git** (150MB sin trackear) — commitear,
-   mover a un remote separado, o `.gitignore`. No decidido esta sesión.
+1. **Ejecutar v0.3** (prompt maestro completo recibido, no resumido en ningún archivo salvo
+   esta conversación) — scene intelligence, perspective match, edge integration, surface-aware
+   shadow, 1 pilot real adicional autorizado. Rama nueva desde `71cc6f2`.
+2. **Ejecutar la auditoría de traducción EN/ES** (mismo mensaje, alcance separado de v0.3) —
+   filtros de categoría del catálogo ya confirmados mezclando idiomas en locale EN.
+3. **Brey decide sobre v0.2**: si vale la pena seguir invirtiendo antes de resolver el problema
+   de perspectiva, cuándo mergear `feat/nima-catalog-ai-v02-lifestyle-composition` (o la v0.3
+   que salga de ella) a `main`, y cuándo autorizar más llamadas API o publicación a Shopify.
+4. **21 de los 24 productos con imágenes descargadas siguen sin pasar por ningún pipeline
+   visual** (no tocado esta sesión, ver `ESTADO` sección 8 para el detalle completo).
 5. Sigue pendiente de sesiones anteriores (no tocado esta sesión, ver
    `ESTADO-tienda-mascotas.md` sección 7/8 para el detalle completo): publicar el duplicado de
    theme `199238025297` ("Nima — Evolucion fundamentos"), tratamiento de las 5 fotos de AutoDS
@@ -99,12 +111,20 @@ total) sobre `waterproof-pet-feeding-mats-...`.** Ver decisión #77 de
   IA, decisión #76/#77).
 - **Correcciones humanas verificadas sobre un producto van en
   `product-overrides.json`, nunca editando `product-analysis.json` a
-  mano** — patrón nuevo de esta sesión (decisión #77), para no perder
-  el rastro de qué generó el modelo vs. qué corrigió un humano.
+  mano** — patrón de v0.1 (decisión #77), sigue vigente en v0.2.
 - **Un pipeline de generación de imagen puede quedar "cerrado
   técnicamente" (validado, funcionando) sin que ninguna imagen esté
   lista para publicar** — no asumir que "el pipeline funciona" implica
   autorización para subir nada a Shopify; son decisiones separadas.
+- **Antes de cualquier llamada real a una API paga: verificar checkpoint
+  completo primero** (branch/HEAD/tests/`main` intacto/Shopify intacto),
+  hacer push del punto de partida, y respetar el límite exacto de
+  llamadas autorizado — nunca reintentar automáticamente ni encadenar
+  una segunda llamada "para mejorar" sin autorización nueva. Patrón
+  usado en el pilot real de v0.2 (decisión #79), a repetir en v0.3.
+- **Un pilot real es para diagnosticar la arquitectura, no para perseguir
+  una imagen perfecta** — no consumir una segunda llamada para arreglar
+  lo que salió mal en la primera; documentarlo como hallazgo y seguir.
 - Autoridad exclusiva de `git commit`/`push` es de Code, sin excepción.
 - Numeración de decisiones nuevas en `ESTADO`: la asigna quien commitea
   (Code), nunca quien la propone.

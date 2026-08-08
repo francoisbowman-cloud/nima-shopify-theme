@@ -6,6 +6,96 @@ tipo (Added/Changed/Fixed/Removed) en vez de una lista cronológica
 plana, así es más fácil escanear "qué se rompió y se arregló" vs "qué
 es nuevo" de un vistazo.
 
+## [Unreleased] - 2026-08-07 (tanda 22 — Nima Catalog AI v0.2: Protected Lifestyle Composition, implementado + 1 pilot real)
+
+**Actor:** Code, a pedido y con autorización explícita de Brey (implementación completa
+autorizada de punta a punta en un solo prompt maestro; la única llamada real a la API de
+OpenAI, autorizada aparte, en un pilot posterior).
+
+### Added
+- **`feat/nima-catalog-ai-v02-lifestyle-composition`** (base `1bab58b`, el cierre de v0.1) —
+  nueva arquitectura de composición para resolver el límite conocido de v0.1: en vez de que la
+  IA regenere el producto completo dentro de la escena `lifestyle` (y a veces le cambie la
+  escala o lo confunda con `in-use`), ahora **el producto real se segmenta de la foto fuente y
+  se compone de forma determinística** sobre un fondo generado por IA que nunca contiene el
+  producto.
+- **`src/segmentation.py`** — `segment_product()`, interfaz con backend intercambiable
+  (`register_backend()`); v0.2 usa un backend `"heuristic"` que reutiliza la lógica de color de
+  fondo + componente conectada más grande de `masking.py` (v0.1) — deja afuera elementos
+  secundarios desconectados (ej. una grilla de swatches de color) automáticamente. Produce
+  `product-cutout.png`, `product-mask.png`, `segmentation-metadata.json`.
+- **`src/placement.py`** — `placement-spec.json` 100% determinístico (sin llamada a API):
+  bbox/ocupación/escala/zona segura calculados por aritmética a partir de la metadata de
+  segmentación. Checks: clipping, violación de zona segura, aspect ratio alterado, ocupación
+  fuera de rango, escala implausible.
+- **`src/scene.py`** — modelo de interacción explícito (`interaction_level` 0-3): `lifestyle`
+  exige `interaction_level=0` y los 3 flags de contacto (`product`/`animal`/`human`) en `false`,
+  o lanza `SceneSpecError` al construirse — la combinación que falló en v0.1 (escena "pasiva"
+  que terminó mostrando un perro bebiendo) ahora es un error de construcción del spec, no solo
+  un rechazo del Fidelity Gate después del hecho.
+- **`src/background.py`** + **`src/background_provider.py`** — la IA solo recibe instrucción de
+  generar el entorno, con la zona del producto reservada explícitamente vacía. Backend
+  intercambiable (`BackgroundProvider`): v0.2 solo usa `FixtureBackgroundProvider` (offline);
+  `OpenAIBackgroundProvider` existe como interfaz probada pero **lanza `NotImplementedError` si
+  se invoca**, a propósito — no se puede activar por accidente.
+- **`src/compositor.py`** + **`src/shadow.py`** — compositor local (Pillow): pega los píxeles
+  reales del producto sobre el fondo, un único escalado uniforme (nunca distorsión no uniforme)
+  hacia el bbox planeado, más una sombra de contacto de primera pasada (offset + blur
+  gaussiano + opacidad, sin modelado de perspectiva/luz).
+- **`src/composition_gates.py`** — Composition Gate: checks de geometría y escena,
+  determinísticos, corren **antes** del Fidelity Gate existente (que se mantiene sin tocar).
+  Orden: Composition Gate → Fidelity Gate → Human Review.
+- **`src/visual_debug.py`** — salida visual obligatoria por corrida: `visual-debug/01-source.jpg`
+  a `08-gate-overlay.png`, más `composition-contact-sheet.jpg` (SOURCE/CUTOUT/BACKGROUND/
+  PLACEMENT/FINAL/GATE RESULT, etiquetado) — pensado para que una persona juzgue el resultado
+  sin abrir código.
+- **`src/composition_review.py`** — extiende el paquete de revisión con `composition`
+  (ocupación, clipping, interaction_level, scale_status, placement_status) y
+  `generation_strategy`/`generation_kind` (`REFINED`/`LIFESTYLE COMPOSITE`/`IN-USE`).
+- **`src/composition_pipeline.py`** (orquestador de un producto) y **`src/composition_batch.py`**
+  (lote offline, `catalog-composition-summary.json`) — ambos 100% offline salvo por el
+  `BackgroundProvider` que se les pase.
+- **`src/demo_v02.py`** — demo offline completa con fixtures sintéticos generados en el momento
+  (no depende de `nima-catalog-images/`, que está sin trackear, ni de una corrida previa de
+  v0.1). `python -m src.demo_v02` → `demo-output/` (gitignored).
+- **71 tests nuevos** (120 total con los 49 de v0.1, todos pasando) — v0.1 no se tocó, ni un
+  módulo ni un test existente.
+- Sección nueva en `tools/nima-catalog-ai/README.md`: "Nima Catalog AI v0.2 — Protected
+  Lifestyle Composition" (arquitectura completa, por qué, limitaciones conocidas).
+
+### Validated (1 pilot real, ~$0.03 USD, mismo producto de la tanda 21: `waterproof-pet-feeding-mats-...`)
+- **Checkpoint verificado antes de gastar**: rama, HEAD, 120/120 tests, `main` intacto en
+  `6a48a20`, working tree limpio (solo `nima-catalog-images/` sin trackear).
+- **Segmentación real confirmada correcta por inspección visual**: aisló la alfombrilla
+  completa (wordmark "Moki Found", pestaña de pata 4+1 pads, gotas de agua) y excluyó
+  automáticamente la grilla de swatches de color de abajo.
+- **1 llamada real a `images.generate`** (`gpt-image-2`, 1024×1024, sin reintentos, sin segundo
+  intento de mejora) — fondo editorial cálido de sala de estar, sin producto/mascota/texto,
+  evaluado visualmente (v0.2 no tiene un clasificador automático para esto, documentado como
+  limitación).
+- **Composition Gate: PASS** (ocupación 34% exacta al objetivo, sin clipping, aspect ratio
+  preservado).
+- **Hallazgo real, cuello de botella actual de v0.2**: el producto se ve "pegado"/parado en vez
+  de apoyado en el piso — la foto fuente es una toma cenital y no hay transformación de
+  perspectiva que lo asiente en el plano del suelo de una escena a nivel de ojos. Limitación
+  arquitectónica conocida ("No 3D perspective" en el README), no un bug puntual — es el próximo
+  problema a resolver si se sigue invirtiendo en este pipeline.
+
+### Fixed
+- **`visual_debug._thumb()` perdía el canal alfa** con un `.convert("RGB")` sin componer sobre
+  blanco primero — un cutout con región transparente (ej. donde se excluyeron los swatches)
+  mostraba esos píxeles descartados de vuelta en el panel CUTOUT del contact sheet, aunque el
+  PNG real del cutout siempre tuvo el alfa correcto. Encontrado en el pilot real, corregido
+  componiendo sobre blanco antes de convertir. 120/120 tests siguen pasando tras el fix.
+- Agregado `OpenAIClient.generate_image()` (`images.generate`, texto-a-imagen) — distinto de
+  `edit_image()` (`images.edit`), que v0.2 nunca llama.
+
+### Deployment / Safety
+- Commits `91c1cd4` (implementación) y `71cc6f2` (fix + `generate_image`) en
+  `feat/nima-catalog-ai-v02-lifestyle-composition`, pusheada a `origin` — **sin PR, sin merge a
+  `main`**. `main` intacto en `6a48a20`. Shopify no se tocó en ningún punto. Solo 1 llamada real
+  a la API de OpenAI en toda la tanda, sin reintentos.
+
 ## [Unreleased] - 2026-08-06 (tanda 21 — Nima Catalog API Pipeline v0.1: implementado, testeado, validado con 2 corridas reales)
 
 **Actor:** Code, a pedido y con autorización explícita de Brey en cada paso (implementación,
