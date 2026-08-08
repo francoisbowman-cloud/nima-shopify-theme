@@ -26,6 +26,9 @@
       "page": "Página {{ page }}"
     }
   },
+  "announcement": {
+    "shipping_returns": "Envío gratis desde $50 · Devoluciones fáciles en 30 días"
+  },
   "accessibility": {
     "skip_to_content": "Saltar al contenido",
     "menu": "Menú",
