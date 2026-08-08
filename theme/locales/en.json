@@ -26,6 +26,9 @@
       "page": "Page {{ page }}"
     }
   },
+  "announcement": {
+    "shipping_returns": "Free shipping from $50 · Easy 30-day returns"
+  },
   "accessibility": {
     "skip_to_content": "Skip to content",
     "menu": "Menu",
