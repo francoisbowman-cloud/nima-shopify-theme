@@ -8,6 +8,7 @@ additional model call.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from pathlib import Path
 
@@ -116,7 +117,7 @@ def main() -> int:
         api_key=api_key,
         schemas_dir=args.schemas_dir,
     )
-    print(file_utils.json.dumps(summary, indent=2) if hasattr(file_utils, "json") else summary)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
     return 0
 
 
