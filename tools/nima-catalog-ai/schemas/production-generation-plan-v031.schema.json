@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "production-generation-plan-v031.schema.json",
+  "title": "ProductionGenerationPlanV031",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["handle", "policy_version", "outputs"],
+  "properties": {
+    "handle": {"type": "string", "minLength": 1},
+    "policy_version": {"const": "0.3.1"},
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["type", "asset_role", "background_policy", "required_background", "background", "mandatory_rules", "rejection_criteria"],
+        "properties": {
+          "type": {"enum": ["refined", "lifestyle", "in-use"]},
+          "asset_role": {"enum": ["commerce-primary", "contextual-editorial"]},
+          "background_policy": {"enum": ["commerce-white-background", "contextual-scene-background"]},
+          "required_background": {"type": ["string", "null"]},
+          "background": {"type": "string", "minLength": 1},
+          "mandatory_rules": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "rejection_criteria": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+        }
+      }
+    }
+  }
+}
