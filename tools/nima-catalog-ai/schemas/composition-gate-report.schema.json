@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "composition-gate-report.schema.json",
+  "title": "CompositionGateReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["passed", "geometry", "scene", "status"],
+  "properties": {
+    "passed": {"type": "boolean"},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "violations", "passed"],
+      "properties": {
+        "checks": {"type": "object"},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "violations", "passed"],
+      "properties": {
+        "checks": {"type": "object"},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "passed": {"type": "boolean"}
+      }
+    }
+  }
+}

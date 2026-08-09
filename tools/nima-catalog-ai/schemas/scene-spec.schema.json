@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scene-spec.schema.json",
+  "title": "SceneSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scene_type",
+    "interaction_level",
+    "product_contact_allowed",
+    "animal_contact_allowed",
+    "human_contact_allowed"
+  ],
+  "properties": {
+    "scene_type": {"type": "string", "enum": ["lifestyle", "in-use"]},
+    "interaction_level": {"type": "integer", "enum": [0, 1, 2, 3]},
+    "product_contact_allowed": {"type": "boolean"},
+    "animal_contact_allowed": {"type": "boolean"},
+    "human_contact_allowed": {"type": "boolean"}
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scene-intelligence.schema.json",
+  "title": "SceneIntelligence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "product_role",
+    "usage_mode",
+    "primary_environments",
+    "secondary_environments",
+    "preferred_surfaces",
+    "placement_plane",
+    "geometry_class",
+    "camera_requirement",
+    "interaction_level",
+    "environment_rankings",
+    "warnings"
+  ],
+  "properties": {
+    "product_role": {"type": "string", "minLength": 1},
+    "usage_mode": {"type": "string", "minLength": 1},
+    "primary_environments": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "secondary_environments": {"type": "array", "items": {"type": "string"}},
+    "preferred_surfaces": {"type": "array", "items": {"type": "string"}},
+    "placement_plane": {"type": "string", "enum": ["ground", "tabletop", "wall", "shelf", "hanging"]},
+    "geometry_class": {"type": "string", "enum": ["flat", "soft", "volumetric", "upright", "deformable"]},
+    "camera_requirement": {"type": "string"},
+    "interaction_level": {"type": "integer", "enum": [0, 1, 2, 3]},
+    "environment_rankings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["environment", "score"],
+        "properties": {
+          "environment": {"type": "string"},
+          "score": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

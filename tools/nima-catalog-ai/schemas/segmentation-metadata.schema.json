@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "segmentation-metadata.schema.json",
+  "title": "SegmentationMetadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_width",
+    "source_height",
+    "bounding_box",
+    "product_pixel_width",
+    "product_pixel_height",
+    "product_area_ratio",
+    "edge_confidence",
+    "has_transparency",
+    "backend",
+    "warnings"
+  ],
+  "properties": {
+    "source_width": {"type": "integer", "minimum": 0},
+    "source_height": {"type": "integer", "minimum": 0},
+    "bounding_box": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "top", "right", "bottom"],
+      "properties": {
+        "left": {"type": "integer"},
+        "top": {"type": "integer"},
+        "right": {"type": "integer"},
+        "bottom": {"type": "integer"}
+      }
+    },
+    "product_pixel_width": {"type": "integer", "minimum": 0},
+    "product_pixel_height": {"type": "integer", "minimum": 0},
+    "product_area_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+    "edge_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "has_transparency": {"type": "boolean"},
+    "backend": {"type": "string", "minLength": 1},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

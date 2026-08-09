@@ -3,108 +3,131 @@ Pegar como primer mensaje en la sesión nueva de Code, junto con
 `ESTADO-tienda-mascotas.md` (ya actualizado en el repo, no hace falta
 adjuntarlo aparte si la sesión abre con acceso a la carpeta).
 
-## Estado al cierre de esta sesión (23 de julio de 2026)
+## Estado al cierre de esta sesión (7 de agosto de 2026)
 
 Repo: `C:\Users\user\Claude\Projects\OVL_PetDrop`, sincronizado con
-`github.com/francoisbowman-cloud/nima-shopify-theme` (privado), rama
-`main`, working tree limpio. Último commit: `e250563`.
+`github.com/francoisbowman-cloud/nima-shopify-theme` (privado). Rama
+`feat/nima-catalog-ai-v02-lifestyle-composition`, HEAD `71cc6f2` —
+**pusheada a `origin` al cierre de esta sesión, sin PR, no mergeada a
+`main`** (`main` sigue en `6a48a20`). Directorio sin trackear:
+`nima-catalog-images/` (sigue sin decidirse si se commitea o se deja
+fuera del repo vía `.gitignore` — no tocado esta sesión).
 
 ### Lo más importante para entender antes de tocar nada
 **El theme publicado (MAIN) en Shopify puede divergir del código de este
-repo.** Ya pasó una vez: Design reemplazó el MAIN por un theme nuevo
-("Nima — Dirección B") sin avisar, y este repo seguía trackeando el
-theme viejo (`PetDrop_OVL`), que ya no existía. Antes de auditar o
-tocar cualquier archivo de `theme/`, verificar contra la API real cuál
-es el theme `MAIN` actual y confirmar que coincide con lo que dice
-`ESTADO-tienda-mascotas.md`. El procedimiento exacto (queries GraphQL
-de solo lectura, cómo resincronizar, cómo aplicar fixes sin romper el
-theme publicado) está documentado en `CLAUDE.md`, sección "⚠️ El theme
-publicado puede divergir del repo".
+repo.** Antes de auditar o tocar cualquier archivo de `theme/`, verificar
+contra la API real cuál es el theme `MAIN` actual (procedimiento en
+`CLAUDE.md`, sección "⚠️ El theme publicado puede divergir del repo").
+No se tocó nada de `theme/` ni de Shopify en esta sesión — todo el
+trabajo fue en `tools/nima-catalog-ai/`.
+
+### Punto de entrada más reciente: Nima Catalog AI v0.2 implementado + 1 pilot real — y v0.3 ya solicitado, sin empezar
+Ver decisiones #78/#79 de `ESTADO-tienda-mascotas.md` para el detalle completo. Resumen de lo
+que importa para retomar:
+
+- **v0.2 ("Protected Lifestyle Composition") implementado y testeado (120/120 tests)** —
+  resuelve el límite de v0.1 (decisión #77) componiendo el producto real, segmentado, sobre un
+  fondo generado por IA que nunca ve el producto, en vez de regenerar todo desde texto.
+- **1 pilot real ejecutado** sobre `waterproof-pet-feeding-mats-...` (mismo producto de v0.1):
+  1 llamada real a `images.generate` (~$0.03, sin reintentos), Composition Gate: PASS. Bug real
+  de visualización encontrado y corregido en el mismo pilot (`visual_debug._thumb()` perdía
+  alfa). **Hallazgo principal**: el producto se ve "pegado"/parado, no apoyado en el piso — la
+  foto fuente es una toma cenital y v0.2 no tiene transformación de perspectiva.
+- **Instrucción explícita recibida al cierre de esta sesión: construir v0.3** ("Scene
+  Intelligence + Perspective Match + Edge Integration") — prompt maestro completo ya recibido,
+  **todavía no ejecutado, cero código escrito**. Objetivo: (1) elegir escena coherente con el
+  producto (para una feeding mat: cocina/mudroom/patio, no living room), (2) transformar
+  geométricamente el producto real para que coincida con la perspectiva del fondo (sin
+  redibujarlo), (3) mejorar integración de bordes (halo blanco actual), (4) sombra
+  surface-aware. Nueva rama sugerida: `feat/nima-catalog-ai-v03-scene-intelligence-perspective`,
+  base = `71cc6f2` (HEAD actual de v0.2). Autoriza 1 sola llamada real de generación de fondo al
+  final, mismas reglas de seguridad que v0.2 (no Shopify, no `main`, no PR/merge automático).
+  **El prompt completo del usuario para v0.3 debe pegarse en la sesión nueva** — no está
+  resumido en ningún archivo del repo todavía, solo en esta conversación que se va a cerrar.
+- **Instrucción adicional recibida en el mismo mensaje, también sin empezar**: auditoría
+  completa de traducción EN/ES del theme (`BLOCK — GLOBAL TRANSLATION & LOCALE AUDIT`) — ya se
+  detectó que en locale EN el catálogo muestra filtros de categoría en español ("Comederos",
+  "Descanso", "Paseo" en vez de sus equivalentes en inglés). Alcance: solo consistencia EN/ES
+  del theme (nav, catálogo, filtros, product cards/page, Magazine, About, Contact, footer,
+  cart, search, aria-labels) — explícitamente NO autoriza traducción automática de
+  descripciones vía API, ni cambios de contenido de producto, ni publicación en Shopify.
 
 ### Completado en esta sesión
-1. **Repo movido a GitHub** (privado) + `gh` CLI instalado y
-   autenticado en la máquina de Brey, para que ChatGPT/Codex Cloud
-   pueda trabajar sobre el código y entregar PRs.
-2. **`AGENTS.md` creado** — equivalente de `CLAUDE.md` para Codex
-   Cloud, con el protocolo v2 completo embebido (Codex no puede leer
-   archivos fuera de este repo).
-3. **Corrección ortográfica "Atlas Comerce" → "Atlas Commerce"**
-   aplicada en todo el repo y a nivel sistema (archivo renombrado a
-   `ESTADO-atlas-commerce.md` en el Project Atlas E-Commerce,
-   referencias corregidas en `ESTADO-aromia.md`, protocolo actualizado
-   a v2). Pendiente solo el renombrado del Project de claude.ai en la
-   UI (acción manual, no de código).
-4. **Detectado y resincronizado: el theme publicado ya no era
-   `PetDrop_OVL`.** Design lo había reemplazado por "Nima — Dirección
-   B" (ID `198916800593`), con paleta cálida propia, páginas nuevas
-   (Sobre Nima, Contacto) y una sección de teaser de Magazine. Se leyó
-   el theme real vía Admin GraphQL API (`theme.files`) y se
-   sobreescribió `theme/` en el repo para reflejar la realidad.
-5. **Auditoría técnica completa de "Nima — Dirección B"**, en orden de
-   prioridad (rompe-compra → responsive → navegación → consistencia
-   visual → limpieza). Bugs reales encontrados y corregidos:
-   - Selector de color roto en productos con Color + otra opción (Dog
-     Leash 17 variantes, Portable Pet Grooming Hammock 9 variantes) —
-     mostraba círculos duplicados sin indicar talla.
-   - Galería de producto sin forma de volver a la imagen principal.
-   - Formulario de contacto en inglés mostraba las claves de
-     traducción sin resolver (faltaba el bloque `contact` en
-     `en.json`).
-   - Logo del header con `height="auto"` inválido (regresión) + 3
-     imágenes nuevas sin `width`/`height`.
-   - Grid del blog no colapsaba a 1 columna en mobile (un `style`
-     inline pisaba el breakpoint responsive).
-   - Swatches/pills sin estado visual para "sin stock".
-   - Consolidado el CSS duplicado de tarjetas (Catálogo/Búsqueda/
-     Colecciones ahora usan el mismo patrón).
-   - Colores hardcodeados que coincidían con la paleta (footer,
-     botones, paneles oscuros) migrados a variables de tema — antes
-     no seguían el color elegido en el Customizer.
-   - Limpieza: metadata del theme desactualizada, copy con datos
-     incorrectos.
-   - `shopify theme check`: 0 errores (antes 7), 2 warnings ya
-     conocidos (fuentes deprecated, sin urgencia).
-6. **Los fixes se subieron a un theme duplicado sin publicar**
-   ("Nima — Dirección B (Auditoría Code)", ID `198934265937`) — Shopify
-   bloquea escritura por API sobre el theme MAIN. Todo documentado en
-   `CHANGELOG.md` (tanda 9) y `ESTADO-tienda-mascotas.md` (decisiones
-   #31-33, sección 9 con la checklist de qué revisar).
+1. **`tools/nima-catalog-ai/` v0.2 implementado de punta a punta** (Blocks 1-15 del prompt
+   maestro v0.2): segmentación (`src/segmentation.py`), placement (`src/placement.py`), scene
+   spec (`src/scene.py`), background contract + provider (`src/background.py`,
+   `src/background_provider.py`), compositor (`src/compositor.py`), sombra (`src/shadow.py`),
+   Composition Gate (`src/composition_gates.py`), visual debug (`src/visual_debug.py`), review
+   package extendido (`src/composition_review.py`), orquestador (`src/composition_pipeline.py`),
+   batch (`src/composition_batch.py`), demo offline (`src/demo_v02.py`). v0.1 queda intacto y
+   congelado (49/49 tests siguen pasando sin tocarse).
+2. **71 tests nuevos** (120 total, todos pasando).
+3. **Checkpoint verificado y rama pusheada a `origin`** antes del pilot real (branch, HEAD,
+   tests, `main` intacto, Shopify intacto).
+4. **1 pilot real autorizado y ejecutado** sobre `waterproof-pet-feeding-mats-...`: segmentación
+   real correcta (excluyó automáticamente la grilla de swatches), 1 llamada real a
+   `images.generate` (sin reintentos), Composition Gate: PASS, evaluación visual honesta
+   (perspectiva es el cuello de botella real).
+5. **Bug real encontrado y corregido en el pilot**: `visual_debug._thumb()` perdía el canal
+   alfa (`.convert("RGB")` sin componer sobre blanco primero) — corregido, 120/120 tests
+   siguen pasando.
+6. **Commits `91c1cd4` (v0.2) y `71cc6f2` (fix + `generate_image`)**, pusheados a `origin` —
+   sin PR, sin merge a `main`.
+7. **`ESTADO-tienda-mascotas.md` y `CHANGELOG.md` actualizados** con decisiones #78/#79 y
+   tanda 22 — este archivo (`CONTINUIDAD`) reescrito para el cierre de sesión.
 
 ### Pendiente exacto al momento de migrar
-1. **Brey debe previsualizar el duplicado `198934265937` en Shopify y
-   publicarlo manualmente** si aprueba los cambios (Online Store →
-   Themes → ese theme → Publicar). Checklist de qué mirar:
-   `ESTADO-tienda-mascotas.md`, sección 9.
-2. Conectar Codex Cloud (ChatGPT) al repo de GitHub — primer uso, sin
-   hacer todavía.
-3. Confirmar si existen las "adendas v3-v5" del protocolo
-   (`PROTOCOLO-adendas-completas.md`) mencionadas en un mensaje de
-   Chat — no se encontraron en ninguna carpeta de proyecto verificada.
-   Si no existen, aclarar de dónde salió la referencia.
-4. Verificar en el checkout real que el nombre visible al cliente sea
-   "Nima" (no "Atlas Commerce" ni "PetDrop").
-5. Confirmar si Brey corrigió la configuración de moneda en AutoDS
-   (causa raíz de un bug de precios DOP→USD que se repitió más de una
-   vez en el catálogo).
-6. Quitar la contraseña de la tienda para abrirla al público —
-   decisión de timing de Brey, no técnica.
-7. Renombrar el Project de claude.ai "Atlas-Comerce-Lab" en la UI
-   (única parte manual que falta de la corrección ortográfica).
+1. **Ejecutar v0.3** (prompt maestro completo recibido, no resumido en ningún archivo salvo
+   esta conversación) — scene intelligence, perspective match, edge integration, surface-aware
+   shadow, 1 pilot real adicional autorizado. Rama nueva desde `71cc6f2`.
+2. **Ejecutar la auditoría de traducción EN/ES** (mismo mensaje, alcance separado de v0.3) —
+   filtros de categoría del catálogo ya confirmados mezclando idiomas en locale EN.
+3. **Brey decide sobre v0.2**: si vale la pena seguir invirtiendo antes de resolver el problema
+   de perspectiva, cuándo mergear `feat/nima-catalog-ai-v02-lifestyle-composition` (o la v0.3
+   que salga de ella) a `main`, y cuándo autorizar más llamadas API o publicación a Shopify.
+4. **21 de los 24 productos con imágenes descargadas siguen sin pasar por ningún pipeline
+   visual** (no tocado esta sesión, ver `ESTADO` sección 8 para el detalle completo).
+5. Sigue pendiente de sesiones anteriores (no tocado esta sesión, ver
+   `ESTADO-tienda-mascotas.md` sección 7/8 para el detalle completo): publicar el duplicado de
+   theme `199238025297` ("Nima — Evolucion fundamentos"), tratamiento de las 5 fotos de AutoDS
+   con marca de competidor (decisión #37/#49, en pausa), conectar Codex Cloud al repo,
+   confirmar moneda en AutoDS, decidir cuándo quitar la contraseña del sitio.
 
 ## Reglas de esta sesión, ya en memoria (no hace falta repetirlas)
 - **Verificar contra el repo/API real antes de reportar algo como
-  pendiente o roto** — no asumir desde memoria de sesión ni desde una
-  copia vieja de un documento (regla del protocolo v2, sección 8).
+  pendiente o roto** — no asumir desde memoria de sesión.
 - **Nunca escribir directo sobre el theme MAIN/publicado vía API** —
   Shopify lo bloquea. Flujo seguro: duplicar → aplicar fixes en el
   duplicado → Brey revisa y publica manualmente.
-- `shopify theme pull`/`push` no son viables en este entorno (requieren
-  login OAuth interactivo) — todo lo que Code hace contra Shopify es
-  vía Admin GraphQL API (lectura y, en duplicados, escritura).
+- **Nunca mutar Shopify (subir imágenes, reordenar, etc.) sin
+  autorización explícita y punto por punto** — el flujo de `pilot-01`
+  (revisión humana → confirmación → ejecución → validación → registro
+  de rollback) es el patrón a repetir para cualquier escritura futura
+  a Shopify, no solo para imágenes.
+- **No dar por hecho nombres de modelo/endpoints de APIs externas
+  (OpenAI, etc.) desde memoria de entrenamiento** — verificar contra
+  documentación oficial vigente antes de programar, con fecha de
+  verificación anotada (regla explícita de Brey para el pipeline de
+  IA, decisión #76/#77).
+- **Correcciones humanas verificadas sobre un producto van en
+  `product-overrides.json`, nunca editando `product-analysis.json` a
+  mano** — patrón de v0.1 (decisión #77), sigue vigente en v0.2.
+- **Un pipeline de generación de imagen puede quedar "cerrado
+  técnicamente" (validado, funcionando) sin que ninguna imagen esté
+  lista para publicar** — no asumir que "el pipeline funciona" implica
+  autorización para subir nada a Shopify; son decisiones separadas.
+- **Antes de cualquier llamada real a una API paga: verificar checkpoint
+  completo primero** (branch/HEAD/tests/`main` intacto/Shopify intacto),
+  hacer push del punto de partida, y respetar el límite exacto de
+  llamadas autorizado — nunca reintentar automáticamente ni encadenar
+  una segunda llamada "para mejorar" sin autorización nueva. Patrón
+  usado en el pilot real de v0.2 (decisión #79), a repetir en v0.3.
+- **Un pilot real es para diagnosticar la arquitectura, no para perseguir
+  una imagen perfecta** — no consumir una segunda llamada para arreglar
+  lo que salió mal en la primera; documentarlo como hallazgo y seguir.
 - Autoridad exclusiva de `git commit`/`push` es de Code, sin excepción.
 - Numeración de decisiones nuevas en `ESTADO`: la asigna quien commitea
-  (Code), nunca quien la propone — evita colisiones entre sesiones que
-  no se vieron entre sí.
+  (Code), nunca quien la propone.
 - Español neutro, sin coloquialismos. Brey es principiante en
   programación — explicar conceptos técnicos con contexto, sin asumir
   jerga previa.

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "surface-model.schema.json",
+  "title": "SurfaceModel",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "surface_plane",
+    "geometry_class",
+    "preferred_surfaces",
+    "perspective_match_eligible",
+    "warnings"
+  ],
+  "properties": {
+    "surface_plane": {"type": "string", "enum": ["ground", "tabletop", "wall", "shelf", "hanging"]},
+    "geometry_class": {"type": "string", "enum": ["flat", "soft", "volumetric", "upright", "deformable"]},
+    "preferred_surfaces": {"type": "array", "items": {"type": "string"}},
+    "perspective_match_eligible": {"type": "boolean"},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

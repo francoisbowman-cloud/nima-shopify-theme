@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "product-analysis.schema.json",
+  "title": "ProductAnalysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handle",
+    "title",
+    "product_category",
+    "reference_images",
+    "primary_reference",
+    "critical_visual_features",
+    "critical_functional_features",
+    "allowed_changes",
+    "forbidden_changes",
+    "variant_constraints",
+    "scale_constraints",
+    "interaction_constraints",
+    "risk_level",
+    "eligible_outputs",
+    "requires_human_review",
+    "unknowns"
+  ],
+  "properties": {
+    "handle": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "product_category": {"type": "string"},
+    "reference_images": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "primary_reference": {"type": "string", "minLength": 1},
+    "critical_visual_features": {"type": "array", "items": {"type": "string"}},
+    "critical_functional_features": {"type": "array", "items": {"type": "string"}},
+    "allowed_changes": {"type": "array", "items": {"type": "string"}},
+    "forbidden_changes": {"type": "array", "items": {"type": "string"}},
+    "variant_constraints": {"type": "array", "items": {"type": "string"}},
+    "scale_constraints": {"type": "array", "items": {"type": "string"}},
+    "interaction_constraints": {"type": "array", "items": {"type": "string"}},
+    "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
+    "eligible_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["refined", "lifestyle", "in_use"],
+      "properties": {
+        "refined": {"type": "boolean"},
+        "lifestyle": {"type": "boolean"},
+        "in_use": {"type": "boolean"}
+      }
+    },
+    "requires_human_review": {"type": "boolean"},
+    "unknowns": {"type": "array", "items": {"type": "string"}}
+  }
+}

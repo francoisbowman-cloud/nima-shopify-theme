@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "placement-spec.schema.json",
+  "title": "PlacementSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["canvas", "product", "safe_zone", "ground_plane", "warnings"],
+  "properties": {
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1}
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anchor",
+        "target_occupancy",
+        "min_occupancy",
+        "max_occupancy",
+        "rotation_degrees",
+        "allow_crop",
+        "aspect_ratio",
+        "final_bbox",
+        "final_occupancy"
+      ],
+      "properties": {
+        "anchor": {"type": "string", "enum": ["bottom-center", "center"]},
+        "target_occupancy": {"type": "number", "minimum": 0, "maximum": 1},
+        "min_occupancy": {"type": "number", "minimum": 0, "maximum": 1},
+        "max_occupancy": {"type": "number", "minimum": 0, "maximum": 1},
+        "rotation_degrees": {"type": "number"},
+        "allow_crop": {"type": "boolean"},
+        "aspect_ratio": {"type": "number", "exclusiveMinimum": 0},
+        "final_bbox": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["left", "top", "right", "bottom"],
+          "properties": {
+            "left": {"type": "integer"},
+            "top": {"type": "integer"},
+            "right": {"type": "integer"},
+            "bottom": {"type": "integer"}
+          }
+        },
+        "final_occupancy": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "safe_zone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "top", "right", "bottom"],
+      "properties": {
+        "left": {"type": "integer"},
+        "top": {"type": "integer"},
+        "right": {"type": "integer"},
+        "bottom": {"type": "integer"}
+      }
+    },
+    "ground_plane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["y", "depth"],
+      "properties": {
+        "y": {"type": "integer"},
+        "depth": {"type": "integer"}
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

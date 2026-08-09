@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fidelity-report.schema.json",
+  "title": "FidelityReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handle",
+    "output_type",
+    "candidate_file",
+    "decision",
+    "overall_score",
+    "visual_identity_score",
+    "functional_accuracy_score",
+    "interaction_score",
+    "anatomy_score",
+    "violations",
+    "verified_preserved_features",
+    "uncertain_features",
+    "recommended_action"
+  ],
+  "properties": {
+    "handle": {"type": "string", "minLength": 1},
+    "output_type": {"type": "string", "enum": ["refined", "lifestyle", "in-use"]},
+    "candidate_file": {"type": "string", "minLength": 1},
+    "decision": {"type": "string", "enum": ["approved_candidate", "review", "reject"]},
+    "overall_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "visual_identity_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "functional_accuracy_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "interaction_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "anatomy_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category", "severity", "description", "evidence"],
+        "properties": {
+          "category": {"type": "string"},
+          "severity": {"type": "string", "enum": ["minor", "major", "critical"]},
+          "description": {"type": "string"},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "verified_preserved_features": {"type": "array", "items": {"type": "string"}},
+    "uncertain_features": {"type": "array", "items": {"type": "string"}},
+    "recommended_action": {
+      "type": "string",
+      "enum": ["accept_for_human_review", "regenerate", "omit_output"]
+    }
+  }
+}
