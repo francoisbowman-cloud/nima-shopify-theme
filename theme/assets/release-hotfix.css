@@ -1,0 +1,6 @@
+/* Final release hardening: product media must remain fully visible inside commerce frames. */
+.template-product .gallery__main > img,
+.template-product .gallery__thumbs img {
+  box-sizing: border-box;
+  display: block;
+}
