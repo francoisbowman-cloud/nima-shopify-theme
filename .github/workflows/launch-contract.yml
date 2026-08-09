@@ -1,6 +1,13 @@
 name: Launch contract
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'theme/**'
+      - 'tests/test_launch_theme_contract.py'
+      - '.github/workflows/launch-contract.yml'
   pull_request:
     paths:
       - 'theme/**'
