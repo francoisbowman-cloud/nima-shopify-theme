@@ -81,6 +81,7 @@ async def establish_locale(page, base, locale):
 
 async def common_checks(page, locale):
     assert await page.locator('link[href*="premium-experience.css"]').count() > 0, "premium-experience.css missing"
+    assert await page.locator('link[href*="premium-audit-fixes.css"]').count() > 0, "premium-audit-fixes.css missing"
     lang = (await page.locator("html").get_attribute("lang") or "").lower()
     assert lang.startswith(locale)
     text = (await page.locator("body").inner_text()).lower()
@@ -98,6 +99,14 @@ async def magazine_checks(page):
     assert color in {"rgb(255, 255, 255)", "rgba(255, 255, 255, 1)"}, f"Magazine hero copy not white: {color}"
     assert await page.locator(".mag-grid .feature").count() >= 1, "Magazine feature story missing"
     assert await page.locator(".mag-grid .side-story").count() >= 1, "Magazine side stories missing"
+    brand_heading = page.locator(".split--brand .dark .big")
+    assert await brand_heading.count() == 1 and await brand_heading.is_visible(), "Magazine brand statement missing"
+    brand_color = await brand_heading.evaluate("el => getComputedStyle(el).color")
+    assert brand_color in {"rgb(255, 255, 255)", "rgba(255, 255, 255, 1)"}, f"Magazine dark-panel heading not white: {brand_color}"
+    newsletter = page.locator('.footer-newsletter__form input[type="email"]')
+    if await newsletter.count():
+        border_radius = await newsletter.evaluate("el => getComputedStyle(el).borderRadius")
+        assert border_radius == "0px", f"Newsletter input still browser/default styled: radius={border_radius}"
 
 
 async def commerce_pdp_checks(page, label):
@@ -131,7 +140,16 @@ async def run_context(browser, base, locale, viewport_name, report):
                 await commerce_pdp_checks(page, route)
             shot = OUT / f"{locale}-{viewport_name}-{route}.png"
             await page.screenshot(path=str(shot), full_page=True)
-            report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "url": page.url, "screenshot": shot.name, "status": "PASS"})
+            detail_name = None
+            if route == "magazine":
+                detail = page.locator(".split--brand")
+                detail_name = f"{locale}-{viewport_name}-{route}-brand-statement.png"
+            else:
+                detail = page.locator(".gallery__main")
+                detail_name = f"{locale}-{viewport_name}-{route}-main-media.png"
+            if await detail.count() and await detail.is_visible():
+                await detail.screenshot(path=str(OUT / detail_name))
+            report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "url": page.url, "screenshot": shot.name, "detail_screenshot": detail_name, "status": "PASS"})
     finally:
         await context.close()
 
@@ -159,7 +177,7 @@ async def main():
             lines = ["# Nima Editorial + Media Gate", "", f"- Theme: `{THEME_ID}`", f"- Base: `{base}`", f"- Status: **{report['status']}**", f"- Cases completed: {len(report['cases'])}/{total}"]
             if report.get("failure"):
                 lines.append(f"- Failure: `{report['failure']}`")
-            lines += ["", "## Evidence", ""] + [f"- {c['locale'].upper()} · {c['viewport']} · {c['route']} — PASS — `{c['screenshot']}`" for c in report["cases"]]
+            lines += ["", "## Evidence", ""] + [f"- {c['locale'].upper()} · {c['viewport']} · {c['route']} — PASS — `{c['screenshot']}` · detail `{c.get('detail_screenshot')}`" for c in report["cases"]]
             (OUT / "REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
             await browser.close()
 
