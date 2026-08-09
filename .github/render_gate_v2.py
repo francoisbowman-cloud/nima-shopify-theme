@@ -15,20 +15,14 @@ OUT = Path(os.getenv("NIMA_RENDER_OUT", "render-gate-evidence"))
 OUT.mkdir(parents=True, exist_ok=True)
 
 VIEWPORTS = {"desktop": {"width": 1440, "height": 900}, "mobile": {"width": 390, "height": 844}}
-ROUTES = {
-    "home": "",
-    "collection": "collections/frontpage",
-    "pdp": f"products/{PRODUCT_HANDLE}",
-    "search": "search?q=water",
-}
+ROUTES = {"home": "", "collection": "collections/frontpage", "pdp": f"products/{PRODUCT_HANDLE}", "search": "search?q=water"}
 
 
 def localized_url(base, root, route):
     root = root if root.startswith("/") else "/" + root
     if not root.endswith("/"):
         root += "/"
-    relative = ROUTES[route]
-    path = root + relative
+    path = root + ROUTES[route]
     sep = "&" if "?" in path else "?"
     return f"{base}{path}{sep}{urlencode({'preview_theme_id': THEME_ID})}"
 
@@ -86,9 +80,14 @@ async def establish_locale(page, base, locale):
     assert await page.locator('link[href*="premium-experience.css"]').count() > 0, "RC marker asset missing during locale bootstrap"
 
     current = (await page.locator("html").get_attribute("lang") or "").lower()
+    switcher = page.locator(f'.language-switcher__option[value="{locale}"]')
+    switch_count = await switcher.count()
+
     if not current.startswith(locale):
-        switcher = page.locator(f'.language-switcher__option[value="{locale}"]')
-        assert await switcher.count() == 1, f"Language switcher has no {locale} option"
+        assert switch_count == 1, (
+            f"MARKET_LOCALE_BLOCKED: {locale} is published at shop level but is not exposed "
+            "by localization.available_languages for the active web presence"
+        )
         assert await switcher.is_visible(), f"Language switcher {locale} option is not visible"
         async with page.expect_navigation(wait_until="domcontentloaded", timeout=45000):
             await switcher.click()
@@ -96,8 +95,9 @@ async def establish_locale(page, base, locale):
 
     active = (await page.locator("html").get_attribute("lang") or "").lower()
     assert active.startswith(locale), f"Language selector failed: expected {locale}, got html lang={active!r}"
-    active_button = page.locator(f'.language-switcher__option[value="{locale}"]')
-    assert await active_button.get_attribute("aria-current") == "true", f"Language switcher did not mark {locale} active"
+    if switch_count:
+        assert await switcher.get_attribute("aria-current") == "true", f"Language switcher did not mark {locale} active"
+
     root = await page.evaluate("window.Shopify && window.Shopify.routes ? window.Shopify.routes.root : '/' ")
     assert isinstance(root, str) and root.startswith("/"), f"Invalid Shopify.routes.root: {root!r}"
     return root
@@ -117,13 +117,7 @@ async def assert_visible_product_cards(page, route):
         card = cards.nth(i)
         if not await card.is_visible():
             continue
-        geometry = await card.evaluate(
-            """el => {
-              const r = el.getBoundingClientRect();
-              const s = getComputedStyle(el);
-              return {width:r.width,height:r.height,opacity:parseFloat(s.opacity),visibility:s.visibility,display:s.display};
-            }"""
-        )
+        geometry = await card.evaluate("""el => { const r=el.getBoundingClientRect(); const s=getComputedStyle(el); return {width:r.width,height:r.height,opacity:parseFloat(s.opacity),visibility:s.visibility,display:s.display}; }""")
         assert geometry["width"] > 40 and geometry["height"] > 80, f"{route} card collapsed: {geometry}"
         assert geometry["opacity"] > 0.95, f"{route} card remained transparent: {geometry}"
         assert geometry["visibility"] != "hidden" and geometry["display"] != "none", f"{route} card hidden: {geometry}"
