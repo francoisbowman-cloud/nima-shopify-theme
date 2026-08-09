@@ -21,12 +21,34 @@ def test_commerce_images_use_border_box_containment():
     for selector in (
         ".pcard__media img",
         ".template-product .gallery__main>img",
-        ".template-product [data-gallery-main] img",
+        ".template-product [data-gallery-main]",
         ".template-cart .cart-item__media img",
     ):
         assert selector in css
     assert "box-sizing:border-box!important" in css
+    assert "object-fit:contain!important" in css
     assert "background:#fff!important" in css
+
+
+def test_supplier_media_gets_larger_safety_margin_than_refined_media():
+    css = read(THEME / "assets" / "premium-experience.css").replace(" ", "")
+    card = read(THEME / "snippets" / "product-card.liquid")
+    assert 'data-media-grade="{{ media_grade }}"' in card
+    assert "media_probe contains '-refined-'" in card
+    assert '[data-media-grade="source"]' in css
+    assert '[data-media-grade="refined"]' in css
+    assert "padding:clamp(30px,14%,62px)!important" in css
+    assert "padding:clamp(20px,9%,44px)!important" in css
+
+
+def test_pdp_refined_media_can_use_tighter_safe_area_without_changing_fit_mode():
+    css = read(THEME / "assets" / "premium-experience.css")
+    assert '[data-gallery-main][src*="refined"]' in css
+    assert "padding:clamp(28px,8%,62px)!important" in css
+    assert "object-fit:contain!important" in css
+    assert "object-fit:cover" not in "\n".join(
+        line for line in css.splitlines() if "gallery__main" in line or "data-gallery-main" in line
+    )
 
 
 def test_magazine_has_real_scrim_and_white_copy():
@@ -35,6 +57,18 @@ def test_magazine_has_real_scrim_and_white_copy():
     assert "linear-gradient" in css
     assert ".mag-hero .on-dark-heading{color:#fff!important" in css
     assert ".mag-hero__intro{color:rgba(255,255,255,.94)!important" in css
+
+
+def test_premium_layer_transforms_all_priority_commerce_surfaces():
+    css = read(THEME / "assets" / "premium-experience.css")
+    for selector in (
+        ".template-index .shop-window",
+        ".template-collection .collection-head",
+        ".template-product .product",
+        ".template-search .search-form",
+        ".template-cart .cart-summary",
+    ):
+        assert selector in css
 
 
 def test_motion_is_progressive_and_reduced_motion_safe():
