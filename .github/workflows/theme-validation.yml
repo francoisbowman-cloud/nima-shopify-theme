@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/nima-premium-mockup-implementation
     paths:
       - 'theme/**'
       - '.github/workflows/theme-validation.yml'
@@ -39,8 +40,6 @@ jobs:
           failures = []
           for path in Path('theme').rglob('*.json'):
               text = path.read_text(encoding='utf-8')
-              # Shopify-generated locale/template JSON may contain a leading
-              # /* ... */ warning comment. Strip only that first block comment.
               stripped = text.lstrip()
               if stripped.startswith('/*'):
                   end = stripped.find('*/')

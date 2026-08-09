@@ -6,6 +6,28 @@
   {%- else -%}
     <p class="muted collection-sub">{{ 'collections.default_description' | t }}</p>
   {%- endif -%}
+
+  {%- liquid
+    assign collection_visual = collection.image
+    if collection_visual == blank and collection.products.first.featured_image != blank
+      assign collection_visual = collection.products.first.featured_image
+    endif
+  -%}
+  {%- if collection_visual != blank -%}
+    <div class="collection-visual" aria-hidden="true">
+      {{
+        collection_visual
+        | image_url: width: 1600
+        | image_tag:
+          widths: '640, 960, 1200, 1600',
+          sizes: '(min-width: 801px) 55vw, 100vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          decoding: 'async',
+          alt: ''
+      }}
+    </div>
+  {%- endif -%}
 </div>
 
 <div class="container">

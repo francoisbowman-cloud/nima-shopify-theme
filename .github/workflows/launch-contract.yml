@@ -4,14 +4,17 @@ on:
   push:
     branches:
       - main
+      - feat/nima-premium-mockup-implementation
     paths:
       - 'theme/**'
       - 'tests/test_launch_theme_contract.py'
+      - 'tests/test_locale_contract.py'
       - '.github/workflows/launch-contract.yml'
   pull_request:
     paths:
       - 'theme/**'
       - 'tests/test_launch_theme_contract.py'
+      - 'tests/test_locale_contract.py'
       - '.github/workflows/launch-contract.yml'
 
 jobs:
@@ -23,4 +26,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install pytest
-      - run: pytest -q tests/test_launch_theme_contract.py
+      - run: pytest -q tests/test_launch_theme_contract.py tests/test_locale_contract.py

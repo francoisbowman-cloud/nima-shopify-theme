@@ -30,12 +30,30 @@
     "shipping_returns": "Shipping within the United States · Secure checkout"
   },
   "home": {
+    "hero": {
+      "kicker": "Pet lifestyle & essentials",
+      "heading": "Designed for quieter, better pet living.",
+      "text": "Thoughtful essentials for pets and the people who love them.",
+      "cta": "Shop essentials"
+    },
     "shop_window": {
-      "kicker": "Selected for everyday life",
-      "heading": "Objects worth living with.",
-      "text": "A small edit of useful pieces for feeding, rest, walks, and care — chosen to feel considered at home.",
-      "view_all": "Shop the collection",
+      "kicker": "Shop our essentials",
+      "heading": "Everyday pieces, thoughtfully chosen.",
+      "text": "A concise edit of useful objects for feeding, rest, walks and care — designed to feel considered at home.",
+      "view_all": "View all",
       "empty": "Select a collection in the theme editor to feature products here."
+    },
+    "story": {
+      "kicker": "Living well together",
+      "heading": "Calm spaces. Happy pets.",
+      "text": "We choose beautifully made essentials that support daily routines, encourage rest, and bring a little more harmony to your home.",
+      "cta": "Our philosophy"
+    },
+    "journal": {
+      "kicker": "From the Journal",
+      "heading": "Care, comfort and the rituals of everyday life.",
+      "text": "Stories and practical guides for creating a calmer, more considered life with pets.",
+      "cta": "Read the Journal"
     }
   },
   "accessibility": {
@@ -49,6 +67,10 @@
   "products": {
     "variants": "Variants",
     "color": "Color",
+    "quantity": "Quantity",
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "secure_checkout": "Secure checkout",
     "add_to_cart": "Add to cart",
     "adding": "Adding…",
     "added": "Added ✓",
@@ -57,7 +79,7 @@
     "in_stock": "Available",
     "bestseller": "Bestseller",
     "new": "New",
-    "details": "Product details",
+    "details": "Details",
     "visual_profile": "Visual profile",
     "view_image": "View image {{ index }}",
     "image_unavailable": "Image unavailable",
@@ -65,9 +87,9 @@
     "shipping_us": "Shipping available within the United States",
     "returns_30_days": "See return policy",
     "cross_sell": {
-      "kicker": "Complete the routine",
+      "kicker": "More for their routine",
       "heading": "A few things that belong together.",
-      "text": "Keep the edit useful: complementary objects from the same part of everyday pet life, without turning the page into a marketplace.",
+      "text": "Complementary objects selected from the same part of everyday pet life.",
       "view_all": "Explore all products"
     }
   },
@@ -82,7 +104,7 @@
     "sort_featured": "Featured",
     "sort_price_asc": "Price: low to high",
     "sort_price_desc": "Price: high to low",
-    "default_description": "Objects for feeding, resting, and daily care — without the fuss.",
+    "default_description": "Functional pieces that keep everyday pet care simple and your home beautifully calm.",
     "no_filter_results": "There are no products available in this category.",
     "category": {
       "feeding": "Feeding",
@@ -117,7 +139,7 @@
     "secure_checkout": "Secure checkout hosted by Shopify"
   },
   "seo": {
-    "home_description": "Selected objects for everyday pet care and wellbeing.",
+    "home_description": "Thoughtful pet essentials for quieter, better everyday living.",
     "collection_description": "Shop {{ collection }} at Nima: selected pet products with a clear and dependable experience.",
     "search_description": "Search everyday pet care products at Nima.",
     "default_description": "Nima selects practical objects for everyday pet care and wellbeing."

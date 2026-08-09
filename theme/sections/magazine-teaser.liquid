@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container journal-teaser-wrap">
   <section class="mag-teaser">
     {%- if section.settings.image != blank -%}
-      {%- assign teaser_alt = section.settings.image.alt | default: section.settings.heading | strip_html -%}
+      {%- assign teaser_alt = section.settings.image.alt | default: 'home.journal.heading' | t | strip_html -%}
       {{
         section.settings.image
         | image_url: width: 1800
@@ -16,12 +16,10 @@
     {%- endif -%}
     <div class="mag-teaser__scrim"></div>
     <div class="mag-teaser__card">
-      <span class="kicker on-dark-kicker">{{ section.settings.kicker }}</span>
-      <h3 class="mag-teaser__h">{{ section.settings.heading }}</h3>
-      <p class="on-dark-text">{{ section.settings.text }}</p>
-      {%- if section.settings.button_label != blank -%}
-        <a class="btn btn--light" href="{{ section.settings.button_url | default: '#' }}">{{ section.settings.button_label }}</a>
-      {%- endif -%}
+      <span class="kicker on-dark-kicker">{{ 'home.journal.kicker' | t }}</span>
+      <h3 class="mag-teaser__h">{{ 'home.journal.heading' | t }}</h3>
+      <p class="on-dark-text">{{ 'home.journal.text' | t }}</p>
+      <a class="btn btn--light" href="{{ section.settings.button_url | default: '/pages/magazine' }}">{{ 'home.journal.cta' | t }}</a>
     </div>
   </section>
 </div>
@@ -31,10 +29,6 @@
   "name": "Teaser de Magazine",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Imagen de fondo" },
-    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Nima Magazine" },
-    { "type": "text", "id": "heading", "label": "Título", "default": "El ritual del baño: por qué el grooming es un momento de calma." },
-    { "type": "textarea", "id": "text", "label": "Texto", "default": "Historias sobre el cuidado diario — de comederos a siestas largas." },
-    { "type": "text", "id": "button_label", "label": "Texto del botón", "default": "Leer la historia completa" },
     { "type": "url", "id": "button_url", "label": "Enlace del botón" }
   ],
   "presets": [{ "name": "Teaser de Magazine" }]

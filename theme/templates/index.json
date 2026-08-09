@@ -12,10 +12,6 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "kicker": "Nima — cuidado diario",
-        "heading": "Un día tranquilo,<br>en casa.",
-        "text": "Objetos pensados para el ritmo lento de las mascotas — y de las personas que las cuidan.",
-        "button_label": "Comprar ahora",
         "button_url": "shopify://collections/all",
         "image": "shopify://shop_images/01-hero.png"
       }
@@ -30,9 +26,8 @@
       "type": "dual-mode-split",
       "settings": {
         "left_image": "shopify://shop_images/Home_Split_lado_ComprarUtility.png",
-        "left_button_url": "/collections/all",
         "right_image": "shopify://shop_images/Home_Split_lado_DescubrirEditorial.png",
-        "right_button_url": "/pages/magazine"
+        "left_button_url": "/pages/about"
       }
     },
     "magazine-teaser": {
