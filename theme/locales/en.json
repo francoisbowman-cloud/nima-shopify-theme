@@ -63,7 +63,13 @@
     "image_unavailable": "Image unavailable",
     "image_unavailable_for": "Image unavailable for {{ product }}",
     "shipping_us": "Shipping available within the United States",
-    "returns_30_days": "30-day returns"
+    "returns_30_days": "30-day returns",
+    "cross_sell": {
+      "kicker": "Complete the routine",
+      "heading": "A few things that belong together.",
+      "text": "Keep the edit useful: complementary objects from the same part of everyday pet life, without turning the page into a marketplace.",
+      "view_all": "Explore all products"
+    }
   },
   "collections": {
     "shop": "Shop",
