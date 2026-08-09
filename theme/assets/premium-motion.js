@@ -40,6 +40,12 @@
     });
   }
 
+  function revealAllPending() {
+    document.querySelectorAll('[data-nima-reveal]:not(.is-visible)').forEach(function (target) {
+      target.classList.add('is-visible');
+    });
+  }
+
   function reveal() {
     markRevealTargets();
     var targets = document.querySelectorAll('[data-nima-reveal]');
@@ -52,6 +58,14 @@
     }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
 
     targets.forEach(function (target) { observer.observe(target); });
+
+    /* Motion is enhancement, never a visibility dependency. If an observer is
+       throttled, a layout shift occurs, or a browser misses an intersection,
+       make every remaining target visible after the entrance window. */
+    window.setTimeout(function () {
+      revealAllPending();
+      observer.disconnect();
+    }, 1800);
   }
 
   if (document.readyState === 'loading') {
