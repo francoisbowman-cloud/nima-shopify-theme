@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'theme/**'
-      - '.github/render_gate.py'
+      - '.github/render_gate_v2.py'
       - '.github/workflows/render-gate.yml'
   workflow_dispatch:
 
@@ -38,7 +38,7 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Execute real storefront Render Gate
-        run: python .github/render_gate.py
+        run: python .github/render_gate_v2.py
 
       - name: Publish Render Gate summary
         if: always()
