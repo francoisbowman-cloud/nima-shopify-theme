@@ -10,7 +10,7 @@
     assign feature_button = 'sections.magazine.feature_button' | t
   endif
 -%}
-<section class="container mag-grid">
+<section class="container mag-grid" aria-labelledby="MagazineFeature-{{ section.id }}">
   <article class="feature{% if section.settings.feature_image != blank %} feature--image{% endif %}">
     {%- if section.settings.feature_image != blank -%}
       {%- assign feature_alt = section.settings.feature_image.alt | default: feature_heading | strip_html -%}
@@ -25,21 +25,21 @@
           class: 'feature__media',
           alt: feature_alt
       }}
-      <span class="mag-media-scrim" aria-hidden="true"></span>
     {%- else -%}
       <img class="feature__media" src="{{ 'nima-magazine-grooming.webp' | asset_url }}" width="1120" height="1400" loading="lazy" decoding="async" alt="{{ feature_heading | escape }}">
     {%- endif -%}
+    <span class="mag-media-scrim" aria-hidden="true"></span>
     <div class="feature__content">
       <span class="kicker">{{ feature_kicker }}</span>
-      <h2>{{ feature_heading }}</h2>
+      <h2 id="MagazineFeature-{{ section.id }}">{{ feature_heading }}</h2>
       <p>{{ feature_text }}</p>
-      {%- if feature_button != blank -%}
-        <a class="btn" href="{{ section.settings.feature_button_url | default: '#' }}">{{ feature_button }}</a>
+      {%- if feature_button != blank and section.settings.feature_button_url != blank -%}
+        <a class="btn" href="{{ section.settings.feature_button_url }}">{{ feature_button }}</a>
       {%- endif -%}
     </div>
   </article>
 
-  <aside>
+  <aside aria-label="{{ 'sections.magazine.more_stories' | t }}">
     {%- for block in section.blocks -%}
       {%- liquid
         assign story_kicker = block.settings.kicker
@@ -55,11 +55,12 @@
           assign story_text = story_text_key | t
         endif
       -%}
-      <article class="side-story" {{ block.shopify_attributes }}>
-        {%- if block.settings.url != blank -%}<a href="{{ block.settings.url }}">{%- endif -%}
+      <article class="side-story{% if block.settings.url != blank %} side-story--linked{% endif %}" {{ block.shopify_attributes }}>
+        {%- if block.settings.url != blank -%}<a href="{{ block.settings.url }}" aria-label="{{ story_heading | escape }}">{%- endif -%}
           <span class="kicker">{{ story_kicker }}</span>
           <h3>{{ story_heading }}</h3>
           <p class="muted">{{ story_text }}</p>
+          {%- if block.settings.url != blank -%}<span class="side-story__arrow" aria-hidden="true">↗</span>{%- endif -%}
         {%- if block.settings.url != blank -%}</a>{%- endif -%}
       </article>
     {%- endfor -%}
