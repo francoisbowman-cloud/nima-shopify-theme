@@ -23,6 +23,20 @@
           {%- assign rendered_count = rendered_count | plus: 1 -%}
         {%- endif -%}
       {%- endfor -%}
+
+      {%- if rendered_count == 0 and source_collection.handle != 'all' -%}
+        {%- assign fallback_collection = collections['all'] -%}
+        {%- if fallback_collection != blank -%}
+          {%- for candidate in fallback_collection.products -%}
+            {%- if candidate.id != product.id and rendered_count < section.settings.products_to_show -%}
+              <div class="routine-cross-sell__item">
+                {% render 'product-card', product: candidate %}
+              </div>
+              {%- assign rendered_count = rendered_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
     </div>
 
     {%- if rendered_count == 0 -%}
