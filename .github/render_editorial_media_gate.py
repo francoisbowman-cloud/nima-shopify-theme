@@ -122,6 +122,19 @@ async def commerce_pdp_checks(page, label):
     assert rect and rect["width"] > 120 and rect["height"] > 120, f"{label}: image collapsed: {rect}"
 
 
+async def save_source_media(context, page, route):
+    main = page.locator("[data-gallery-main]")
+    src = await main.evaluate("el => el.currentSrc || el.src")
+    assert src, f"{route}: no source media URL"
+    response = await context.request.get(src)
+    assert response.ok, f"{route}: source media HTTP {response.status}"
+    content_type = (response.headers.get("content-type") or "").lower()
+    ext = ".png" if "png" in content_type else ".webp" if "webp" in content_type else ".jpg"
+    source_name = f"source-{route}{ext}"
+    (OUT / source_name).write_bytes(await response.body())
+    return source_name, src
+
+
 async def run_context(browser, base, locale, viewport_name, report):
     context = await browser.new_context(viewport=VIEWPORTS[viewport_name], device_scale_factor=1)
     page = await context.new_page()
@@ -134,13 +147,16 @@ async def run_context(browser, base, locale, viewport_name, report):
             await settle(page)
             await reveal_page(page)
             await common_checks(page, locale)
+            source_name = None
+            source_url = None
             if route == "magazine":
                 await magazine_checks(page)
             else:
                 await commerce_pdp_checks(page, route)
+                if locale == "en" and viewport_name == "desktop":
+                    source_name, source_url = await save_source_media(context, page, route)
             shot = OUT / f"{locale}-{viewport_name}-{route}.png"
             await page.screenshot(path=str(shot), full_page=True)
-            detail_name = None
             if route == "magazine":
                 detail = page.locator(".split--brand")
                 detail_name = f"{locale}-{viewport_name}-{route}-brand-statement.png"
@@ -149,7 +165,7 @@ async def run_context(browser, base, locale, viewport_name, report):
                 detail_name = f"{locale}-{viewport_name}-{route}-main-media.png"
             if await detail.count() and await detail.is_visible():
                 await detail.screenshot(path=str(OUT / detail_name))
-            report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "url": page.url, "screenshot": shot.name, "detail_screenshot": detail_name, "status": "PASS"})
+            report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "url": page.url, "screenshot": shot.name, "detail_screenshot": detail_name, "source_media": source_name, "source_url": source_url, "status": "PASS"})
     finally:
         await context.close()
 
