@@ -7,6 +7,7 @@
       assign color_option_index = forloop.index0
     endif
   endfor
+  assign primary_collection = product.collections.first
 -%}
 
 <section class="product product--b">
@@ -71,6 +72,14 @@
   </div>
 
   <div class="buy">
+    <nav class="product-breadcrumb" aria-label="{{ 'products.breadcrumb' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'products.home' | t }}</a>
+      {%- if primary_collection != blank -%}
+        <span aria-hidden="true">/</span>
+        <a href="{{ primary_collection.url }}">{{ primary_collection.title }}</a>
+      {%- endif -%}
+    </nav>
+
     {%- if product.type != blank -%}
       <span class="kicker">{% render 'product-type-label', type: product.type %}</span>
     {%- endif -%}
@@ -180,6 +189,11 @@
 
       <input type="hidden" name="id" value="{{ current_variant.id }}">
 
+      <div class="quantity-field">
+        <label for="Quantity-{{ section.id }}">{{ 'products.quantity' | t }}</label>
+        <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+      </div>
+
       <button
         type="submit"
         class="add"
@@ -192,6 +206,9 @@
         {% unless current_variant.available %}disabled{% endunless %}>
         {%- if current_variant.available -%}{{ 'products.add_to_cart' | t }} — {{ current_variant.price | money }}{%- else -%}{{ 'products.sold_out' | t }}{%- endif -%}
       </button>
+      {%- if current_variant.available -%}
+        {{ form | payment_button }}
+      {%- endif -%}
       <p class="product-form-error" data-product-error role="alert" hidden>{{ 'products.add_error' | t }}</p>
     {% endform %}
 
@@ -206,12 +223,13 @@
       endif
     -%}
     <div class="trust trust--center">
+      <span>{{ 'products.secure_checkout' | t }}</span>
       {%- if shop.shipping_policy != blank -%}<a href="{{ shop.shipping_policy.url }}">{{ delivery_note }}</a>{%- else -%}<span>{{ delivery_note }}</span>{%- endif -%}
       {%- if shop.refund_policy != blank -%}<a href="{{ shop.refund_policy.url }}">{{ returns_note }}</a>{%- else -%}<span>{{ returns_note }}</span>{%- endif -%}
     </div>
 
     {%- if product.description != blank -%}
-      <details class="product-details">
+      <details class="product-details" open>
         <summary>{{ 'products.details' | t }}</summary>
         <div class="rte">{{ product.description }}</div>
       </details>
