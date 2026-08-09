@@ -33,11 +33,56 @@
   background:var(--nima-commerce-white);
 }
 
-/* PDP primary gallery + thumbnails are commercial media, never lifestyle crop. */
-.template-product .gallery__main,
+/* PDP gallery geometry is deterministic: thumbnails and primary media never share space. */
+.template-product .gallery{
+  display:grid!important;
+  grid-template-columns:72px minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  gap:12px!important;
+  align-items:start!important;
+  padding:0!important;
+  position:relative!important;
+  min-width:0!important;
+}
+
+.template-product .gallery__main{
+  grid-column:2!important;
+  grid-row:1!important;
+  width:100%!important;
+  min-width:0!important;
+  position:relative!important;
+  z-index:1!important;
+  background:var(--nima-commerce-white)!important;
+}
+
+.template-product .gallery__thumbs{
+  grid-column:1!important;
+  grid-row:1!important;
+  position:static!important;
+  inset:auto!important;
+  width:72px!important;
+  min-width:72px!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-auto-flow:row!important;
+  gap:10px!important;
+  flex-wrap:nowrap!important;
+  overflow:visible!important;
+  align-content:start!important;
+  z-index:2!important;
+}
+
 .template-product .gallery__thumbs button,
 .template-product .gallery__thumb,
 .template-product [data-gallery-thumb]{
+  width:72px!important;
+  height:72px!important;
+  min-width:72px!important;
+  max-width:72px!important;
+  margin:0!important;
+  flex:none!important;
   background:var(--nima-commerce-white)!important;
 }
 
@@ -95,5 +140,45 @@
   .template-product .gallery__main>img,
   .template-product [data-gallery-main]{
     padding:var(--nima-commerce-media-pad-mobile)!important;
+  }
+
+  .template-product .gallery{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:10px!important;
+    width:100%!important;
+    overflow:hidden!important;
+  }
+
+  .template-product .gallery__main{
+    order:1!important;
+    width:100%!important;
+    grid-column:auto!important;
+    grid-row:auto!important;
+  }
+
+  .template-product .gallery__thumbs{
+    order:2!important;
+    position:static!important;
+    width:calc(100% - 34px)!important;
+    min-width:0!important;
+    margin:0 17px!important;
+    padding:0 0 4px!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:10px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-x:contain;
+    scrollbar-width:thin;
+  }
+
+  .template-product .gallery__thumbs button,
+  .template-product [data-gallery-thumb]{
+    flex:0 0 64px!important;
+    width:64px!important;
+    min-width:64px!important;
+    max-width:64px!important;
+    height:64px!important;
   }
 }
