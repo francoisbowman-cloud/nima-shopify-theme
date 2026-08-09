@@ -84,6 +84,82 @@ def test_refine_edges_returns_metadata_with_params(tmp_path):
     assert refined_mask.size == seg.mask.size
 
 
+def test_refine_alpha_produces_no_pixels_below_cutoff(tmp_path):
+    photo = tmp_path / "p.jpg"
+    _make_product_photo(photo)
+    seg = segmentation.segment_product(photo)
+    refined_mask = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5)
+    alpha_values = set(refined_mask.split()[-1].getdata())
+    assert not any(0 < v < edge_refinement.DEFAULT_FEATHER_ALPHA_CUTOFF for v in alpha_values)
+
+
+def test_refine_alpha_zero_stays_zero(tmp_path):
+    photo = tmp_path / "p.jpg"
+    _make_product_photo(photo)
+    seg = segmentation.segment_product(photo)
+    refined_mask = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5)
+    # far corner, well outside the feather radius of the product rectangle
+    assert refined_mask.getpixel((0, 0))[3] == 0
+
+
+def test_refine_alpha_preserves_values_at_or_above_cutoff(tmp_path):
+    photo = tmp_path / "p.jpg"
+    _make_product_photo(photo)
+    seg = segmentation.segment_product(photo)
+    cutoff_alpha = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5).split()[-1]
+    # alpha_cutoff=0 disables the collapse entirely, isolating exactly what
+    # GaussianBlur itself produced before the cutoff is applied
+    raw_alpha = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5, alpha_cutoff=0).split()[-1]
+    w, h = cutoff_alpha.size
+    cutoff_px, raw_px = cutoff_alpha.load(), raw_alpha.load()
+    for y in range(h):
+        for x in range(w):
+            raw_v = raw_px[x, y]
+            if raw_v >= edge_refinement.DEFAULT_FEATHER_ALPHA_CUTOFF:
+                assert cutoff_px[x, y] == raw_v
+
+
+def test_refine_alpha_leaves_opaque_center_untouched(tmp_path):
+    photo = tmp_path / "p.jpg"
+    _make_product_photo(photo)
+    seg = segmentation.segment_product(photo)
+    refined_mask = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5)
+    # deep inside the product rectangle (40,40)-(160,120) — unaffected by
+    # feathering or the cutoff either way
+    assert refined_mask.getpixel((100, 80))[3] == 255
+
+
+def test_refine_alpha_cutoff_does_not_materially_shrink_product_bbox(tmp_path):
+    photo = tmp_path / "p.jpg"
+    _make_product_photo(photo)
+    seg = segmentation.segment_product(photo)
+    hard_bbox = seg.mask.split()[-1].getbbox()
+    refined_bbox = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5).split()[-1].getbbox()
+    # the cutoff must never cut INTO the original hard-mask bbox, and any
+    # growth from feathering's surviving (>= cutoff) band must stay small
+    tolerance = 3
+    assert refined_bbox[0] >= hard_bbox[0] - tolerance
+    assert refined_bbox[1] >= hard_bbox[1] - tolerance
+    assert refined_bbox[2] <= hard_bbox[2] + tolerance
+    assert refined_bbox[3] <= hard_bbox[3] + tolerance
+
+
+def test_decontaminate_color_after_refine_alpha_has_no_low_alpha_saturation(tmp_path):
+    # Integration check: once refine_alpha's cutoff removes the 0<alpha<64
+    # band, decontaminate_color's own low-alpha guard (MIN_DECONTAMINATION_ALPHA)
+    # has nothing left in that band to skip-and-preserve — the contaminated
+    # background RGB that used to survive there is gone before decontamination
+    # even runs.
+    photo = tmp_path / "p.jpg"
+    _make_product_photo(photo)
+    seg = segmentation.segment_product(photo)
+    refined_mask = edge_refinement.refine_alpha(seg.mask, feather_radius=1.5)
+    bg_color = edge_refinement.sample_background_color(photo)
+    decontaminated = edge_refinement.decontaminate_color(seg.cutout, refined_mask, bg_color)
+    for _, _, _, a in decontaminated.getdata():
+        assert not (0 < a < edge_refinement.MIN_DECONTAMINATION_ALPHA)
+
+
 def test_refine_edges_metadata_validates_schema(tmp_path):
     from src import file_utils
 

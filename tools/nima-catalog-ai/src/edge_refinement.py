@@ -34,6 +34,19 @@ _MAX_FEATHER_RADIUS = 3.0
 # contribute very little visually, while inverse-blend extrapolation becomes
 # unstable because feathered alpha is not the original source blend fraction.
 MIN_DECONTAMINATION_ALPHA = 64
+# GaussianBlur on a hard 0/255 alpha edge manufactures a synthetic coverage
+# tail (small non-zero alpha) over pixels that are still, in the source
+# JPEG's own RGB, the original studio background — refine_alpha never
+# touches RGB, only alpha, so that tail's color is whatever the background
+# happened to be (real Nima photos: near-white). MIN_DECONTAMINATION_ALPHA
+# already stops decontaminate_color from trying to correct that RGB (the
+# inverse-blend math is unstable there), but leaving the tail's contaminated
+# background RGB attached to a small nonzero alpha still lets it survive as
+# a visible white fringe once composited/warped (see Halo Root Cause
+# investigation, real feeding-mat asset). Collapsing this tail to alpha=0
+# removes the contaminated color at the source instead of just declining to
+# correct it.
+DEFAULT_FEATHER_ALPHA_CUTOFF = 64
 
 
 class EdgeRefinementError(ValueError):
@@ -51,13 +64,24 @@ def sample_background_color(image_path: Path) -> tuple[int, int, int]:
     return (r, g, b)
 
 
-def refine_alpha(mask: Image.Image, *, feather_radius: float = DEFAULT_FEATHER_RADIUS) -> Image.Image:
+def refine_alpha(
+    mask: Image.Image,
+    *,
+    feather_radius: float = DEFAULT_FEATHER_RADIUS,
+    alpha_cutoff: int = DEFAULT_FEATHER_ALPHA_CUTOFF,
+) -> Image.Image:
     if not (0 <= feather_radius <= _MAX_FEATHER_RADIUS):
         raise EdgeRefinementError(f"feather_radius {feather_radius} outside [0, {_MAX_FEATHER_RADIUS}]")
     alpha = mask.split()[-1]
     feathered = alpha.filter(ImageFilter.GaussianBlur(radius=feather_radius))
+    # Drop the synthetic low-alpha tail GaussianBlur creates outside the
+    # true edge — those pixels' RGB is still the original background, not a
+    # real product/background blend, so keeping them semi-opaque would let
+    # contaminated background color survive as a visible fringe. Alpha=0
+    # stays 0; alpha>=alpha_cutoff is untouched.
+    cut = feathered.point(lambda a: 0 if 0 < a < alpha_cutoff else a)
     refined = mask.convert("RGBA").copy()
-    refined.putalpha(feathered)
+    refined.putalpha(cut)
     return refined
 
 
