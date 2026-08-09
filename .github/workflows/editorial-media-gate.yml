@@ -27,6 +27,12 @@ jobs:
           pip install playwright==1.54.0
           python -m playwright install --with-deps chromium
 
+      - name: Diagnose visible Magazine translation markers
+        env:
+          NIMA_PRIMARY_URL: https://nimapets.com
+          NIMA_PREVIEW_THEME_ID: '199660142673'
+        run: python .github/diagnose_magazine_translation.py
+
       - name: Execute Magazine and flagged commerce media gate
         env:
           NIMA_PRIMARY_URL: https://nimapets.com
