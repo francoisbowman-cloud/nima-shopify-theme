@@ -4,6 +4,10 @@ ROOT = Path(__file__).resolve().parents[1]
 THEME = ROOT / "theme"
 
 
+def _commerce_css() -> str:
+    return (THEME / "assets" / "commerce-white.css").read_text(encoding="utf-8")
+
+
 def test_commerce_white_stylesheet_is_loaded_last():
     layout = (THEME / "layout" / "theme.liquid").read_text(encoding="utf-8")
     assert "commerce-white.css" in layout
@@ -11,7 +15,7 @@ def test_commerce_white_stylesheet_is_loaded_last():
 
 
 def test_commerce_white_contract_covers_commercial_surfaces():
-    css = (THEME / "assets" / "commerce-white.css").read_text(encoding="utf-8")
+    css = _commerce_css()
     required_selectors = (
         ".pcard__media",
         ".shop-window__item .pcard__media",
@@ -26,7 +30,25 @@ def test_commerce_white_contract_covers_commercial_surfaces():
 
 
 def test_commerce_media_never_uses_cover():
-    css = (THEME / "assets" / "commerce-white.css").read_text(encoding="utf-8").lower()
+    css = _commerce_css().lower()
     assert "object-fit:contain" in css
     assert "object-fit:cover" not in css
     assert "--nima-commerce-white:#fff" in css
+
+
+def test_desktop_pdp_gallery_reserves_separate_thumbnail_column():
+    css = _commerce_css().replace(" ", "").lower()
+    assert "grid-template-columns:72pxminmax(0,1fr)!important" in css
+    assert "grid-column:2!important" in css
+    assert "grid-column:1!important" in css
+    assert "grid-template-columns:1fr!important" in css
+    assert "position:static!important" in css
+
+
+def test_mobile_pdp_gallery_places_thumbnails_after_primary_media():
+    css = _commerce_css().replace(" ", "").lower()
+    assert "flex-direction:column!important" in css
+    assert "order:1!important" in css
+    assert "order:2!important" in css
+    assert "flex-wrap:nowrap!important" in css
+    assert "overflow-x:auto!important" in css
