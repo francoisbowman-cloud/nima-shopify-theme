@@ -1,15 +1,23 @@
-<section class="container" style="padding:60px 0 80px">
-  <h1 style="font-size:clamp(40px,5vw,72px);letter-spacing:-2px;margin:0 0 20px">{{ 'general.search' | t }}</h1>
+<section class="container search-page">
+  <div class="search-page__intro">
+    <h1 class="search-page__title">{{ 'general.search' | t }}</h1>
+    <p class="search-page__copy">{{ 'seo.search_description' | t }}</p>
+  </div>
 
-  <form action="{{ routes.search_url }}" method="get" role="search" style="margin-bottom:40px">
-    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search_placeholder' | t }}"
-      style="padding:14px 18px;border:1px solid var(--line);border-radius:999px;width:min(480px,100%);font-size:16px">
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+    <input
+      class="search-form__input"
+      type="search"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="{{ 'general.search_placeholder' | t }}"
+      aria-label="{{ 'general.search' | t }}">
     <button type="submit" class="btn">{{ 'general.search' | t }}</button>
   </form>
 
   {%- if search.performed -%}
     {%- if search.results.size > 0 -%}
-      <p class="muted">{{ 'general.results_count' | t: count: search.results.size, terms: search.terms }}</p>
+      <p class="search-results-meta">{{ 'general.results_count' | t: count: search.results.size, terms: search.terms }}</p>
       <div class="product-grid product-grid--b">
         {%- for item in search.results -%}
           {%- if item.object_type == 'product' -%}
