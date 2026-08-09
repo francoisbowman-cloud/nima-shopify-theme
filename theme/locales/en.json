@@ -29,6 +29,15 @@
   "announcement": {
     "shipping_returns": "Free shipping from $50 · Easy 30-day returns"
   },
+  "home": {
+    "shop_window": {
+      "kicker": "Selected for everyday life",
+      "heading": "Objects worth living with.",
+      "text": "A small edit of useful pieces for feeding, rest, walks, and care — chosen to feel considered at home.",
+      "view_all": "Shop the collection",
+      "empty": "Select a collection in the theme editor to feature products here."
+    }
+  },
   "accessibility": {
     "skip_to_content": "Skip to content",
     "menu": "Menu",
