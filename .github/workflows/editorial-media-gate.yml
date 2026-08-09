@@ -1,0 +1,51 @@
+name: Editorial media gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  editorial-media-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright==1.54.0
+          python -m playwright install --with-deps chromium
+
+      - name: Execute Magazine and flagged commerce media gate
+        env:
+          NIMA_PRIMARY_URL: https://nimapets.com
+          NIMA_FALLBACK_URL: https://gbe01p-0e.myshopify.com
+          NIMA_PREVIEW_THEME_ID: '199660142673'
+        run: python .github/render_editorial_media_gate.py
+
+      - name: Publish gate summary
+        if: always()
+        run: |
+          if [ -f editorial-media-gate-evidence/REPORT.md ]; then
+            cat editorial-media-gate-evidence/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nima-editorial-media-gate-evidence
+          path: editorial-media-gate-evidence
+          if-no-files-found: warn
+          retention-days: 14
