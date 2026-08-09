@@ -2,6 +2,7 @@
 
 Branch de trabajo: `feat/nima-production-readiness-launch`
 Base: `fix/theme-en-es-locale-audit` (derivada de `main` `6a48a20`)
+PR draft: `#4 — Nima production readiness launch`
 
 ## Objetivo
 
@@ -23,7 +24,7 @@ Mover Nima desde una tienda técnicamente funcional hacia una experiencia lista 
 ### PDP — cross-sell sin apps
 - Nueva sección `product-routine-cross-sell` al final de la ficha.
 - Prioriza la primera colección del producto y excluye el SKU actual.
-- Fallback a catálogo general.
+- Fallback real a `collections['all']` si la primera colección no aporta productos alternativos.
 - Máximo configurable 2–4 productos.
 - Sin AJAX, sin app, sin coste adicional.
 
@@ -31,6 +32,19 @@ Mover Nima desde una tienda técnicamente funcional hacia una experiencia lista 
 - `launch.css` es una capa aditiva y reversible.
 - Refuerza jerarquía editorial, espacios, tipografía y composición sin convertir Nima en un e-commerce genérico.
 - Product media de los nuevos módulos se presenta sobre blanco, compatible con la política commerce-primary de Catalog AI v0.3.1.
+
+### Contratos de lanzamiento
+- `tests/test_launch_theme_contract.py` comprueba referencias section/template, paridad EN/ES, translation keys, orden de carga CSS, jerarquía Home/PDP y fallbacks del catálogo.
+- `.github/workflows/theme-validation.yml` define Theme Check + validación JSON.
+- `.github/workflows/launch-contract.yml` define ejecución de los contratos de lanzamiento.
+
+## Estado de CI
+
+Los workflows están definidos, pero GitHub no inició ejecuciones ni en push ni al abrir el PR draft. La integración disponible tampoco tiene permiso para leer/modificar Actions a nivel de repositorio (`403`). Por tanto:
+
+- **NO** se reclama que Theme Check haya corrido en esta fase.
+- **NO** se reclama que los contratos pytest hayan corrido en GitHub.
+- Los checks quedan reproducibles para el primer entorno con Actions/CLI disponible.
 
 ## Catalog AI v0.3.1 — estado separado
 
@@ -47,7 +61,7 @@ Rama: `fix/nima-catalog-ai-v031-production-image-readiness`
 Antes de merge a `main`:
 
 1. Ejecutar `theme check` sobre `feat/nima-production-readiness-launch`.
-2. Validar JSON/Liquid del theme completo.
+2. Ejecutar `pytest -q tests/test_launch_theme_contract.py`.
 3. Revisar visualmente Home desktop/mobile:
    - hero;
    - editorial shop window;
@@ -63,13 +77,15 @@ Antes de merge a `main`:
 
 ## Pendiente administrativo / negocio
 
-No resoluble únicamente desde GitHub:
+No resoluble únicamente desde GitHub en este entorno:
 
 1. Confirmar que "Free shipping from $50" / "Envío gratis desde $50" sea política real antes de tráfico pagado.
 2. Confirmar precios atípicos del catálogo (especialmente tickets premium) antes de campañas.
 3. Revisar PayPal Business / guest-card checkout y reducir fricción si la cuenta lo permite.
 4. Confirmar mercado y shipping activo para Estados Unidos.
-5. Confirmar Instagram/handles oficiales antes de distribución de contenido.
+5. Ejecutar una compra real de punta a punta y confirmar impuestos/envío/pago/notificación.
+6. Confirmar analítica mínima de sesiones, add-to-cart, checkout y purchase.
+7. Confirmar Instagram/handles oficiales antes de distribución de contenido.
 
 ## Gate de salida a ventas
 
