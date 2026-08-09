@@ -27,7 +27,7 @@
     }
   },
   "announcement": {
-    "shipping_returns": "Free shipping from $50 · Easy 30-day returns"
+    "shipping_returns": "Shipping within the United States · Secure checkout"
   },
   "home": {
     "shop_window": {
@@ -63,7 +63,7 @@
     "image_unavailable": "Image unavailable",
     "image_unavailable_for": "Image unavailable for {{ product }}",
     "shipping_us": "Shipping available within the United States",
-    "returns_30_days": "30-day returns",
+    "returns_30_days": "See return policy",
     "cross_sell": {
       "kicker": "Complete the routine",
       "heading": "A few things that belong together.",
