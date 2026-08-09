@@ -1,6 +1,18 @@
-<section class="container mag-hero{% if section.settings.image != blank %} mag-hero--image{% endif %}">
+{%- liquid
+  assign magazine_kicker = section.settings.kicker
+  assign magazine_heading = section.settings.heading
+  assign magazine_intro = section.settings.intro
+  if section.settings.use_localized_copy
+    assign magazine_kicker = 'sections.magazine.kicker' | t
+    assign magazine_heading = 'sections.magazine.heading' | t
+    assign magazine_intro = 'sections.magazine.intro' | t
+  endif
+  assign magazine_heading_lines = magazine_heading | split: '||'
+  assign magazine_alt_text = magazine_heading | replace: '||', ' ' | strip_html
+-%}
+<section class="container mag-hero mag-hero--image">
   {%- if section.settings.image != blank -%}
-    {%- assign hero_alt = section.settings.image.alt | default: section.settings.heading | strip_html -%}
+    {%- assign hero_alt = section.settings.image.alt | default: magazine_alt_text -%}
     {{
       section.settings.image
       | image_url: width: 1800
@@ -13,11 +25,13 @@
         class: 'mag-hero__media',
         alt: hero_alt
     }}
-    <span class="mag-media-scrim" aria-hidden="true"></span>
+  {%- else -%}
+    <img class="mag-hero__media" src="{{ 'nima-magazine-dog-hero.webp' | asset_url }}" width="1586" height="992" loading="eager" fetchpriority="high" decoding="async" alt="{{ magazine_alt_text | escape }}">
   {%- endif -%}
   <div class="mag-hero__content">
-    {%- if section.settings.kicker != blank -%}<span class="kicker{% if section.settings.image != blank %} on-dark-kicker{% endif %}">{{ section.settings.kicker }}</span>{%- endif -%}
-    <h1{% if section.settings.image != blank %} class="on-dark-heading"{% endif %}>{{ section.settings.heading }}</h1>
+    {%- if magazine_kicker != blank -%}<span class="kicker on-dark-kicker">{{ magazine_kicker }}</span>{%- endif -%}
+    <h1 class="on-dark-heading">{%- for heading_line in magazine_heading_lines -%}{{ heading_line }}{%- unless forloop.last -%}<br>{%- endunless -%}{%- endfor -%}</h1>
+    {%- if magazine_intro != blank -%}<p class="mag-hero__intro">{{ magazine_intro }}</p>{%- endif -%}
   </div>
 </section>
 
@@ -25,9 +39,11 @@
 {
   "name": "Magazine — Hero",
   "settings": [
+    { "type": "checkbox", "id": "use_localized_copy", "label": "Usar copy automático EN/ES", "default": true },
     { "type": "image_picker", "id": "image", "label": "Imagen de fondo" },
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "OVL Edition 01" },
-    { "type": "html", "id": "heading", "label": "Título (permite <br>)", "default": "Viajar<br>sin ansiedad." }
+    { "type": "html", "id": "heading", "label": "Título (permite <br>)", "default": "Ideas para una<br>vida más tranquila." },
+    { "type": "textarea", "id": "intro", "label": "Introducción", "default": "Historias y guías para compartir mejor cada día con ellos." }
   ],
   "presets": [{ "name": "Magazine — Hero" }]
 }
