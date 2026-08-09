@@ -1,0 +1,99 @@
+/* Nima commerce-white media system
+   Binding rule: every primary commercial/product media surface is white and
+   uses contain. Lifestyle/editorial imagery is intentionally excluded. */
+
+:root{
+  --nima-commerce-white:#fff;
+  --nima-commerce-media-pad-desktop:7%;
+  --nima-commerce-media-pad-mobile:6%;
+}
+
+/* Product cards everywhere: home shop window, collections, search, related/cross-sell. */
+.pcard__media,
+.shop-window__item .pcard__media,
+.routine-cross-sell__item .pcard__media,
+.search-results .pcard__media,
+.template-collection .pcard__media,
+.template-search .pcard__media{
+  background:var(--nima-commerce-white)!important;
+}
+
+.pcard__media .pcard__image,
+.pcard__media>img,
+.shop-window__item .pcard__media img,
+.routine-cross-sell__item .pcard__media img,
+.template-collection .pcard__media img,
+.template-search .pcard__media img{
+  width:100%;
+  height:100%;
+  object-fit:contain!important;
+  object-position:center!important;
+  box-sizing:border-box;
+  padding:var(--nima-commerce-media-pad-desktop)!important;
+  background:var(--nima-commerce-white);
+}
+
+/* PDP primary gallery + thumbnails are commercial media, never lifestyle crop. */
+.template-product .gallery__main,
+.template-product .gallery__thumbs button,
+.template-product .gallery__thumb,
+.template-product [data-gallery-thumb]{
+  background:var(--nima-commerce-white)!important;
+}
+
+.template-product .gallery__main>img,
+.template-product .gallery__thumbs img,
+.template-product [data-gallery-main],
+.template-product [data-gallery-thumb] img{
+  object-fit:contain!important;
+  object-position:center!important;
+  box-sizing:border-box;
+  background:var(--nima-commerce-white);
+}
+
+.template-product .gallery__main>img,
+.template-product [data-gallery-main]{
+  width:100%;
+  height:100%;
+  padding:var(--nima-commerce-media-pad-desktop)!important;
+}
+
+.template-product .gallery__thumbs img,
+.template-product [data-gallery-thumb] img{
+  width:100%;
+  height:100%;
+  padding:8%!important;
+}
+
+/* Placeholder media belongs to the same commercial visual system. */
+.pcard__placeholder,
+.template-product .gallery__placeholder{
+  background:var(--nima-commerce-white)!important;
+}
+
+/* Keep commercial media visually quiet: no gray tint, overlay or image filter. */
+.pcard__media::before,
+.pcard__media::after,
+.template-product .gallery__main::before,
+.template-product .gallery__main::after{
+  background:transparent!important;
+}
+
+.pcard__media img,
+.template-product .gallery img{
+  filter:none!important;
+  mix-blend-mode:normal!important;
+}
+
+@media(max-width:800px){
+  .pcard__media .pcard__image,
+  .pcard__media>img,
+  .shop-window__item .pcard__media img,
+  .routine-cross-sell__item .pcard__media img,
+  .template-collection .pcard__media img,
+  .template-search .pcard__media img,
+  .template-product .gallery__main>img,
+  .template-product [data-gallery-main]{
+    padding:var(--nima-commerce-media-pad-mobile)!important;
+  }
+}
