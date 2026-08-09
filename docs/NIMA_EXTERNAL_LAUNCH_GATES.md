@@ -21,23 +21,27 @@ Current cutover state: launch source merged; Shopify Release Candidate prepared 
 - [x] English published as primary locale.
 - [x] Spanish enabled and published in Shopify.
 - [x] Announcement/UI locale keys present in the RC.
-- [x] 23/23 ACTIVE products now have native Spanish `title` and `body_html` translations.
+- [x] 23/23 ACTIVE products have native Spanish `title` and `body_html` translations.
 - [x] Translation audit reports no `outdated:true` entries for the active products.
-- [x] Spanish SEO title/description translations registered where the English source fields exist.
+- [x] Spanish SEO title/description translations registered wherever the English source fields exist.
+- [x] Existing Privacy Policy already has a full Spanish translation and reports `outdated:false`.
+- [x] U.S. market has no separate MarketWebPresence; localized storefront traffic therefore uses the primary shop domain/locales rather than a market-specific domain.
 
 ## Catalog / brand hygiene
 
 - [x] 23/23 ACTIVE products are published to Online Store.
 - [x] ACTIVE `vendor:PetDrop` count reduced to zero; active supplier vendor leakage replaced with `Nima` without changing SKU, price, inventory or fulfillment.
 - [x] Seven clearly supplier-style product titles normalized while preserving their existing handles/URLs.
-- [x] Active catalog sampled with featured product media present.
+- [x] No ACTIVE product has `inventory_total <= 0`.
+- [x] No ACTIVE product has a variant price `<= 0`.
+- [x] Products returned by the partial-stock-location audit retain positive sellable inventory and featured media; the zero-stock signal comes from the unused manual location while AutoDS remains stocked.
 
 ## U.S. commerce runtime
 
 - [x] United States market is ACTIVE.
 - [x] `shipsToCountries` currently contains only `US`.
 - [x] 23 ACTIVE products belong to `AutoDS Free Shipping`; 0 ACTIVE products belong to the default $18.99 shipping profile.
-- [x] Draft-order calculation using an ACTIVE feeding-mat variant and a U.S. address returns `Free Shipping` at `$0.00`, no alerts/errors, and does not create an order.
+- [x] Draft-order calculation using an ACTIVE feeding-mat variant and a representative U.S. address returns `Free Shipping` at `$0.00`, no alerts/errors, and does not create an order.
 - [x] Feeding-mat inventory verified at AutoDS location: sellable inventory is held at the active AutoDS fulfillment location, not the manual location.
 - [x] AutoDS fulfillment service and location are active and configured to fulfill online orders.
 - [ ] Verify enabled payment gateway in a real checkout. Admin GraphQL does not expose the configured gateway list; Shopify documents it under the REST PaymentGateway resource with a separate `payment_gateways` scope not exposed by the installed connector.
@@ -49,7 +53,7 @@ Current cutover state: launch source merged; Shopify Release Candidate prepared 
 
 ## Store policies
 
-- [x] Existing Privacy Policy detected.
+- [x] Existing Privacy Policy detected with current Spanish translation.
 - [ ] Add/approve Shipping Policy and Refund Policy. Truth-safe drafts were prepared, but the installed connector lacks `write_legal_policies`, so Shopify rejected the write without modifying the store.
 - [ ] Review Terms of Service / other policy requirements before paid traffic.
 
