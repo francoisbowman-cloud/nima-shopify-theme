@@ -83,6 +83,34 @@ async def select_base(page):
     raise AssertionError("No preview endpoint reachable: " + " | ".join(failures))
 
 
+async def assert_visible_product_cards(page, route):
+    if route not in {"collection", "search"}:
+        return
+    cards = page.locator(".product-grid .pcard")
+    count = await cards.count()
+    if route == "collection":
+        assert count > 0, "Collection reports products but rendered no product cards"
+    if count == 0:
+        return
+    visible = 0
+    for i in range(min(count, 12)):
+        card = cards.nth(i)
+        if not await card.is_visible():
+            continue
+        geometry = await card.evaluate(
+            """el => {
+              const r = el.getBoundingClientRect();
+              const s = getComputedStyle(el);
+              return {width:r.width,height:r.height,opacity:parseFloat(s.opacity),visibility:s.visibility,display:s.display};
+            }"""
+        )
+        assert geometry["width"] > 40 and geometry["height"] > 80, f"{route} card collapsed: {geometry}"
+        assert geometry["opacity"] > 0.95, f"{route} card remained transparent: {geometry}"
+        assert geometry["visibility"] != "hidden" and geometry["display"] != "none", f"{route} card hidden: {geometry}"
+        visible += 1
+    assert visible > 0, f"{route} contains product cards but none are visually visible"
+
+
 async def invariant_checks(page, locale, route):
     assert await page.locator('link[href*="premium-experience.css"]').count() > 0, "RC marker asset missing"
     lang = (await page.locator("html").get_attribute("lang") or "").lower()
@@ -91,6 +119,8 @@ async def invariant_checks(page, locale, route):
     assert "translation missing" not in text, "Visible translation missing marker"
     overflow = await page.evaluate("() => ({scroll:document.documentElement.scrollWidth, client:document.documentElement.clientWidth})")
     assert overflow["scroll"] <= overflow["client"] + 2, f"Horizontal overflow: {overflow}"
+
+    await assert_visible_product_cards(page, route)
 
     selectors = []
     if route in {"home", "collection", "search"}:
@@ -157,10 +187,6 @@ async def variant_checks(page):
 
 
 async def populate_cart_with_permalink(page, base, locale):
-    # Shopify documents /cart/variant_id:quantity?storefront=true as the
-    # non-checkout permalink for opening a populated cart. Use navigation
-    # instead of scripted Ajax POSTs so the gate follows a customer-like flow
-    # and does not trip automated-request protection on /cart/add.js.
     response = await page.goto(cart_permalink(base, locale), wait_until="domcontentloaded", timeout=45000)
     assert response and response.status < 400, f"Cart permalink HTTP {response.status if response else 'none'}"
     await settle(page)
