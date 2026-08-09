@@ -16,31 +16,29 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 VIEWPORTS = {"desktop": {"width": 1440, "height": 900}, "mobile": {"width": 390, "height": 844}}
 ROUTES = {
-    "home": "/",
-    "collection": "/collections/frontpage",
-    "pdp": f"/products/{PRODUCT_HANDLE}",
-    "search": "/search?q=water",
-    "cart": "/cart",
+    "home": "",
+    "collection": "collections/frontpage",
+    "pdp": f"products/{PRODUCT_HANDLE}",
+    "search": "search?q=water",
 }
 
 
-def path_for(locale, route):
-    path = ROUTES[route]
-    if locale == "es":
-        path = "/es" if path == "/" else "/es" + path
-    return path
-
-
-def url_for(base, locale, route):
-    path = path_for(locale, route)
+def localized_url(base, root, route):
+    root = root if root.startswith("/") else "/" + root
+    if not root.endswith("/"):
+        root += "/"
+    relative = ROUTES[route]
+    path = root + relative
     sep = "&" if "?" in path else "?"
     return f"{base}{path}{sep}{urlencode({'preview_theme_id': THEME_ID})}"
 
 
-def cart_permalink(base, locale):
-    prefix = "/es" if locale == "es" else ""
+def cart_permalink(base, root):
+    root = root if root.startswith("/") else "/" + root
+    if not root.endswith("/"):
+        root += "/"
     params = urlencode({"storefront": "true", "preview_theme_id": THEME_ID})
-    return f"{base}{prefix}/cart/{VARIANT_ID}:1?{params}"
+    return f"{base}{root}cart/{VARIANT_ID}:1?{params}"
 
 
 async def settle(page):
@@ -53,7 +51,6 @@ async def settle(page):
 
 
 async def reveal_page(page):
-    # IntersectionObserver-driven content should be captured after a realistic scroll pass.
     await page.evaluate("window.scrollTo(0, 0)")
     height = await page.evaluate("document.documentElement.scrollHeight")
     viewport = await page.evaluate("window.innerHeight")
@@ -65,7 +62,6 @@ async def reveal_page(page):
         y += step
         height = max(height, await page.evaluate("document.documentElement.scrollHeight"))
     await page.evaluate("window.scrollTo(0, 0)")
-    # The storefront has a hard visibility failsafe at 1.8s; let that window close.
     await page.wait_for_timeout(2000)
 
 
@@ -81,6 +77,30 @@ async def select_base(page):
         except Exception as exc:
             failures.append(f"{base}: {type(exc).__name__}: {exc}")
     raise AssertionError("No preview endpoint reachable: " + " | ".join(failures))
+
+
+async def establish_locale(page, base, locale):
+    response = await page.goto(f"{base}/?preview_theme_id={THEME_ID}", wait_until="domcontentloaded", timeout=45000)
+    assert response and response.status < 400, f"Locale bootstrap HTTP {response.status if response else 'none'}"
+    await settle(page)
+    assert await page.locator('link[href*="premium-experience.css"]').count() > 0, "RC marker asset missing during locale bootstrap"
+
+    current = (await page.locator("html").get_attribute("lang") or "").lower()
+    if not current.startswith(locale):
+        switcher = page.locator(f'.language-switcher__option[value="{locale}"]')
+        assert await switcher.count() == 1, f"Language switcher has no {locale} option"
+        assert await switcher.is_visible(), f"Language switcher {locale} option is not visible"
+        async with page.expect_navigation(wait_until="domcontentloaded", timeout=45000):
+            await switcher.click()
+        await settle(page)
+
+    active = (await page.locator("html").get_attribute("lang") or "").lower()
+    assert active.startswith(locale), f"Language selector failed: expected {locale}, got html lang={active!r}"
+    active_button = page.locator(f'.language-switcher__option[value="{locale}"]')
+    assert await active_button.get_attribute("aria-current") == "true", f"Language switcher did not mark {locale} active"
+    root = await page.evaluate("window.Shopify && window.Shopify.routes ? window.Shopify.routes.root : '/' ")
+    assert isinstance(root, str) and root.startswith("/"), f"Invalid Shopify.routes.root: {root!r}"
+    return root
 
 
 async def assert_visible_product_cards(page, route):
@@ -119,7 +139,6 @@ async def invariant_checks(page, locale, route):
     assert "translation missing" not in text, "Visible translation missing marker"
     overflow = await page.evaluate("() => ({scroll:document.documentElement.scrollWidth, client:document.documentElement.clientWidth})")
     assert overflow["scroll"] <= overflow["client"] + 2, f"Horizontal overflow: {overflow}"
-
     await assert_visible_product_cards(page, route)
 
     selectors = []
@@ -186,8 +205,8 @@ async def variant_checks(page):
     assert after and after != before, f"Variant form id did not update: {before} -> {after}"
 
 
-async def populate_cart_with_permalink(page, base, locale):
-    response = await page.goto(cart_permalink(base, locale), wait_until="domcontentloaded", timeout=45000)
+async def populate_cart_with_permalink(page, base, root):
+    response = await page.goto(cart_permalink(base, root), wait_until="domcontentloaded", timeout=45000)
     assert response and response.status < 400, f"Cart permalink HTTP {response.status if response else 'none'}"
     await settle(page)
     assert "verifying your connection" not in (await page.title()).lower(), "Shopify connection challenge intercepted cart permalink"
@@ -200,26 +219,27 @@ async def run_context(browser, base, locale, viewport_name, report):
     page.set_default_timeout(15000)
     page.on("console", lambda msg: report["console_errors"].append({"locale": locale, "viewport": viewport_name, "message": msg.text}) if msg.type == "error" else None)
     try:
+        root = await establish_locale(page, base, locale)
         for route in ("home", "collection", "pdp", "search"):
-            response = await page.goto(url_for(base, locale, route), wait_until="domcontentloaded", timeout=45000)
+            response = await page.goto(localized_url(base, root, route), wait_until="domcontentloaded", timeout=45000)
             assert response and response.status < 400, f"{route} HTTP {response.status if response else 'none'}"
             await settle(page)
             await reveal_page(page)
             await invariant_checks(page, locale, route)
             shot = OUT / f"{locale}-{viewport_name}-{route}.png"
             await page.screenshot(path=str(shot), full_page=True)
-            report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "screenshot": shot.name, "status": "PASS"})
+            report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "url": page.url, "screenshot": shot.name, "status": "PASS"})
             if route == "pdp":
                 await gallery_checks(page, viewport_name)
                 await variant_checks(page)
 
-        await populate_cart_with_permalink(page, base, locale)
+        await populate_cart_with_permalink(page, base, root)
         await reveal_page(page)
         await invariant_checks(page, locale, "cart")
         assert await page.locator(".cart-summary").count() == 1, "Cart summary missing"
         shot = OUT / f"{locale}-{viewport_name}-cart.png"
         await page.screenshot(path=str(shot), full_page=True)
-        report["cases"].append({"locale": locale, "viewport": viewport_name, "route": "cart", "screenshot": shot.name, "status": "PASS"})
+        report["cases"].append({"locale": locale, "viewport": viewport_name, "route": "cart", "url": page.url, "screenshot": shot.name, "status": "PASS"})
     finally:
         await context.close()
 
