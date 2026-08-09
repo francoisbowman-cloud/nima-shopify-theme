@@ -1,7 +1,19 @@
+{%- liquid
+  assign feature_kicker = section.settings.feature_kicker
+  assign feature_heading = section.settings.feature_heading
+  assign feature_text = section.settings.feature_text
+  assign feature_button = section.settings.feature_button_label
+  if section.settings.use_localized_copy
+    assign feature_kicker = 'sections.magazine.feature_kicker' | t
+    assign feature_heading = 'sections.magazine.feature_heading' | t
+    assign feature_text = 'sections.magazine.feature_text' | t
+    assign feature_button = 'sections.magazine.feature_button' | t
+  endif
+-%}
 <section class="container mag-grid">
   <article class="feature{% if section.settings.feature_image != blank %} feature--image{% endif %}">
     {%- if section.settings.feature_image != blank -%}
-      {%- assign feature_alt = section.settings.feature_image.alt | default: section.settings.feature_heading | strip_html -%}
+      {%- assign feature_alt = section.settings.feature_image.alt | default: feature_heading | strip_html -%}
       {{
         section.settings.feature_image
         | image_url: width: 1400
@@ -14,28 +26,42 @@
           alt: feature_alt
       }}
       <span class="mag-media-scrim" aria-hidden="true"></span>
+    {%- else -%}
+      <img class="feature__media" src="{{ 'nima-magazine-grooming.webp' | asset_url }}" width="1120" height="1400" loading="lazy" decoding="async" alt="{{ feature_heading | escape }}">
     {%- endif -%}
     <div class="feature__content">
-      <span class="kicker">{{ section.settings.feature_kicker }}</span>
-      <h2>{{ section.settings.feature_heading }}</h2>
-      <p>{{ section.settings.feature_text }}</p>
-      {%- if section.settings.feature_button_label != blank -%}
-        <a class="btn" href="{{ section.settings.feature_button_url | default: '#' }}">{{ section.settings.feature_button_label }} →</a>
+      <span class="kicker">{{ feature_kicker }}</span>
+      <h2>{{ feature_heading }}</h2>
+      <p>{{ feature_text }}</p>
+      {%- if feature_button != blank -%}
+        <a class="btn" href="{{ section.settings.feature_button_url | default: '#' }}">{{ feature_button }}</a>
       {%- endif -%}
     </div>
   </article>
 
   <aside>
     {%- for block in section.blocks -%}
-      <div class="side-story" {{ block.shopify_attributes }}>
-        <span class="kicker">{{ block.settings.kicker }}</span>
-        <h3>{{ block.settings.heading }}</h3>
-        {%- if block.settings.url != blank -%}
-          <a href="{{ block.settings.url }}"><p class="muted">{{ block.settings.text }}</p></a>
-        {%- else -%}
-          <p class="muted">{{ block.settings.text }}</p>
-        {%- endif -%}
-      </div>
+      {%- liquid
+        assign story_kicker = block.settings.kicker
+        assign story_heading = block.settings.heading
+        assign story_text = block.settings.text
+        if section.settings.use_localized_copy and forloop.index <= 3
+          assign story_key_base = 'sections.magazine.story_' | append: forloop.index
+          assign story_kicker_key = story_key_base | append: '_kicker'
+          assign story_heading_key = story_key_base | append: '_heading'
+          assign story_text_key = story_key_base | append: '_text'
+          assign story_kicker = story_kicker_key | t
+          assign story_heading = story_heading_key | t
+          assign story_text = story_text_key | t
+        endif
+      -%}
+      <article class="side-story" {{ block.shopify_attributes }}>
+        {%- if block.settings.url != blank -%}<a href="{{ block.settings.url }}">{%- endif -%}
+          <span class="kicker">{{ story_kicker }}</span>
+          <h3>{{ story_heading }}</h3>
+          <p class="muted">{{ story_text }}</p>
+        {%- if block.settings.url != blank -%}</a>{%- endif -%}
+      </article>
     {%- endfor -%}
   </aside>
 </section>
@@ -44,6 +70,7 @@
 {
   "name": "Magazine — Grid",
   "settings": [
+    { "type": "checkbox", "id": "use_localized_copy", "label": "Usar copy automático EN/ES", "default": true },
     { "type": "header", "content": "Historia principal" },
     { "type": "text", "id": "feature_kicker", "label": "Kicker", "default": "Historia principal" },
     { "type": "textarea", "id": "feature_heading", "label": "Título", "default": "El primer viaje no empieza en el coche." },
