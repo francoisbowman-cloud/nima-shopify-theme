@@ -41,7 +41,7 @@
   </div>
   <div class="pcard__body">
     {%- if product.type != blank -%}
-      <span class="pcard__category">{{ product.type }}</span>
+      <span class="pcard__category">{% render 'product-type-label', type: product.type %}</span>
     {%- endif -%}
     {%- assign ovl_emotion = product.metafields.ovl.dominant_emotion -%}
     {%- if ovl_emotion != blank -%}

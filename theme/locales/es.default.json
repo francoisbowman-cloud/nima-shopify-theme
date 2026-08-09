@@ -18,10 +18,24 @@
     "back_home": "Volver al inicio",
     "password": "Contraseña",
     "password_error": "Contraseña incorrecta.",
+    "password_coming_soon": "Estamos preparando algo especial. Vuelve pronto.",
     "enter": "Entrar",
+    "results_count": "{{ count }} resultado(s) para “{{ terms }}”.",
     "meta": {
       "tags": "Etiquetas: {{ tags }}",
       "page": "Página {{ page }}"
+    }
+  },
+  "announcement": {
+    "shipping_returns": "Envío gratis desde $50 · Devoluciones fáciles en 30 días"
+  },
+  "home": {
+    "shop_window": {
+      "kicker": "Seleccionado para cada día",
+      "heading": "Objetos con los que vale la pena convivir.",
+      "text": "Una selección breve de piezas útiles para comer, descansar, pasear y cuidar — elegidas para sentirse bien dentro de casa.",
+      "view_all": "Ver la colección",
+      "empty": "Selecciona una colección en el editor del tema para destacar productos aquí."
     }
   },
   "accessibility": {
@@ -49,7 +63,13 @@
     "image_unavailable": "Imagen no disponible",
     "image_unavailable_for": "Imagen no disponible para {{ product }}",
     "shipping_us": "Envíos disponibles en Estados Unidos",
-    "returns_30_days": "Devoluciones en 30 días"
+    "returns_30_days": "Devoluciones en 30 días",
+    "cross_sell": {
+      "kicker": "Completa la rutina",
+      "heading": "Algunas cosas simplemente van juntas.",
+      "text": "Mantenemos la selección útil: objetos complementarios de una misma rutina, sin convertir la ficha en un marketplace.",
+      "view_all": "Explorar todos los productos"
+    }
   },
   "collections": {
     "shop": "Comprar",
@@ -63,7 +83,13 @@
     "sort_price_asc": "Precio: menor a mayor",
     "sort_price_desc": "Precio: mayor a menor",
     "default_description": "Objetos pensados para comer, descansar y cuidar — sin vueltas.",
-    "no_filter_results": "No hay productos disponibles en esta categoría."
+    "no_filter_results": "No hay productos disponibles en esta categoría.",
+    "category": {
+      "feeding": "Comederos",
+      "rest": "Descanso",
+      "walking": "Paseo",
+      "grooming": "Grooming"
+    }
   },
   "cart": {
     "title": "Tu bolsa",
@@ -82,6 +108,7 @@
   "contact": {
     "name": "Nombre",
     "email": "Correo electrónico",
+    "hours_label": "Horario",
     "message": "Mensaje",
     "send": "Enviar mensaje"
   },

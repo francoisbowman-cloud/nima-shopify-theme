@@ -18,10 +18,24 @@
     "back_home": "Back to home",
     "password": "Password",
     "password_error": "Wrong password.",
+    "password_coming_soon": "We're preparing something special. Check back soon.",
     "enter": "Enter",
+    "results_count": "{{ count }} result(s) for “{{ terms }}”.",
     "meta": {
       "tags": "Tags: {{ tags }}",
       "page": "Page {{ page }}"
+    }
+  },
+  "announcement": {
+    "shipping_returns": "Free shipping from $50 · Easy 30-day returns"
+  },
+  "home": {
+    "shop_window": {
+      "kicker": "Selected for everyday life",
+      "heading": "Objects worth living with.",
+      "text": "A small edit of useful pieces for feeding, rest, walks, and care — chosen to feel considered at home.",
+      "view_all": "Shop the collection",
+      "empty": "Select a collection in the theme editor to feature products here."
     }
   },
   "accessibility": {
@@ -49,7 +63,13 @@
     "image_unavailable": "Image unavailable",
     "image_unavailable_for": "Image unavailable for {{ product }}",
     "shipping_us": "Shipping available within the United States",
-    "returns_30_days": "30-day returns"
+    "returns_30_days": "30-day returns",
+    "cross_sell": {
+      "kicker": "Complete the routine",
+      "heading": "A few things that belong together.",
+      "text": "Keep the edit useful: complementary objects from the same part of everyday pet life, without turning the page into a marketplace.",
+      "view_all": "Explore all products"
+    }
   },
   "collections": {
     "shop": "Shop",
@@ -63,7 +83,13 @@
     "sort_price_asc": "Price: low to high",
     "sort_price_desc": "Price: high to low",
     "default_description": "Objects for feeding, resting, and daily care — without the fuss.",
-    "no_filter_results": "There are no products available in this category."
+    "no_filter_results": "There are no products available in this category.",
+    "category": {
+      "feeding": "Feeding",
+      "rest": "Rest",
+      "walking": "Walking",
+      "grooming": "Grooming"
+    }
   },
   "cart": {
     "title": "Your bag",
@@ -82,6 +108,7 @@
   "contact": {
     "name": "Name",
     "email": "Email",
+    "hours_label": "Hours",
     "message": "Message",
     "send": "Send message"
   },

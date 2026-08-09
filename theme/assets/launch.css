@@ -1,0 +1,74 @@
+/* Nima production-readiness launch layer.
+   Deliberately additive: strengthens commerce hierarchy without flattening
+   the editorial identity already present in base.css. */
+
+.shop-window{padding:112px 0 120px;border-bottom:1px solid var(--line)}
+.shop-window__head{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:64px;align-items:end;margin-bottom:48px}
+.shop-window__head h2{font-family:var(--serif);font-size:clamp(48px,6vw,88px);line-height:.94;letter-spacing:-.035em;margin:14px 0 0;max-width:900px}
+.shop-window__aside{max-width:420px;justify-self:end}
+.shop-window__aside p{margin:0;color:var(--muted);font-size:16px;line-height:1.7}
+.shop-window__grid{display:grid;grid-template-columns:1.35fr repeat(3,1fr);gap:18px;align-items:stretch}
+.shop-window__item{min-width:0}
+.shop-window__item .pcard{height:100%;border-radius:0;box-shadow:none;border-color:var(--line)}
+.shop-window__item .pcard__media{background:#fff}
+.shop-window__item .pcard__media img{padding:18px}
+.shop-window__item .pcard__body{padding:18px 2px 0}
+.shop-window__item .pcard__category{letter-spacing:.12em}
+.shop-window__item .pcard__body h3{font-size:18px;margin:8px 0 6px}
+.shop-window__item--lead .pcard{border-top:2px solid var(--text)}
+.shop-window__item--lead .pcard__media{aspect-ratio:4/5}
+.shop-window__item--lead .pcard__body h3{font-size:clamp(24px,2.4vw,34px);line-height:1.05}
+.shop-window__foot{display:flex;justify-content:flex-end;border-top:1px solid var(--line);margin-top:34px;padding-top:18px}
+.shop-window__link{display:inline-flex;gap:10px;align-items:center;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:4px}
+.shop-window__empty{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:36px 0;display:flex;justify-content:space-between;gap:24px;align-items:center}
+.shop-window__empty p{margin:0;color:var(--muted)}
+
+/* Slightly more editorial launch hierarchy on home without changing content. */
+.template-index .hero{min-height:86vh}
+.template-index .hero-copy{align-self:end;padding-bottom:96px}
+.template-index .hero h1{font-family:var(--serif);font-weight:500;letter-spacing:-.05em;max-width:780px}
+.template-index .hero p{max-width:46ch}
+.template-index .btn{border-radius:0;padding:14px 0;background:transparent;color:var(--text);border-bottom:1px solid var(--text);margin-top:24px}
+
+/* Product-page cross-sell: commerce without marketplace visual noise. */
+.routine-cross-sell{padding:104px 0 112px;border-top:1px solid var(--line)}
+.routine-cross-sell__head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(260px,.7fr);gap:56px;align-items:end;margin-bottom:38px}
+.routine-cross-sell__head h2{font-family:var(--serif);font-size:clamp(42px,5vw,72px);line-height:.96;letter-spacing:-.035em;margin:14px 0 0;max-width:760px}
+.routine-cross-sell__head p{margin:0;color:var(--muted);font-size:15px;line-height:1.7;max-width:440px;justify-self:end}
+.routine-cross-sell__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.routine-cross-sell__item .pcard{height:100%;border-radius:0;box-shadow:none}
+.routine-cross-sell__item .pcard__media{background:#fff}
+.routine-cross-sell__item .pcard__media img{padding:18px}
+.routine-cross-sell__empty{border-top:1px solid var(--line);padding-top:20px}
+
+@media(hover:hover) and (pointer:fine){
+  .shop-window__item .pcard:hover,.routine-cross-sell__item .pcard:hover{transform:none;box-shadow:none;border-color:var(--text)}
+  .shop-window__link:hover{opacity:.62}
+}
+
+@media(max-width:1000px){
+  .shop-window__grid{grid-template-columns:1.2fr 1fr 1fr}
+  .shop-window__item:nth-child(n+4){display:none}
+}
+
+@media(max-width:800px){
+  .shop-window{padding:72px 0 80px}
+  .shop-window__head,.routine-cross-sell__head{grid-template-columns:1fr;gap:22px;margin-bottom:30px}
+  .shop-window__aside,.routine-cross-sell__head p{justify-self:start;max-width:34rem}
+  .shop-window__grid{grid-template-columns:1fr 1fr;gap:14px}
+  .shop-window__item--lead{grid-column:1/-1}
+  .shop-window__item--lead .pcard__media{aspect-ratio:4/3}
+  .routine-cross-sell{padding:72px 0 80px}
+  .routine-cross-sell__grid{grid-template-columns:1fr 1fr}
+  .routine-cross-sell__item:nth-child(n+3){display:none}
+  .template-index .hero{min-height:auto}
+  .template-index .hero-copy{padding-bottom:56px}
+}
+
+@media(max-width:480px){
+  .shop-window__grid,.routine-cross-sell__grid{grid-template-columns:1fr}
+  .shop-window__item:nth-child(n+4),.routine-cross-sell__item:nth-child(n+3){display:block}
+  .shop-window__item--lead{grid-column:auto}
+  .shop-window__item--lead .pcard__media{aspect-ratio:1/1}
+  .shop-window__empty{align-items:flex-start;flex-direction:column}
+}

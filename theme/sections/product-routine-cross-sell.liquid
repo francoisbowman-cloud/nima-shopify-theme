@@ -1,0 +1,70 @@
+{%- assign source_collection = product.collections.first -%}
+{%- if source_collection == blank -%}
+  {%- assign source_collection = collections['all'] -%}
+{%- endif -%}
+
+{%- assign rendered_count = 0 -%}
+<section class="routine-cross-sell" aria-labelledby="routine-cross-sell-heading-{{ section.id }}">
+  <div class="container">
+    <div class="routine-cross-sell__head">
+      <div>
+        <span class="kicker">{{ 'products.cross_sell.kicker' | t }}</span>
+        <h2 id="routine-cross-sell-heading-{{ section.id }}">{{ 'products.cross_sell.heading' | t }}</h2>
+      </div>
+      <p>{{ 'products.cross_sell.text' | t }}</p>
+    </div>
+
+    <div class="routine-cross-sell__grid">
+      {%- for candidate in source_collection.products -%}
+        {%- if candidate.id != product.id and rendered_count < section.settings.products_to_show -%}
+          <div class="routine-cross-sell__item">
+            {% render 'product-card', product: candidate %}
+          </div>
+          {%- assign rendered_count = rendered_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if rendered_count == 0 and source_collection.handle != 'all' -%}
+        {%- assign fallback_collection = collections['all'] -%}
+        {%- if fallback_collection != blank -%}
+          {%- for candidate in fallback_collection.products -%}
+            {%- if candidate.id != product.id and rendered_count < section.settings.products_to_show -%}
+              <div class="routine-cross-sell__item">
+                {% render 'product-card', product: candidate %}
+              </div>
+              {%- assign rendered_count = rendered_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    {%- if rendered_count == 0 -%}
+      <div class="routine-cross-sell__empty">
+        <a class="shop-window__link" href="{{ routes.all_products_collection_url }}">{{ 'products.cross_sell.view_all' | t }} →</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product routine cross-sell",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product routine cross-sell"
+    }
+  ]
+}
+{% endschema %}

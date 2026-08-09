@@ -1,0 +1,65 @@
+<section class="shop-window" aria-labelledby="shop-window-heading-{{ section.id }}">
+  <div class="container">
+    <div class="shop-window__head">
+      <div>
+        <span class="kicker">{{ 'home.shop_window.kicker' | t }}</span>
+        <h2 id="shop-window-heading-{{ section.id }}">{{ 'home.shop_window.heading' | t }}</h2>
+      </div>
+      <div class="shop-window__aside">
+        <p>{{ 'home.shop_window.text' | t }}</p>
+      </div>
+    </div>
+
+    {%- assign source_collection = section.settings.collection -%}
+    {%- if source_collection == blank -%}
+      {%- assign source_collection = collections['all'] -%}
+    {%- endif -%}
+
+    {%- if source_collection != blank and source_collection.products_count > 0 -%}
+      <div class="shop-window__grid">
+        {%- for product in source_collection.products limit: section.settings.products_to_show -%}
+          <div class="shop-window__item{% if forloop.first %} shop-window__item--lead{% endif %}">
+            {% render 'product-card', product: product %}
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="shop-window__foot">
+        <a class="shop-window__link" href="{{ source_collection.url | default: routes.all_products_collection_url }}">
+          {{ 'home.shop_window.view_all' | t }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    {%- else -%}
+      <div class="shop-window__empty">
+        <p>{{ 'home.shop_window.empty' | t }}</p>
+        <a class="shop-window__link" href="{{ routes.all_products_collection_url }}">{{ 'home.shop_window.view_all' | t }} →</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial shop window",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial shop window"
+    }
+  ]
+}
+{% endschema %}

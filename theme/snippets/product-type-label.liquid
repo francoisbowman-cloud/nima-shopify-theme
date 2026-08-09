@@ -1,0 +1,25 @@
+{%- comment -%}
+  Renders a locale-aware label for a Shopify product's `type` field.
+
+  `product.type` is a free-text field the merchant enters once, in whatever
+  language they were using at the time (this store's product types were
+  entered in Spanish: "Comederos", "Descanso", "Paseo") — it does NOT change
+  with the storefront locale like `| t` strings do. Printing `{{ type }}`
+  directly (as this theme did before) means the English storefront still
+  shows the Spanish category name.
+
+  This snippet maps the known type values to a `collections.category.*`
+  locale key (translated in both locales/es.default.json and locales/en.json)
+  and falls back to the raw `type` string for anything not in the mapping —
+  so a new/unmapped product type never breaks or shows "translation missing",
+  it just behaves exactly like before this fix.
+
+  Usage: {% render 'product-type-label', type: product.type %}
+{%- endcomment -%}
+{%- case type -%}
+  {%- when 'Comederos' -%}{{ 'collections.category.feeding' | t }}
+  {%- when 'Descanso' -%}{{ 'collections.category.rest' | t }}
+  {%- when 'Paseo' -%}{{ 'collections.category.walking' | t }}
+  {%- when 'Grooming' -%}{{ 'collections.category.grooming' | t }}
+  {%- else -%}{{ type }}
+{%- endcase -%}

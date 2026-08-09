@@ -17,7 +17,7 @@
           <button type="button" class="filterbar__chip filterbar__chip--active" data-filter-chip data-category="all" aria-pressed="true">{{ 'collections.all_category' | t }}</button>
           {%- for type in product_types -%}
             {%- unless type == blank -%}
-              <button type="button" class="filterbar__chip" data-filter-chip data-category="{{ type | escape }}" aria-pressed="false">{{ type }}</button>
+              <button type="button" class="filterbar__chip" data-filter-chip data-category="{{ type | escape }}" aria-pressed="false">{% render 'product-type-label', type: type %}</button>
             {%- endunless -%}
           {%- endfor -%}
         </div>

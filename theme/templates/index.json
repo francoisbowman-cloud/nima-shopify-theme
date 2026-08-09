@@ -20,6 +20,12 @@
         "image": "shopify://shop_images/01-hero.png"
       }
     },
+    "shop-window": {
+      "type": "editorial-shop-window",
+      "settings": {
+        "products_to_show": 4
+      }
+    },
     "split": {
       "type": "dual-mode-split",
       "settings": {
@@ -39,6 +45,7 @@
   },
   "order": [
     "hero",
+    "shop-window",
     "split",
     "magazine-teaser"
   ]
