@@ -11,7 +11,7 @@ DOC = ROOT / "docs" / "nima-commerce-media-normalization.md"
 def test_manifest_is_full_active_catalog_snapshot():
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert data["policy"] == "commerce-white-background"
-    assert len(data["products"]) == 22
+    assert len(data["products"]) == 23
     handles = [p["handle"] for p in data["products"]]
     assert len(handles) == len(set(handles))
     assert all(p["url"].startswith("https://cdn.shopify.com/") for p in data["products"])
