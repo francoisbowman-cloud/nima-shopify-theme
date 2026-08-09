@@ -1,10 +1,8 @@
 <section class="shop-window" aria-labelledby="shop-window-heading-{{ section.id }}">
   <div class="container">
-    <div class="shop-window__head">
-      <div>
-        <span class="kicker">{{ 'home.shop_window.kicker' | t }}</span>
-        <h2 id="shop-window-heading-{{ section.id }}">{{ 'home.shop_window.heading' | t }}</h2>
-      </div>
+    <div class="shop-window__head" data-nima-reveal>
+      <span class="kicker">{{ 'home.shop_window.kicker' | t }}</span>
+      <h2 id="shop-window-heading-{{ section.id }}">{{ 'home.shop_window.heading' | t }}</h2>
       <div class="shop-window__aside">
         <p>{{ 'home.shop_window.text' | t }}</p>
       </div>
@@ -16,17 +14,35 @@
     {%- endif -%}
 
     {%- if source_collection != blank and source_collection.products_count > 0 -%}
-      <div class="shop-window__grid">
-        {%- for product in source_collection.products limit: section.settings.products_to_show -%}
-          <div class="shop-window__item{% if forloop.first %} shop-window__item--lead{% endif %}">
-            {% render 'product-card', product: product %}
-          </div>
-        {%- endfor -%}
+      <div class="shop-window__showcase" data-nima-reveal="media">
+        <div class="shop-window__grid">
+          {%- for product in source_collection.products limit: section.settings.products_to_show -%}
+            <div class="shop-window__item{% if forloop.first %} shop-window__item--lead{% endif %}">
+              {% render 'product-card', product: product %}
+            </div>
+          {%- endfor -%}
+        </div>
       </div>
-      <div class="shop-window__foot">
+
+      <div class="shop-window__foot" data-nima-reveal>
         <a class="shop-window__link" href="{{ source_collection.url | default: routes.all_products_collection_url }}">
-          {{ 'home.shop_window.view_all' | t }} <span aria-hidden="true">↗</span>
+          {{ 'home.shop_window.view_all' | t }} <span aria-hidden="true">→</span>
         </a>
+      </div>
+
+      <div class="shop-window__trust" aria-label="{{ 'products.purchase_assurances' | t }}" data-nima-reveal>
+        <div class="shop-window__trust-item">
+          <span class="shop-window__trust-icon" aria-hidden="true">◇</span>
+          <span>{{ 'products.secure_checkout' | t }}</span>
+        </div>
+        <div class="shop-window__trust-item">
+          <span class="shop-window__trust-icon" aria-hidden="true">♡</span>
+          <span>{{ 'products.shipping_us' | t }}</span>
+        </div>
+        <div class="shop-window__trust-item">
+          <span class="shop-window__trust-icon" aria-hidden="true">↺</span>
+          <span>{{ 'products.returns_30_days' | t }}</span>
+        </div>
       </div>
     {%- else -%}
       <div class="shop-window__empty">
