@@ -3,7 +3,7 @@ name: Theme validation
 on:
   push:
     branches:
-      - feat/nima-production-readiness-launch
+      - main
     paths:
       - 'theme/**'
       - '.github/workflows/theme-validation.yml'
