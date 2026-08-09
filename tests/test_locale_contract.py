@@ -11,6 +11,31 @@ LOCALES = {
 
 TRANSLATION_RE = re.compile(r"(['\"])([A-Za-z0-9_.-]+)\1\s*\|\s*t\b")
 
+DYNAMIC_REQUIRED_KEYS = {
+    "sections.footer.newsletter_kicker",
+    "sections.footer.newsletter_heading",
+    "sections.footer.newsletter_placeholder",
+    "sections.footer.newsletter_button",
+    "sections.footer.newsletter_success",
+    "sections.footer.tagline",
+    "sections.magazine.kicker",
+    "sections.magazine.heading",
+    "sections.magazine.intro",
+    "sections.magazine.feature_kicker",
+    "sections.magazine.feature_heading",
+    "sections.magazine.feature_text",
+    "sections.magazine.feature_button",
+    "sections.magazine.story_1_kicker",
+    "sections.magazine.story_1_heading",
+    "sections.magazine.story_1_text",
+    "sections.magazine.story_2_kicker",
+    "sections.magazine.story_2_heading",
+    "sections.magazine.story_2_text",
+    "sections.magazine.story_3_kicker",
+    "sections.magazine.story_3_heading",
+    "sections.magazine.story_3_text",
+}
+
 
 def _load_json_with_shopify_comment(path: Path):
     text = path.read_text(encoding="utf-8").lstrip()
@@ -40,15 +65,18 @@ def _liquid_translation_keys():
     return keys
 
 
-def test_all_literal_translation_keys_exist_in_en_and_es():
-    used = _liquid_translation_keys()
-    assert used, "No literal translation keys were detected in Liquid."
-
-    locale_keys = {
+def _locale_key_sets():
+    return {
         locale: _flatten(_load_json_with_shopify_comment(path))
         for locale, path in LOCALES.items()
     }
 
+
+def test_all_literal_translation_keys_exist_in_en_and_es():
+    used = _liquid_translation_keys()
+    assert used, "No literal translation keys were detected in Liquid."
+
+    locale_keys = _locale_key_sets()
     failures = []
     for locale, available in locale_keys.items():
         missing = sorted(used - available)
@@ -56,6 +84,17 @@ def test_all_literal_translation_keys_exist_in_en_and_es():
             failures.append(f"{locale}: {', '.join(missing)}")
 
     assert not failures, "Missing translation keys:\n" + "\n".join(failures)
+
+
+def test_dynamic_magazine_and_footer_translation_keys_exist_in_en_and_es():
+    locale_keys = _locale_key_sets()
+    failures = []
+    for locale, available in locale_keys.items():
+        missing = sorted(DYNAMIC_REQUIRED_KEYS - available)
+        if missing:
+            failures.append(f"{locale}: {', '.join(missing)}")
+
+    assert not failures, "Missing dynamic translation keys:\n" + "\n".join(failures)
 
 
 def test_en_and_es_locale_structures_match():
