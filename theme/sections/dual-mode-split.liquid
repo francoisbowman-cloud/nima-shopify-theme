@@ -1,7 +1,14 @@
+{%- liquid
+  assign story_heading = 'home.story.heading' | t
+  assign story_alt = section.settings.right_image.alt | default: section.settings.left_image.alt
+  if story_alt == blank
+    assign story_alt = story_heading
+  endif
+-%}
 <section class="premium-story container">
   <div class="premium-story__copy">
     <span class="kicker">{{ 'home.story.kicker' | t }}</span>
-    <h2>{{ 'home.story.heading' | t }}</h2>
+    <h2>{{ story_heading }}</h2>
     <p>{{ 'home.story.text' | t }}</p>
     <a class="premium-story__link" href="{{ section.settings.left_button_url | default: routes.all_products_collection_url }}">{{ 'home.story.cta' | t }}</a>
   </div>
@@ -16,7 +23,7 @@
           sizes: '(min-width: 801px) 58vw, 100vw',
           loading: 'lazy',
           decoding: 'async',
-          alt: story_image.alt | default: 'home.story.heading' | t
+          alt: story_alt
       }}
     {%- endif -%}
   </div>
