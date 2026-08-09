@@ -9,15 +9,19 @@ JPEG), and jagged, non-anti-aliased edges. This module is a second,
 optional refinement pass over an existing cutout+mask — it never re-derives
 the mask from scratch, only softens and cleans up the edge band.
 
-Two independent steps, both small and reproducible:
-1. `refine_alpha` — feathers the hard 0/255 alpha edge with a small blur.
-2. `decontaminate_color` — removes sampled background contribution only where
-   alpha is high enough for the inverse blend to be numerically stable.
+Three small, reproducible steps:
+1. `refine_alpha` feathers the hard 0/255 alpha edge and collapses the
+   synthetic low-alpha tail that is known to carry studio-background RGB.
+2. `refine_background_edge_matte` suppresses only boundary pixels whose
+   source RGB is still very close to the sampled studio background. It is
+   constrained to the geometric edge band so product interior pixels are
+   never modified.
+3. `decontaminate_color` removes sampled background contribution where alpha
+   is high enough for inverse blending to remain numerically stable.
 
 Important: the feathered alpha is a geometric coverage estimate, not a measured
-source compositing alpha. Very small feathered alpha values must therefore not
-be used as divisors for aggressive color extrapolation; doing so can clamp RGB
-channels to 0/255 and manufacture a fringe before the perspective warp.
+source compositing alpha. The matte therefore uses source RGB evidence only to
+reduce coverage near the boundary; it does not infer or redraw product color.
 """
 
 from __future__ import annotations
@@ -30,34 +34,35 @@ SCHEMA_NAME = "edge-refinement-metadata.schema.json"
 
 DEFAULT_FEATHER_RADIUS = 1.2
 _MAX_FEATHER_RADIUS = 3.0
-# Below this alpha, decontamination is intentionally skipped. These pixels
-# contribute very little visually, while inverse-blend extrapolation becomes
-# unstable because feathered alpha is not the original source blend fraction.
 MIN_DECONTAMINATION_ALPHA = 64
-# GaussianBlur on a hard 0/255 alpha edge manufactures a synthetic coverage
-# tail (small non-zero alpha) over pixels that are still, in the source
-# JPEG's own RGB, the original studio background — refine_alpha never
-# touches RGB, only alpha, so that tail's color is whatever the background
-# happened to be (real Nima photos: near-white). MIN_DECONTAMINATION_ALPHA
-# already stops decontaminate_color from trying to correct that RGB (the
-# inverse-blend math is unstable there), but leaving the tail's contaminated
-# background RGB attached to a small nonzero alpha still lets it survive as
-# a visible white fringe once composited/warped (see Halo Root Cause
-# investigation, real feeding-mat asset). Collapsing this tail to alpha=0
-# removes the contaminated color at the source instead of just declining to
-# correct it.
 DEFAULT_FEATHER_ALPHA_CUTOFF = 64
+
+# Conservative distance in RGB Euclidean space. Only pixels within the
+# geometric edge band AND this close to the sampled studio background have
+# their coverage reduced. The value is intentionally below masking.py's
+# foreground tolerance (28): this is a cleanup for obvious background carry,
+# not a second segmentation pass.
+DEFAULT_BACKGROUND_EDGE_DISTANCE = 24.0
 
 
 class EdgeRefinementError(ValueError):
     pass
 
 
+def _color_distance(a: tuple[int, int, int], b: tuple[int, int, int]) -> float:
+    return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5
+
+
 def sample_background_color(image_path: Path) -> tuple[int, int, int]:
     """Corner-average background color estimate."""
     img = Image.open(image_path).convert("RGB")
     w, h = img.size
-    corners = [img.getpixel((0, 0)), img.getpixel((w - 1, 0)), img.getpixel((0, h - 1)), img.getpixel((w - 1, h - 1))]
+    corners = [
+        img.getpixel((0, 0)),
+        img.getpixel((w - 1, 0)),
+        img.getpixel((0, h - 1)),
+        img.getpixel((w - 1, h - 1)),
+    ]
     r = sum(c[0] for c in corners) // 4
     g = sum(c[1] for c in corners) // 4
     b = sum(c[2] for c in corners) // 4
@@ -71,26 +76,100 @@ def refine_alpha(
     alpha_cutoff: int = DEFAULT_FEATHER_ALPHA_CUTOFF,
 ) -> Image.Image:
     if not (0 <= feather_radius <= _MAX_FEATHER_RADIUS):
-        raise EdgeRefinementError(f"feather_radius {feather_radius} outside [0, {_MAX_FEATHER_RADIUS}]")
+        raise EdgeRefinementError(
+            f"feather_radius {feather_radius} outside [0, {_MAX_FEATHER_RADIUS}]"
+        )
+    if not (0 <= alpha_cutoff <= 255):
+        raise EdgeRefinementError("alpha_cutoff must be within [0, 255]")
+
     alpha = mask.split()[-1]
     feathered = alpha.filter(ImageFilter.GaussianBlur(radius=feather_radius))
-    # Drop the synthetic low-alpha tail GaussianBlur creates outside the
-    # true edge — those pixels' RGB is still the original background, not a
-    # real product/background blend, so keeping them semi-opaque would let
-    # contaminated background color survive as a visible fringe. Alpha=0
-    # stays 0; alpha>=alpha_cutoff is untouched.
     cut = feathered.point(lambda a: 0 if 0 < a < alpha_cutoff else a)
     refined = mask.convert("RGBA").copy()
     refined.putalpha(cut)
     return refined
 
 
-def decontaminate_color(cutout: Image.Image, refined_mask: Image.Image, bg_color: tuple[int, int, int]) -> Image.Image:
-    """Reduce sampled-background contamination in the feathered edge band.
+def refine_background_edge_matte(
+    cutout: Image.Image,
+    refined_mask: Image.Image,
+    bg_color: tuple[int, int, int],
+    *,
+    background_edge_distance: float = DEFAULT_BACKGROUND_EDGE_DISTANCE,
+    alpha_cutoff: int = DEFAULT_FEATHER_ALPHA_CUTOFF,
+) -> Image.Image:
+    """Reduce alpha only for background-like pixels in the product edge band.
 
-    Fully opaque pixels are preserved exactly. For very low feathered alpha,
-    RGB is preserved rather than inverse-extrapolated because dividing by a
-    near-zero geometric alpha can create artificial 0/255 channel saturation.
+    Two edge classes are eligible:
+    - semi-transparent pixels introduced by `refine_alpha`;
+    - one-pixel-wide boundary pixels from the original hard product mask.
+
+    For eligible pixels whose source RGB remains close to the sampled studio
+    background, alpha is scaled by color distance/background_edge_distance.
+    If that pushes coverage below `alpha_cutoff`, it collapses to zero.
+
+    This addresses both residual halo mechanisms found on the real feeding-mat
+    asset: partially-transparent white carry and a small number of fully opaque
+    hard-mask boundary pixels that were actually studio-background transition
+    pixels. Deep interior pixels are never touched.
+    """
+    if cutout.size != refined_mask.size:
+        raise EdgeRefinementError("cutout and refined_mask must be the same size")
+    if background_edge_distance <= 0:
+        raise EdgeRefinementError("background_edge_distance must be > 0")
+    if not (0 <= alpha_cutoff <= 255):
+        raise EdgeRefinementError("alpha_cutoff must be within [0, 255]")
+
+    rgb = cutout.convert("RGB")
+    hard_alpha = cutout.split()[-1]
+    refined_alpha = refined_mask.split()[-1]
+
+    # MinFilter erodes the binary hard mask by one pixel. A hard-mask pixel
+    # that disappears under this erosion lies on the geometric boundary.
+    eroded_hard_alpha = hard_alpha.filter(ImageFilter.MinFilter(3))
+
+    rgb_px = rgb.load()
+    hard_px = hard_alpha.load()
+    eroded_px = eroded_hard_alpha.load()
+    alpha_px = refined_alpha.load()
+
+    out_alpha = refined_alpha.copy()
+    out_px = out_alpha.load()
+
+    width, height = cutout.size
+    for y in range(height):
+        for x in range(width):
+            a = alpha_px[x, y]
+            if a == 0:
+                continue
+
+            is_semitransparent_edge = a < 255
+            is_hard_mask_boundary = hard_px[x, y] > 0 and eroded_px[x, y] == 0
+            if not (is_semitransparent_edge or is_hard_mask_boundary):
+                continue
+
+            distance = _color_distance(rgb_px[x, y], bg_color)
+            if distance >= background_edge_distance:
+                continue
+
+            scaled_alpha = round(a * (distance / background_edge_distance))
+            out_px[x, y] = 0 if 0 < scaled_alpha < alpha_cutoff else scaled_alpha
+
+    refined = refined_mask.convert("RGBA").copy()
+    refined.putalpha(out_alpha)
+    return refined
+
+
+def decontaminate_color(
+    cutout: Image.Image,
+    refined_mask: Image.Image,
+    bg_color: tuple[int, int, int],
+) -> Image.Image:
+    """Reduce sampled-background contamination in the refined edge band.
+
+    Fully opaque pixels are preserved exactly. Very low alpha is preserved
+    rather than inverse-extrapolated because dividing by a near-zero geometric
+    alpha can create artificial channel saturation.
     """
     if cutout.size != refined_mask.size:
         raise EdgeRefinementError("cutout and refined_mask must be the same size")
@@ -132,9 +211,10 @@ def refine_edges(
     *,
     feather_radius: float = DEFAULT_FEATHER_RADIUS,
 ) -> tuple[Image.Image, Image.Image, dict]:
-    """Full Block 4 pass: feather + guarded decontamination."""
+    """Full Block 4 pass: feather, edge-matte suppression, decontamination."""
     bg_color = sample_background_color(source_image_path)
     refined_mask = refine_alpha(mask, feather_radius=feather_radius)
+    refined_mask = refine_background_edge_matte(cutout, refined_mask, bg_color)
     refined_cutout = decontaminate_color(cutout, refined_mask, bg_color)
 
     metadata = {
