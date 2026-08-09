@@ -17,6 +17,16 @@
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var nav = document.querySelector('[data-navlinks]');
+    var toggle = document.querySelector('[data-nav-toggle]');
+    if (!nav || !toggle || !nav.classList.contains('is-open')) return;
+    nav.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.focus();
+  });
+
   /* ---- Galería de producto ---- */
   document.addEventListener('click', function (e) {
     var thumb = e.target.closest('[data-gallery-thumb]');
@@ -58,6 +68,11 @@
     var btn = form.querySelector('[data-add-btn]');
     var error = form.querySelector('[data-product-error]');
     var original = btn ? btn.textContent : '';
+    var quantityInput = form.querySelector('[name="quantity"]');
+    var quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
+    if (!Number.isFinite(quantity) || quantity < 1) quantity = 1;
+    if (quantityInput) quantityInput.value = quantity;
+
     if (error) error.hidden = true;
     if (btn) { btn.disabled = true; btn.textContent = btn.getAttribute('data-adding') || 'Añadiendo…'; }
 
@@ -66,7 +81,7 @@
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         id: form.querySelector('[name="id"]').value,
-        quantity: 1
+        quantity: quantity
       })
     })
       .then(function (r) {
