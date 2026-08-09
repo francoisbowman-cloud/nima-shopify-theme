@@ -7,7 +7,11 @@
     {%- endif -%}
   </a>
 
-  <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="{{ 'accessibility.menu' | t }}">≡</button>
+  <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="{{ 'accessibility.menu' | t }}">
+    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M4 7h16M4 12h16M4 17h16"></path>
+    </svg>
+  </button>
 
   <nav class="navlinks" data-navlinks aria-label="{{ 'accessibility.primary_nav' | t }}">
     {%- for link in section.settings.menu.links -%}
@@ -16,10 +20,26 @@
   </nav>
 
   <div class="actions">
-    <a href="{{ routes.search_url }}" aria-label="{{ 'accessibility.search' | t }}">⌕</a>
-    <a href="{{ routes.account_url }}" aria-label="{{ 'accessibility.account' | t }}">♡</a>
-    <a href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
-      {{ 'general.cart' | t }} <span class="cart-count" data-cart-count aria-live="polite" aria-atomic="true">{{ cart.item_count }}</span>
+    <a href="{{ routes.search_url }}" aria-label="{{ 'accessibility.search' | t }}">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="6.5"></circle>
+        <path d="m16 16 4 4"></path>
+      </svg>
+    </a>
+    <a href="{{ routes.account_url }}" aria-label="{{ 'accessibility.account' | t }}">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="8" r="3.25"></circle>
+        <path d="M5.5 19c.7-3.3 3-5 6.5-5s5.8 1.7 6.5 5"></path>
+      </svg>
+    </a>
+    <a class="cart-link" href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3.5 5h2l1.6 9.2h9.8l1.6-6.4H6.1"></path>
+        <circle cx="9" cy="18" r="1"></circle>
+        <circle cx="16" cy="18" r="1"></circle>
+      </svg>
+      <span class="cart-label">{{ 'general.cart' | t }}</span>
+      <span class="cart-count" data-cart-count aria-live="polite" aria-atomic="true">{{ cart.item_count }}</span>
     </a>
   </div>
 </header>
