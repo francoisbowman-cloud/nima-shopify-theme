@@ -4,7 +4,7 @@ This file tracks release checks that require Shopify/runtime evidence rather tha
 
 Current storefront source: `main`
 
-Current cutover state: launch source merged; Shopify Release Candidate prepared and runtime commerce configuration substantially validated; live theme not yet replaced.
+Current cutover state: launch source merged; Shopify Release Candidate prepared; source/theme validation and most commerce-runtime gates have passed; live theme not yet replaced.
 
 ## Shopify Release Candidate
 
@@ -12,8 +12,9 @@ Current cutover state: launch source merged; Shopify Release Candidate prepared 
 - [x] 16/16 launch theme files materialized successfully in Shopify.
 - [x] Shopify schema rejection for the cross-sell section name found and fixed in GitHub (`41e53ab`) and the RC.
 - [x] RC reports `processing=false` and `processingFailed=false`.
-- [ ] Run `shopify theme check theme --fail-level error` when a CLI/runtime with theme-check access is available.
-- [ ] Run `pytest -q tests/test_launch_theme_contract.py` when a local checkout/runtime is available.
+- [x] Launch contract CI PASS — GitHub Actions run `31291026621`; `pytest -q tests/test_launch_theme_contract.py` succeeded.
+- [x] Theme Check + JSON validation PASS — GitHub Actions run `31291026619`; Theme Check and JSON parse steps both succeeded.
+- [x] Deprecated Theme Check 1.x `MissingRequiredTemplateFiles` was explicitly disabled because Shopify reports the store uses `NEW_CUSTOMER_ACCOUNTS`; Shopify documents this legacy check as safe to disable. All other Theme Check rules remain active.
 - [ ] Perform visual Home / Collection / PDP review on desktop and mobile. The current assistant runtime cannot resolve/open the Shopify preview URL even though the RC exists.
 
 ## Localization
@@ -44,6 +45,7 @@ Current cutover state: launch source merged; Shopify Release Candidate prepared 
 - [x] Draft-order calculation using an ACTIVE feeding-mat variant and a representative U.S. address returns `Free Shipping` at `$0.00`, no alerts/errors, and does not create an order.
 - [x] Feeding-mat inventory verified at AutoDS location: sellable inventory is held at the active AutoDS fulfillment location, not the manual location.
 - [x] AutoDS fulfillment service and location are active and configured to fulfill online orders.
+- [x] Store uses `NEW_CUSTOMER_ACCOUNTS`; login links are enabled but login is not required at checkout.
 - [ ] Verify enabled payment gateway in a real checkout. Admin GraphQL does not expose the configured gateway list; Shopify documents it under the REST PaymentGateway resource with a separate `payment_gateways` scope not exposed by the installed connector.
 - [ ] Complete one controlled purchase.
 - [ ] Verify order in Shopify Admin.
@@ -54,8 +56,9 @@ Current cutover state: launch source merged; Shopify Release Candidate prepared 
 ## Store policies
 
 - [x] Existing Privacy Policy detected with current Spanish translation.
-- [ ] Add/approve Shipping Policy and Refund Policy. Truth-safe drafts were prepared, but the installed connector lacks `write_legal_policies`, so Shopify rejected the write without modifying the store.
-- [ ] Review Terms of Service / other policy requirements before paid traffic.
+- [x] Truth-safe EN/ES Shipping and Refund policy drafts are versioned in `docs/NIMA_SHOPIFY_POLICY_DRAFTS.md`.
+- [ ] Add/approve Shipping Policy and Refund Policy in Shopify Admin. The installed connector lacks `write_legal_policies`, so Shopify rejected the API write without modifying the store.
+- [ ] Review/publish Shopify Terms of Service template and remaining legal-policy requirements before paid traffic.
 
 ## Analytics baseline
 
