@@ -543,3 +543,11 @@ confounding the comparison with a different random background each time.
   catalog vocabulary — a genuinely novel product category falls back to a
   generic profile rather than failing, but won't get a tailored environment
   list until the taxonomy is extended.
+
+## Nima Catalog AI v0.3.1 — Halo Root Cause Status
+
+The white-halo defect flagged in "Known limitations of v0.3" above has a
+confirmed root cause and a partial fix, both tracked in
+[`docs/v031-halo-root-cause-status.md`](docs/v031-halo-root-cause-status.md)
+(branch `fix/nima-catalog-ai-v031-production-image-readiness`) — current
+verdict: `RESIDUAL HALO — DECONTAMINATION MODEL REQUIRES FOLLOW-UP`.
