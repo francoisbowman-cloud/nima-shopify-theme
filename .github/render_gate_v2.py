@@ -37,6 +37,12 @@ def url_for(base, locale, route):
     return f"{base}{path}{sep}{urlencode({'preview_theme_id': THEME_ID})}"
 
 
+def cart_permalink(base, locale):
+    prefix = "/es" if locale == "es" else ""
+    params = urlencode({"storefront": "true", "preview_theme_id": THEME_ID})
+    return f"{base}{prefix}/cart/{VARIANT_ID}:1?{params}"
+
+
 async def settle(page):
     await page.wait_for_load_state("domcontentloaded")
     try:
@@ -59,7 +65,8 @@ async def reveal_page(page):
         y += step
         height = max(height, await page.evaluate("document.documentElement.scrollHeight"))
     await page.evaluate("window.scrollTo(0, 0)")
-    await page.wait_for_timeout(250)
+    # The storefront has a hard visibility failsafe at 1.8s; let that window close.
+    await page.wait_for_timeout(2000)
 
 
 async def select_base(page):
@@ -149,14 +156,16 @@ async def variant_checks(page):
     assert after and after != before, f"Variant form id did not update: {before} -> {after}"
 
 
-async def seed_cart(page):
-    result = await page.evaluate("""async variantId => {
-      const root=(window.Shopify?.routes?.root)||'/';
-      await fetch(root+'cart/clear.js',{method:'POST',headers:{Accept:'application/json'}});
-      const r=await fetch(root+'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({id:variantId,quantity:1})});
-      return {ok:r.ok,status:r.status,text:await r.text()};
-    }""", VARIANT_ID)
-    assert result["ok"], f"Cart seed failed: HTTP {result['status']} {result['text'][:250]}"
+async def populate_cart_with_permalink(page, base, locale):
+    # Shopify documents /cart/variant_id:quantity?storefront=true as the
+    # non-checkout permalink for opening a populated cart. Use navigation
+    # instead of scripted Ajax POSTs so the gate follows a customer-like flow
+    # and does not trip automated-request protection on /cart/add.js.
+    response = await page.goto(cart_permalink(base, locale), wait_until="domcontentloaded", timeout=45000)
+    assert response and response.status < 400, f"Cart permalink HTTP {response.status if response else 'none'}"
+    await settle(page)
+    assert "verifying your connection" not in (await page.title()).lower(), "Shopify connection challenge intercepted cart permalink"
+    assert await page.locator(".cart-item").count() >= 1, "Cart permalink did not render a populated cart"
 
 
 async def run_context(browser, base, locale, viewport_name, report):
@@ -169,23 +178,19 @@ async def run_context(browser, base, locale, viewport_name, report):
             response = await page.goto(url_for(base, locale, route), wait_until="domcontentloaded", timeout=45000)
             assert response and response.status < 400, f"{route} HTTP {response.status if response else 'none'}"
             await settle(page)
-            await invariant_checks(page, locale, route)
             await reveal_page(page)
+            await invariant_checks(page, locale, route)
             shot = OUT / f"{locale}-{viewport_name}-{route}.png"
             await page.screenshot(path=str(shot), full_page=True)
             report["cases"].append({"locale": locale, "viewport": viewport_name, "route": route, "screenshot": shot.name, "status": "PASS"})
             if route == "pdp":
                 await gallery_checks(page, viewport_name)
                 await variant_checks(page)
-                await seed_cart(page)
 
-        response = await page.goto(url_for(base, locale, "cart"), wait_until="domcontentloaded", timeout=45000)
-        assert response and response.status < 400, f"cart HTTP {response.status if response else 'none'}"
-        await settle(page)
-        await invariant_checks(page, locale, "cart")
-        assert await page.locator(".cart-item").count() >= 1, "Populated cart item missing"
-        assert await page.locator(".cart-summary").count() == 1, "Cart summary missing"
+        await populate_cart_with_permalink(page, base, locale)
         await reveal_page(page)
+        await invariant_checks(page, locale, "cart")
+        assert await page.locator(".cart-summary").count() == 1, "Cart summary missing"
         shot = OUT / f"{locale}-{viewport_name}-cart.png"
         await page.screenshot(path=str(shot), full_page=True)
         report["cases"].append({"locale": locale, "viewport": viewport_name, "route": "cart", "screenshot": shot.name, "status": "PASS"})
