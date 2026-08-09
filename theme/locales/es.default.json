@@ -29,6 +29,15 @@
   "announcement": {
     "shipping_returns": "Envío gratis desde $50 · Devoluciones fáciles en 30 días"
   },
+  "home": {
+    "shop_window": {
+      "kicker": "Seleccionado para cada día",
+      "heading": "Objetos con los que vale la pena convivir.",
+      "text": "Una selección breve de piezas útiles para comer, descansar, pasear y cuidar — elegidas para sentirse bien dentro de casa.",
+      "view_all": "Ver la colección",
+      "empty": "Selecciona una colección en el editor del tema para destacar productos aquí."
+    }
+  },
   "accessibility": {
     "skip_to_content": "Saltar al contenido",
     "menu": "Menú",
