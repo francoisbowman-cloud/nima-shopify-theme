@@ -1,6 +1,15 @@
 {%- comment -%} Uso: {% render 'product-card', product: product %} {%- endcomment -%}
 {%- assign is_featured = false -%}
 {%- assign tag_label = '' -%}
+{%- assign media_grade = 'missing' -%}
+{%- if product.featured_image != blank -%}
+  {%- assign media_probe = product.featured_image | image_url: width: 1200 | downcase -%}
+  {%- if media_probe contains '-refined-' or media_probe contains '_refined_' or media_probe contains 'refined-v' -%}
+    {%- assign media_grade = 'refined' -%}
+  {%- else -%}
+    {%- assign media_grade = 'source' -%}
+  {%- endif -%}
+{%- endif -%}
 {%- if product.available == false -%}
   {%- assign tag_label = 'products.sold_out' | t -%}
 {%- elsif product.tags contains 'bestseller' -%}
@@ -10,8 +19,8 @@
   {%- assign tag_label = 'products.new' | t -%}
 {%- endif -%}
 
-<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}" data-category="{{ product.type | escape }}">
-  <div class="pcard__media">
+<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}" data-category="{{ product.type | escape }}" data-media-grade="{{ media_grade }}">
+  <div class="pcard__media" data-media-surface data-media-grade="{{ media_grade }}">
     {%- if product.featured_image != blank -%}
       {%- assign card_alt = product.featured_image.alt | default: product.title -%}
       {{
