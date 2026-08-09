@@ -1,0 +1,57 @@
+name: Theme validation
+
+on:
+  push:
+    branches:
+      - feat/nima-production-readiness-launch
+    paths:
+      - 'theme/**'
+      - '.github/workflows/theme-validation.yml'
+  pull_request:
+    paths:
+      - 'theme/**'
+      - '.github/workflows/theme-validation.yml'
+
+jobs:
+  theme-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Install Theme Check
+        run: gem install theme-check --no-document
+
+      - name: Run Theme Check
+        run: theme-check theme --fail-level error
+
+      - name: Validate JSON files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          failures = []
+          for path in Path('theme').rglob('*.json'):
+              text = path.read_text(encoding='utf-8')
+              # Shopify-generated locale/template JSON may contain a leading
+              # /* ... */ warning comment. Strip only that first block comment.
+              stripped = text.lstrip()
+              if stripped.startswith('/*'):
+                  end = stripped.find('*/')
+                  if end != -1:
+                      stripped = stripped[end + 2:].lstrip()
+              try:
+                  json.loads(stripped)
+              except Exception as exc:
+                  failures.append(f'{path}: {exc}')
+
+          if failures:
+              raise SystemExit('\n'.join(failures))
+          print('All theme JSON files parsed successfully.')
+          PY
