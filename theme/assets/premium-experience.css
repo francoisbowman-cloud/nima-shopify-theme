@@ -1,0 +1,121 @@
+/* Nima Premium Experience v1
+   Final visual layer for commercial media geometry, Magazine legibility,
+   contemporary iconography and restrained motion. */
+
+:root{
+  --nima-motion-fast:180ms;
+  --nima-motion:420ms;
+  --nima-motion-slow:820ms;
+  --nima-ease-premium:cubic-bezier(.2,.8,.2,1);
+  --nima-radius-media:2px;
+}
+
+/* Fix the real crop cause: padding must live inside the declared media box. */
+.pcard__media img,
+.pcard__media .pcard__image,
+.template-product .gallery__main>img,
+.template-product [data-gallery-main] img,
+.template-product .gallery__thumbs img,
+.template-product [data-gallery-thumb] img,
+.template-cart .cart-item__media img{
+  box-sizing:border-box!important;
+}
+
+/* Commercial imagery is treated as an object on a clean studio canvas. */
+.pcard__media,
+.template-product .gallery__main,
+.template-product .gallery__thumbs button,
+.template-cart .cart-item__media{
+  background:#fff!important;
+}
+.pcard__media img,.pcard__media .pcard__image{
+  padding:clamp(18px,8%,44px)!important;
+}
+.template-product .gallery__main>img,
+.template-product [data-gallery-main] img{
+  padding:clamp(26px,7.5%,64px)!important;
+}
+.template-cart .cart-item__media img{
+  padding:10%!important;
+}
+
+/* Navigation iconography: thin, optical and tactile rather than decorative. */
+.nav .actions a,.nav-toggle{
+  display:inline-grid;
+  place-items:center;
+  min-width:40px;
+  min-height:40px;
+  border-radius:999px;
+  transition:background var(--nima-motion-fast) ease,transform var(--nima-motion-fast) var(--nima-ease-premium);
+}
+.nav .actions a:hover,.nav-toggle:hover{background:rgba(40,40,39,.055);transform:translateY(-1px)}
+.nav-icon{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.cart-count{min-width:18px;height:18px;display:inline-grid;place-items:center;border-radius:999px;font-variant-numeric:tabular-nums}
+
+/* Magazine hero: guaranteed reading contrast independent of photography. */
+.mag-hero{position:relative;isolation:isolate;overflow:hidden;background:#292521}
+.mag-hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(22,19,17,.78) 0%,rgba(22,19,17,.58) 38%,rgba(22,19,17,.20) 70%,rgba(22,19,17,.06) 100%),
+    linear-gradient(0deg,rgba(22,19,17,.48) 0%,transparent 58%);
+}
+.mag-hero__media{position:relative;z-index:0;transition:transform 1.4s var(--nima-ease-premium),filter .7s ease}
+.mag-hero:hover .mag-hero__media{transform:scale(1.018);filter:saturate(.96) contrast(1.025)}
+.mag-hero__content{position:absolute!important;z-index:2!important;left:clamp(28px,6vw,72px)!important;right:clamp(28px,6vw,72px)!important;bottom:clamp(30px,7vw,72px)!important;max-width:780px!important;color:#fff!important;text-shadow:0 3px 24px rgba(0,0,0,.32)}
+.mag-hero .on-dark-kicker{color:rgba(255,255,255,.78)!important;font-weight:600;letter-spacing:.19em}
+.mag-hero .on-dark-heading{color:#fff!important;max-width:12ch;text-wrap:balance;text-shadow:0 3px 28px rgba(0,0,0,.34)}
+.mag-hero__intro{color:rgba(255,255,255,.94)!important;max-width:46ch!important;font-size:clamp(15px,1.5vw,18px)!important;line-height:1.58!important}
+
+/* Magazine entries become a true editorial index. */
+.mag-grid{padding-top:clamp(44px,6vw,84px);padding-bottom:clamp(64px,8vw,112px)}
+.mag-grid .feature{border-radius:var(--nima-radius-media)}
+.mag-grid aside{position:relative}
+.mag-grid .side-story{min-height:150px;display:grid;align-content:center}
+.mag-grid .side-story h3{transition:transform .32s var(--nima-ease-premium),color .2s ease}
+.mag-grid .side-story--linked:hover h3{transform:translateX(4px)}
+.mag-grid .side-story--linked a:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(180,73,44,.16)}
+.mag-grid .side-story__arrow{font-family:Arial,sans-serif;font-weight:300}
+
+/* Product detail: calmer information architecture and refined trust signals. */
+.template-product .buy{align-self:start}
+.template-product .product-breadcrumb{opacity:.74}
+.template-product .trust__item{padding:9px 0}
+.template-product .trust__icon{width:21px;height:21px;stroke-width:1.35}
+.template-product .gallery__thumbs button{transition:border-color var(--nima-motion-fast) ease,transform var(--nima-motion-fast) var(--nima-ease-premium),box-shadow var(--nima-motion-fast) ease}
+.template-product .gallery__thumbs button:hover{transform:translateY(-1px);border-color:rgba(40,40,39,.34)!important}
+.template-product .gallery__thumbs button[aria-pressed="true"]{border-color:var(--nima-charcoal)!important;box-shadow:inset 0 0 0 1px var(--nima-charcoal)}
+
+/* Micro-interactions shared across commerce surfaces. */
+.btn,.add,.filterbar__chip,.option,.swatch{
+  transition:transform var(--nima-motion-fast) var(--nima-ease-premium),box-shadow var(--nima-motion-fast) ease,background var(--nima-motion-fast) ease,color var(--nima-motion-fast) ease,border-color var(--nima-motion-fast) ease;
+}
+.btn:hover,.add:hover{transform:translateY(-1px)}
+.btn:active,.add:active{transform:translateY(0) scale(.99)}
+
+/* Progressive reveal: only when JS marks the page as motion-capable. */
+.nima-motion [data-nima-reveal]{opacity:0;transform:translateY(18px);transition:opacity var(--nima-motion-slow) var(--nima-ease-premium),transform var(--nima-motion-slow) var(--nima-ease-premium)}
+.nima-motion [data-nima-reveal].is-visible{opacity:1;transform:none}
+.nima-motion [data-nima-reveal="media"]{transform:translateY(12px) scale(.992)}
+.nima-motion [data-nima-reveal="media"].is-visible{transform:none}
+
+@media(max-width:800px){
+  .mag-hero{min-height:560px}
+  .mag-hero:before{background:linear-gradient(0deg,rgba(22,19,17,.84) 0%,rgba(22,19,17,.52) 52%,rgba(22,19,17,.12) 100%)}
+  .mag-hero__content{left:22px!important;right:22px!important;bottom:28px!important}
+  .mag-hero .on-dark-heading{max-width:10ch}
+  .mag-grid{padding-top:42px;padding-bottom:68px}
+  .mag-grid .side-story{min-height:132px}
+  .pcard__media img,.pcard__media .pcard__image{padding:8%!important}
+  .template-product .gallery__main>img,.template-product [data-gallery-main] img{padding:7%!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important}
+  .mag-hero__media,.pcard,.btn,.add,.filterbar__chip,.option,.swatch,.nav .actions a,.nav-toggle,.template-product .gallery__thumbs button{transition:none!important;transform:none!important}
+  .nima-motion [data-nima-reveal]{opacity:1!important;transform:none!important;transition:none!important}
+}
