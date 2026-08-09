@@ -1,9 +1,42 @@
+{%- liquid
+  assign newsletter_kicker = section.settings.newsletter_kicker
+  assign newsletter_heading = section.settings.newsletter_heading
+  assign newsletter_placeholder = section.settings.newsletter_placeholder
+  assign newsletter_button = section.settings.newsletter_button
+  assign newsletter_success = section.settings.newsletter_success
+  assign footer_tagline = section.settings.tagline
+  if section.settings.use_localized_copy
+    assign newsletter_kicker = 'sections.footer.newsletter_kicker' | t
+    assign newsletter_heading = 'sections.footer.newsletter_heading' | t
+    assign newsletter_placeholder = 'sections.footer.newsletter_placeholder' | t
+    assign newsletter_button = 'sections.footer.newsletter_button' | t
+    assign newsletter_success = 'sections.footer.newsletter_success' | t
+    assign footer_tagline = 'sections.footer.tagline' | t
+  endif
+-%}
 <footer class="footer">
   <div class="container">
+    {%- if newsletter_heading != blank -%}
+      <div class="footer-newsletter">
+        <div>
+          <span class="kicker on-dark-kicker">{{ newsletter_kicker }}</span>
+          <h2>{{ newsletter_heading }}</h2>
+        </div>
+        {%- form 'customer', class: 'footer-newsletter__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <label class="visually-hidden" for="FooterNewsletterEmail">{{ 'contact.email' | t }}</label>
+          <input id="FooterNewsletterEmail" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="{{ newsletter_placeholder }}" required>
+          <button type="submit">{{ newsletter_button }}</button>
+          {%- if form.posted_successfully? -%}<p role="status">{{ newsletter_success }}</p>{%- endif -%}
+          {%- if form.errors -%}<div role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+    <div class="footer-main">
     <div class="footer-cols">
-      <div>
+      <div class="footer-brand">
         <div class="logo">{{ shop.name }}.</div>
-        <p class="muted">{{ section.settings.tagline }}</p>
+        <p class="muted">{{ footer_tagline }}</p>
       </div>
       {%- for block in section.blocks -%}
         <div {{ block.shopify_attributes }}>
@@ -32,6 +65,7 @@
       <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
       <span>{{ 'footer.secure_checkout' | t }}</span>
     </div>
+    </div>
   </div>
 </footer>
 
@@ -40,10 +74,46 @@
   "name": "Pie de página",
   "settings": [
     {
+      "type": "checkbox",
+      "id": "use_localized_copy",
+      "label": "Usar copy automático EN/ES",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_kicker",
+      "label": "Etiqueta del newsletter",
+      "default": "Notas de Nima"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Título del newsletter",
+      "default": "Ideas útiles para compartir mejor cada día con ellos."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Placeholder del correo",
+      "default": "Tu correo electrónico"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button",
+      "label": "Botón del newsletter",
+      "default": "Suscribirme"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_success",
+      "label": "Mensaje de éxito",
+      "default": "Gracias por acompañarnos."
+    },
+    {
       "type": "text",
       "id": "tagline",
       "label": "Tagline",
-      "default": "Utility Commerce × Editorial Commerce × Omni Visual Language"
+      "default": "Objetos útiles e historias honestas para una vida más tranquila con mascotas."
     }
   ],
   "blocks": [
