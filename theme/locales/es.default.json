@@ -63,7 +63,13 @@
     "image_unavailable": "Imagen no disponible",
     "image_unavailable_for": "Imagen no disponible para {{ product }}",
     "shipping_us": "Envíos disponibles en Estados Unidos",
-    "returns_30_days": "Devoluciones en 30 días"
+    "returns_30_days": "Devoluciones en 30 días",
+    "cross_sell": {
+      "kicker": "Completa la rutina",
+      "heading": "Algunas cosas simplemente van juntas.",
+      "text": "Mantenemos la selección útil: objetos complementarios de una misma rutina, sin convertir la ficha en un marketplace.",
+      "view_all": "Explorar todos los productos"
+    }
   },
   "collections": {
     "shop": "Comprar",
