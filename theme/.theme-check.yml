@@ -1,0 +1,6 @@
+# Nima uses Shopify NEW_CUSTOMER_ACCOUNTS. Legacy customer-account templates
+# are not part of the live storefront flow. Theme Check 1.x's
+# MissingRequiredTemplateFiles check is deprecated by Shopify and documented
+# as safe to disable. All other Theme Check rules remain enabled.
+MissingRequiredTemplateFiles:
+  enabled: false
