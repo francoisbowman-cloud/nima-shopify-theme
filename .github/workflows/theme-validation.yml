@@ -28,7 +28,7 @@ jobs:
         run: gem install theme-check --no-document
 
       - name: Run Theme Check
-        run: theme-check theme --fail-level error
+        run: theme-check theme --config theme/.theme-check.yml --fail-level error
 
       - name: Validate JSON files
         run: |
