@@ -138,6 +138,34 @@
     "policies": "Policies",
     "secure_checkout": "Secure checkout hosted by Shopify"
   },
+  "sections": {
+    "footer": {
+      "newsletter_kicker": "Nima Notes",
+      "newsletter_heading": "Useful ideas for sharing everyday life better.",
+      "newsletter_placeholder": "Your email address",
+      "newsletter_button": "Subscribe",
+      "newsletter_success": "Thanks for joining us.",
+      "tagline": "Useful objects and honest stories for a quieter life with pets."
+    },
+    "magazine": {
+      "kicker": "Nima Journal",
+      "heading": "A quieter life,||shared well.",
+      "intro": "Stories, guides and everyday rituals for a calmer life with pets.",
+      "feature_kicker": "Care ritual",
+      "feature_heading": "Bath time can be a moment of trust.",
+      "feature_text": "Simple ways to make grooming feel gentler, more predictable and more comfortable for both of you.",
+      "feature_button": "Read the story",
+      "story_1_kicker": "Guide",
+      "story_1_heading": "A calmer bath, from the first towel.",
+      "story_1_text": "Prepare the space, reduce surprises and let comfort set the pace.",
+      "story_2_kicker": "Everyday care",
+      "story_2_heading": "Small routines that build trust.",
+      "story_2_text": "A few repeatable cues can make care feel familiar instead of stressful.",
+      "story_3_kicker": "Selection",
+      "story_3_heading": "A simpler grooming kit.",
+      "story_3_text": "Keep only the essentials that make the routine easier and calmer."
+    }
+  },
   "seo": {
     "home_description": "Thoughtful pet essentials for quieter, better everyday living.",
     "collection_description": "Shop {{ collection }} at Nima: selected pet products with a clear and dependable experience.",
