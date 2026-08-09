@@ -30,12 +30,30 @@
     "shipping_returns": "Envíos dentro de Estados Unidos · Checkout seguro"
   },
   "home": {
+    "hero": {
+      "kicker": "Estilo de vida y esenciales para mascotas",
+      "heading": "Diseñado para una vida más tranquila y mejor con mascotas.",
+      "text": "Esenciales pensados para las mascotas y para quienes las aman.",
+      "cta": "Ver esenciales"
+    },
     "shop_window": {
-      "kicker": "Seleccionado para cada día",
-      "heading": "Objetos con los que vale la pena convivir.",
-      "text": "Una selección breve de piezas útiles para comer, descansar, pasear y cuidar — elegidas para sentirse bien dentro de casa.",
-      "view_all": "Ver la colección",
+      "kicker": "Nuestros esenciales",
+      "heading": "Piezas de cada día, elegidas con intención.",
+      "text": "Una selección concisa de objetos útiles para comer, descansar, pasear y cuidar — pensados para sentirse bien dentro de casa.",
+      "view_all": "Ver todo",
       "empty": "Selecciona una colección en el editor del tema para destacar productos aquí."
+    },
+    "story": {
+      "kicker": "Vivir bien juntos",
+      "heading": "Espacios tranquilos. Mascotas felices.",
+      "text": "Elegimos esenciales bien hechos que acompañan las rutinas diarias, favorecen el descanso y aportan un poco más de armonía al hogar.",
+      "cta": "Nuestra filosofía"
+    },
+    "journal": {
+      "kicker": "Desde el Journal",
+      "heading": "Cuidado, confort y los rituales de cada día.",
+      "text": "Historias y guías prácticas para construir una vida más tranquila y consciente junto a las mascotas.",
+      "cta": "Leer el Journal"
     }
   },
   "accessibility": {
@@ -49,6 +67,10 @@
   "products": {
     "variants": "Variantes",
     "color": "Color",
+    "quantity": "Cantidad",
+    "breadcrumb": "Ruta de navegación",
+    "home": "Inicio",
+    "secure_checkout": "Checkout seguro",
     "add_to_cart": "Añadir al carrito",
     "adding": "Añadiendo…",
     "added": "Añadido ✓",
@@ -57,7 +79,7 @@
     "in_stock": "Disponible",
     "bestseller": "Más vendido",
     "new": "Nuevo",
-    "details": "Detalles del producto",
+    "details": "Detalles",
     "visual_profile": "Perfil visual",
     "view_image": "Ver imagen {{ index }}",
     "image_unavailable": "Imagen no disponible",
@@ -65,9 +87,9 @@
     "shipping_us": "Envíos disponibles en Estados Unidos",
     "returns_30_days": "Consulta la política de devoluciones",
     "cross_sell": {
-      "kicker": "Completa la rutina",
+      "kicker": "Más para su rutina",
       "heading": "Algunas cosas simplemente van juntas.",
-      "text": "Mantenemos la selección útil: objetos complementarios de una misma rutina, sin convertir la ficha en un marketplace.",
+      "text": "Objetos complementarios seleccionados para una misma rutina diaria.",
       "view_all": "Explorar todos los productos"
     }
   },
@@ -82,7 +104,7 @@
     "sort_featured": "Destacados",
     "sort_price_asc": "Precio: menor a mayor",
     "sort_price_desc": "Precio: mayor a menor",
-    "default_description": "Objetos pensados para comer, descansar y cuidar — sin vueltas.",
+    "default_description": "Piezas funcionales que simplifican el cuidado diario y mantienen el hogar visualmente tranquilo.",
     "no_filter_results": "No hay productos disponibles en esta categoría.",
     "category": {
       "feeding": "Comederos",
@@ -117,7 +139,7 @@
     "secure_checkout": "Checkout seguro alojado por Shopify"
   },
   "seo": {
-    "home_description": "Objetos seleccionados para el cuidado diario y el bienestar de las mascotas.",
+    "home_description": "Esenciales pensados para una vida más tranquila y mejor con mascotas.",
     "collection_description": "Compra {{ collection }} en Nima: artículos seleccionados para mascotas con una experiencia clara y confiable.",
     "search_description": "Busca productos de cuidado diario para mascotas en Nima.",
     "default_description": "Nima selecciona objetos prácticos para el cuidado y bienestar diario de las mascotas."
