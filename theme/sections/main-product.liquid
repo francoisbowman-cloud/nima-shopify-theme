@@ -222,10 +222,33 @@
         assign returns_note = 'products.returns_30_days' | t
       endif
     -%}
-    <div class="trust trust--center">
-      <span>{{ 'products.secure_checkout' | t }}</span>
-      {%- if shop.shipping_policy != blank -%}<a href="{{ shop.shipping_policy.url }}">{{ delivery_note }}</a>{%- else -%}<span>{{ delivery_note }}</span>{%- endif -%}
-      {%- if shop.refund_policy != blank -%}<a href="{{ shop.refund_policy.url }}">{{ returns_note }}</a>{%- else -%}<span>{{ returns_note }}</span>{%- endif -%}
+    <div class="trust trust--center" aria-label="{{ 'products.purchase_assurances' | t }}">
+      <span class="trust__item">
+        <svg class="trust__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M12 3.25 19 6v5.4c0 4.45-2.72 7.47-7 9.35-4.28-1.88-7-4.9-7-9.35V6l7-2.75Z"/><path d="m8.8 12 2.05 2.05 4.35-4.35"/></svg>
+        <span>{{ 'products.secure_checkout' | t }}</span>
+      </span>
+      {%- if shop.shipping_policy != blank -%}
+        <a class="trust__item" href="{{ shop.shipping_policy.url }}">
+          <svg class="trust__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M3 6.5h11v10H3z"/><path d="M14 9h3.4l3.1 3.3v4.2H14z"/><circle cx="7" cy="17.5" r="1.75"/><circle cx="17.5" cy="17.5" r="1.75"/></svg>
+          <span>{{ delivery_note }}</span>
+        </a>
+      {%- else -%}
+        <span class="trust__item">
+          <svg class="trust__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M3 6.5h11v10H3z"/><path d="M14 9h3.4l3.1 3.3v4.2H14z"/><circle cx="7" cy="17.5" r="1.75"/><circle cx="17.5" cy="17.5" r="1.75"/></svg>
+          <span>{{ delivery_note }}</span>
+        </span>
+      {%- endif -%}
+      {%- if shop.refund_policy != blank -%}
+        <a class="trust__item" href="{{ shop.refund_policy.url }}">
+          <svg class="trust__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5.5 8.5A7 7 0 1 1 5 15"/><path d="M5.5 4.75V8.5H9.25"/></svg>
+          <span>{{ returns_note }}</span>
+        </a>
+      {%- else -%}
+        <span class="trust__item">
+          <svg class="trust__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5.5 8.5A7 7 0 1 1 5 15"/><path d="M5.5 4.75V8.5H9.25"/></svg>
+          <span>{{ returns_note }}</span>
+        </span>
+      {%- endif -%}
     </div>
 
     {%- if product.description != blank -%}
