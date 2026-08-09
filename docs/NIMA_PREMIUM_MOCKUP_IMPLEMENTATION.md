@@ -10,6 +10,7 @@ The approved Nima premium mockup has been implemented in source and synchronized
 - Shopify RC: `Nima — Premium Mockup RC c92500a`
 - Shopify theme ID: `199660142673`
 - RC role: `UNPUBLISHED`
+- RC state: `processing=false`, `processingFailed=false`
 - Live theme remains: `nima-theme-v3-0-1-editorial`
 
 ## Approved visual direction
@@ -50,6 +51,8 @@ The collection experience now uses:
 - responsive two-column mobile grid
 - product imagery contained cleanly without inconsistent card heights
 
+The current store only exposes one legacy custom collection (`Home page`). The premium catalog therefore keeps `/collections/all` as the primary merchandising surface with category filtering. New editorial collections can be introduced later as a merchandising/growth improvement rather than inventing empty collection architecture during release hardening.
+
 ## Product detail page
 
 The PDP now uses:
@@ -82,16 +85,28 @@ This turns prior `translation missing` defects into a CI regression rather than 
 
 ## Validation
 
-Premium branch validation passed before merge:
+Premium branch validation passed before merge.
 
-- Shopify Theme Check
-- JSON parsing
-- launch contract
-- EN/ES locale contract
+Post-merge `main` validation also passed:
 
-Main CI is required to remain green after the merge.
+- Launch + EN/ES locale contract: GitHub Actions run `31293003885` — SUCCESS
+- Shopify Theme Check + theme JSON parse: GitHub Actions run `31293003896` — SUCCESS
 
-The Shopify Premium RC is healthy (`processingFailed=false`) and remains unpublished.
+The Shopify Premium RC is healthy and remains unpublished.
+
+Shopify was queried after synchronization and all 18 expected release/premium theme files were present, including:
+
+- `assets/launch.css`
+- `assets/premium.css`
+- `assets/premium-home.css`
+- localized theme layout/locales
+- announcement bar
+- editorial shop window
+- hero / premium story / Journal teaser
+- Collection + PDP
+- routine cross-sell
+- product-card and product-type helpers
+- Home and product templates
 
 ## Shopify synchronization note
 
