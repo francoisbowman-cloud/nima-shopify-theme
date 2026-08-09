@@ -1,0 +1,165 @@
+/* Nima visual + commerce audit polish v1
+   Purpose: finish interaction quality and conversion details without changing
+   approved art direction, catalog data, pricing, inventory or fulfillment. */
+
+:root{
+  --nima-header-height:68px;
+}
+
+/* ---------- interaction quality ---------- */
+.nav a,
+.nav button,
+.filterbar__chip,
+.filterbar__select,
+.template-product .option,
+.template-product .swatch,
+.template-product .add,
+.template-product .quantity-field input,
+.template-product .gallery__thumbs button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.nav-toggle,
+.actions a{
+  min-width:40px;
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.nav-toggle{padding:8px}
+.nav-icon{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.actions .cart-link{gap:7px;min-width:auto;padding-inline:4px}
+.actions .cart-count{font-variant-numeric:tabular-nums;text-align:center}
+
+/* Ensure keyboard focus remains obvious on the warm palette. */
+.nav a:focus-visible,
+.nav button:focus-visible,
+.filterbar__chip:focus-visible,
+.filterbar__select:focus-visible,
+.template-product button:focus-visible,
+.template-product input:focus-visible,
+.template-product summary:focus-visible{
+  outline:2px solid var(--nima-charcoal);
+  outline-offset:3px;
+  box-shadow:none;
+}
+
+/* ---------- header finish ---------- */
+.nav{min-height:var(--nima-header-height)}
+.actions a{border-radius:999px;transition:background-color .18s ease}
+@media(hover:hover) and (pointer:fine){
+  .actions a:hover{background:rgba(40,40,39,.055)}
+}
+
+/* ---------- catalog usability ---------- */
+.filterbar__chip{min-height:42px;display:inline-flex;align-items:center}
+.filterbar__select{min-height:42px;cursor:pointer}
+.pcard__body h3{min-height:2.7em}
+.pcard__media img{box-sizing:border-box}
+
+/* ---------- PDP conversion ---------- */
+.template-product .buy{
+  position:sticky;
+  top:calc(var(--nima-header-height) + 18px);
+  align-self:start;
+}
+.template-product .product-breadcrumb{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:7px;
+  margin:0 0 15px;
+  color:var(--nima-muted);
+  font-size:10px;
+  letter-spacing:.035em;
+}
+.template-product .product-breadcrumb a{text-decoration:none}
+.template-product .product-breadcrumb a:hover{text-decoration:underline;text-underline-offset:3px}
+
+.template-product .price{
+  display:flex;
+  align-items:baseline;
+  gap:9px;
+  font-variant-numeric:tabular-nums;
+}
+.template-product .price s{font-size:13px;font-weight:500;color:var(--nima-muted)}
+.template-product .product-availability{font-weight:700;letter-spacing:.015em}
+
+.template-product .option{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px;
+}
+.template-product .swatch{width:38px;height:38px}
+.template-product .quantity-field{padding:8px 0 2px}
+.template-product .quantity-field input{min-height:44px;width:82px;border-color:#d6cfc5}
+.template-product .add{
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.025em;
+}
+.template-product .shopify-payment-button__button{min-height:48px!important}
+
+.template-product .trust{
+  margin-top:20px;
+  padding:15px 16px;
+  border-top:1px solid var(--nima-line);
+  border-bottom:1px solid var(--nima-line);
+  gap:6px 18px;
+  justify-content:flex-start;
+  text-align:left;
+  font-size:12px;
+  line-height:1.45;
+}
+.template-product .trust>*{position:relative}
+.template-product .trust>*:not(:last-child)::after{
+  content:"·";
+  position:absolute;
+  right:-11px;
+  color:#b9b0a6;
+}
+.template-product .product-details summary{min-height:42px;display:flex;align-items:center;cursor:pointer}
+.template-product .product-details .rte{max-width:62ch}
+
+/* Product images should read as commerce photography, never crop to fill. */
+.template-product .gallery__main>img,
+.template-product .gallery__thumbs img{
+  object-fit:contain;
+  object-position:center;
+  box-sizing:border-box;
+}
+
+/* ---------- mobile hierarchy ---------- */
+@media(max-width:800px){
+  :root{--nima-header-height:60px}
+  .nav{min-height:var(--nima-header-height)}
+  .nav-toggle,.actions a{min-width:44px;min-height:44px}
+  .template-product .buy{position:static}
+  .template-product .gallery__main{height:auto;aspect-ratio:1/1;min-height:0}
+  .template-product .gallery__main>img{padding:7%}
+  .template-product .trust{display:grid;grid-template-columns:1fr;gap:8px;padding:14px 0;text-align:left}
+  .template-product .trust>*:not(:last-child)::after{content:none}
+  .template-product .add{min-height:52px;font-size:13px}
+  .filterbar__chips{width:100%;padding-bottom:2px}
+}
+
+@media(max-width:520px){
+  .actions{gap:2px}
+  .actions .cart-link{padding-inline:2px}
+  .actions .cart-link .cart-label{display:none}
+  .pcard__media .pcard__image,
+  .pcard__media img{padding:7%}
+  .pcard__body h3{min-height:auto}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
