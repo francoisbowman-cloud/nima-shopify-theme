@@ -18,7 +18,13 @@
       "settings": {
         "button_label": ""
       }
+    },
+    "routine-cross-sell": {
+      "type": "product-routine-cross-sell",
+      "settings": {
+        "products_to_show": 3
+      }
     }
   },
-  "order": ["main", "ovl-story"]
+  "order": ["main", "ovl-story", "routine-cross-sell"]
 }
