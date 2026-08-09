@@ -82,3 +82,16 @@ def test_home_shop_window_precedes_editorial_discovery_blocks():
 def test_product_cross_sell_is_last_product_template_section():
     template = _load_shopify_json(THEME / "templates" / "product.json")
     assert template["order"][-1] == "routine-cross-sell"
+
+
+def test_product_cross_sell_has_real_catalog_fallback():
+    section = (THEME / "sections" / "product-routine-cross-sell.liquid").read_text(encoding="utf-8")
+    assert "collections['all']" in section
+    assert "rendered_count == 0" in section
+    assert "source_collection.handle != 'all'" in section
+
+
+def test_home_shop_window_has_catalog_fallback():
+    section = (THEME / "sections" / "editorial-shop-window.liquid").read_text(encoding="utf-8")
+    assert "collections['all']" in section
+    assert "routes.all_products_collection_url" in section
