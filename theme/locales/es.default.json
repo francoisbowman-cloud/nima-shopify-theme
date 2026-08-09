@@ -138,6 +138,34 @@
     "policies": "Políticas",
     "secure_checkout": "Checkout seguro alojado por Shopify"
   },
+  "sections": {
+    "footer": {
+      "newsletter_kicker": "Notas de Nima",
+      "newsletter_heading": "Ideas útiles para compartir mejor cada día con ellos.",
+      "newsletter_placeholder": "Tu correo electrónico",
+      "newsletter_button": "Suscribirme",
+      "newsletter_success": "Gracias por acompañarnos.",
+      "tagline": "Objetos útiles e historias honestas para una vida más tranquila con mascotas."
+    },
+    "magazine": {
+      "kicker": "Nima Journal",
+      "heading": "Una vida más tranquila,||mejor compartida.",
+      "intro": "Historias, guías y rituales cotidianos para una vida más serena con mascotas.",
+      "feature_kicker": "Ritual de cuidado",
+      "feature_heading": "El baño también puede ser un momento de confianza.",
+      "feature_text": "Ideas sencillas para que el grooming sea más amable, predecible y cómodo para ambos.",
+      "feature_button": "Leer la historia",
+      "story_1_kicker": "Guía",
+      "story_1_heading": "Un baño más tranquilo, desde la primera toalla.",
+      "story_1_text": "Prepara el espacio, reduce las sorpresas y deja que la comodidad marque el ritmo.",
+      "story_2_kicker": "Cuidado diario",
+      "story_2_heading": "Pequeñas rutinas que construyen confianza.",
+      "story_2_text": "Unas cuantas señales repetibles pueden hacer que el cuidado se sienta familiar en lugar de estresante.",
+      "story_3_kicker": "Selección",
+      "story_3_heading": "Un kit de grooming más simple.",
+      "story_3_text": "Conserva sólo los esenciales que hacen la rutina más fácil y tranquila."
+    }
+  },
   "seo": {
     "home_description": "Esenciales pensados para una vida más tranquila y mejor con mascotas.",
     "collection_description": "Compra {{ collection }} en Nima: artículos seleccionados para mascotas con una experiencia clara y confiable.",
