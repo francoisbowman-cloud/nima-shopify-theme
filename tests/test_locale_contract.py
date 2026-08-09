@@ -36,6 +36,11 @@ DYNAMIC_REQUIRED_KEYS = {
     "sections.magazine.story_3_kicker",
     "sections.magazine.story_3_heading",
     "sections.magazine.story_3_text",
+    "sections.magazine.brand_kicker",
+    "sections.magazine.brand_heading",
+    "sections.magazine.brand_side_heading",
+    "sections.magazine.brand_text",
+    "sections.magazine.brand_button",
 }
 
 
