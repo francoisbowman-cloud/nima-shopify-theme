@@ -7,6 +7,7 @@ on:
       - 'catalog/commerce-media-active.json'
       - 'catalog/commerce-media-semantic.json'
       - 'tests/test_commerce_media_factory.py'
+      - 'tests/test_commerce_media_publication.py'
       - '.github/workflows/commerce-media-factory.yml'
   workflow_dispatch:
 
@@ -22,7 +23,7 @@ jobs:
       - name: Install media dependencies
         run: python -m pip install --disable-pip-version-check pillow numpy requests
       - name: Run deterministic factory tests
-        run: python -m unittest tests.test_commerce_media_factory -v
+        run: python -m unittest tests.test_commerce_media_factory tests.test_commerce_media_publication -v
       - name: Audit active Shopify featured media
         run: |
           python tools/nima_commerce_media/factory.py \
