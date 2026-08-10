@@ -56,6 +56,36 @@ async def assert_home_fundamentals(page, viewport: str):
         assert m["bottom"] <= c["y"] + 2, f"Mobile story must place media before copy without overlay: {geometry}"
 
 
+async def assert_pdp_fundamentals(page, viewport: str):
+    trust = page.locator(".template-product .trust")
+    details = page.locator(".template-product .product-details")
+    assert await trust.count() == 1, "PDP reassurance group missing"
+    assert await details.count() <= 1, "PDP details duplicated"
+    geometry = await trust.evaluate(
+        """el => {
+          const r = el.getBoundingClientRect();
+          const children = Array.from(el.children).map(child => {
+            const c = child.getBoundingClientRect();
+            return {top:c.top,bottom:c.bottom,height:c.height,display:getComputedStyle(child).display};
+          });
+          return {top:r.top,bottom:r.bottom,height:r.height,display:getComputedStyle(el).display,children};
+        }"""
+    )
+    max_height = 92 if viewport == "desktop" else 150
+    assert geometry["height"] <= max_height, f"PDP reassurance became vertically sparse: {geometry}"
+    for child in geometry["children"]:
+        assert child["height"] <= 40, f"PDP reassurance item has accidental height: {geometry}"
+    if await details.count() == 1:
+        distance = await page.evaluate(
+            """() => {
+              const trust=document.querySelector('.template-product .trust').getBoundingClientRect();
+              const details=document.querySelector('.template-product .product-details').getBoundingClientRect();
+              return details.top-trust.bottom;
+            }"""
+        )
+        assert distance <= 48, f"PDP details separated too far from reassurance: {distance}px"
+
+
 async def assert_surface_geometry(page, route: str, viewport: str):
     if route == "home":
         cards = page.locator(".shop-window__grid .pcard")
@@ -80,6 +110,7 @@ async def assert_surface_geometry(page, route: str, viewport: str):
         assert await page.locator("[data-gallery-main]").count() == 1, "PDP main gallery image missing"
         assert await page.locator("[data-product-form]").count() == 1, "PDP product form missing"
         assert await page.locator("[data-add-btn]").count() == 1, "PDP add-to-cart control missing"
+        await assert_pdp_fundamentals(page, viewport)
     elif route == "search":
         assert await page.locator(".search-form input[name='q']").count() == 1, "Search query input missing"
         assert await page.locator(".search-form button[type='submit']").count() == 1, "Search submit missing"
