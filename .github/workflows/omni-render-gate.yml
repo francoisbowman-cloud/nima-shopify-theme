@@ -5,6 +5,7 @@ on:
     paths:
       - 'theme/**'
       - '.github/omni_render_gate.py'
+      - '.github/omni_render_gate_v2.py'
       - '.github/workflows/omni-render-gate.yml'
   workflow_dispatch:
 
@@ -38,7 +39,7 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Execute real Shopify OMNI Render Gate
-        run: python .github/omni_render_gate.py
+        run: python .github/omni_render_gate_v2.py
 
       - name: Publish Render Gate summary
         if: always()
