@@ -7,12 +7,7 @@
     <p class="muted collection-sub">{{ 'collections.default_description' | t }}</p>
   {%- endif -%}
 
-  {%- liquid
-    assign collection_visual = collection.image
-    if collection_visual == blank and collection.products.first.featured_image != blank
-      assign collection_visual = collection.products.first.featured_image
-    endif
-  -%}
+  {%- assign collection_visual = collection.image -%}
   {%- if collection_visual != blank -%}
     <div class="collection-visual" aria-hidden="true">
       {{
