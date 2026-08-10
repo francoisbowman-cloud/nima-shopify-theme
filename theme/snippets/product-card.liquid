@@ -1,6 +1,22 @@
 {%- comment -%} Uso: {% render 'product-card', product: product %} {%- endcomment -%}
 {%- assign is_featured = false -%}
 {%- assign tag_label = '' -%}
+{%- assign media_grade = 'missing' -%}
+{%- assign color_values = blank -%}
+{%- if product.featured_image != blank -%}
+  {%- assign media_probe = product.featured_image | image_url: width: 1200 | downcase -%}
+  {%- if media_probe contains '-refined-' or media_probe contains '_refined_' or media_probe contains 'refined-v' -%}
+    {%- assign media_grade = 'refined' -%}
+  {%- else -%}
+    {%- assign media_grade = 'source' -%}
+  {%- endif -%}
+{%- endif -%}
+{%- for option in product.options_with_values -%}
+  {%- assign option_name = option.name | downcase -%}
+  {%- if option_name == 'color' or option_name == 'colour' or option_name == 'color / size' -%}
+    {%- assign color_values = option.values -%}
+  {%- endif -%}
+{%- endfor -%}
 {%- if product.available == false -%}
   {%- assign tag_label = 'products.sold_out' | t -%}
 {%- elsif product.tags contains 'bestseller' -%}
@@ -10,8 +26,8 @@
   {%- assign tag_label = 'products.new' | t -%}
 {%- endif -%}
 
-<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}" data-category="{{ product.type | escape }}">
-  <div class="pcard__media">
+<a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}" data-category="{{ product.type | escape }}" data-media-grade="{{ media_grade }}">
+  <div class="pcard__media" data-media-surface data-media-grade="{{ media_grade }}">
     {%- if product.featured_image != blank -%}
       {%- assign card_alt = product.featured_image.alt | default: product.title -%}
       {{
@@ -52,5 +68,37 @@
       {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
       {{ product.price | money }}
     </div>
+    {%- if color_values != blank -%}
+      <div class="pcard__swatches" aria-hidden="true">
+        {%- for value in color_values limit: 4 -%}
+          {%- liquid
+            assign color_name = value | downcase
+            case color_name
+              when 'cream' or 'crema' or 'beige'
+                assign swatch_hex = '#eadfce'
+              when 'brown' or 'marron' or 'marrón' or 'tan'
+                assign swatch_hex = '#9b7659'
+              when 'black' or 'negro'
+                assign swatch_hex = '#292725'
+              when 'blue' or 'azul'
+                assign swatch_hex = '#70869b'
+              when 'pink' or 'rosa'
+                assign swatch_hex = '#d7a8ad'
+              when 'grey' or 'gray' or 'gris'
+                assign swatch_hex = '#aaa6a1'
+              when 'green' or 'verde' or 'mint'
+                assign swatch_hex = '#98b9ad'
+              when 'red' or 'rojo'
+                assign swatch_hex = '#9f574c'
+              when 'white' or 'blanco'
+                assign swatch_hex = '#f7f5f1'
+              else
+                assign swatch_hex = '#d7cfc5'
+            endcase
+          -%}
+          <span class="pcard__swatch" style="--swatch:{{ swatch_hex }}"></span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 </a>

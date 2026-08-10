@@ -20,6 +20,26 @@
   </nav>
 
   <div class="actions">
+    {%- if localization.available_languages.size > 1 -%}
+      {% form 'localization', class: 'language-switcher', data-language-switcher: '' %}
+        <span class="visually-hidden">Language / Idioma</span>
+        <div class="language-switcher__options" role="group" aria-label="Language / Idioma">
+          {%- for language in localization.available_languages -%}
+            <button
+              class="language-switcher__option{% if language.iso_code == localization.language.iso_code %} is-active{% endif %}"
+              type="submit"
+              name="language_code"
+              value="{{ language.iso_code }}"
+              lang="{{ language.iso_code }}"
+              hreflang="{{ language.iso_code }}"
+              {% if language.iso_code == localization.language.iso_code %}aria-current="true"{% endif %}
+              aria-label="{{ language.endonym_name | escape }}"
+            >{{ language.iso_code | upcase }}</button>
+          {%- endfor -%}
+        </div>
+      {% endform %}
+    {%- endif -%}
+
     <a href="{{ routes.search_url }}" aria-label="{{ 'accessibility.search' | t }}">
       <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <circle cx="11" cy="11" r="6.5"></circle>
@@ -43,6 +63,21 @@
     </a>
   </div>
 </header>
+
+{% stylesheet %}
+  .language-switcher{margin:0;padding:0;display:flex;align-items:center}
+  .language-switcher__options{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid rgba(40,40,39,.12);border-radius:999px;background:rgba(255,255,255,.52)}
+  .language-switcher__option{appearance:none;border:0;background:transparent;color:rgba(40,40,39,.58);min-width:31px;min-height:28px;padding:0 7px;border-radius:999px;font:600 9px/1 Arial,sans-serif;letter-spacing:.12em;cursor:pointer;transition:background 180ms ease,color 180ms ease,transform 180ms ease}
+  .language-switcher__option:hover{color:#282827;background:rgba(40,40,39,.055)}
+  .language-switcher__option:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(180,73,44,.18)}
+  .language-switcher__option.is-active{background:#282827;color:#fff}
+  .language-switcher__option:active{transform:scale(.96)}
+  @media(max-width:760px){
+    .language-switcher{order:-1}
+    .language-switcher__options{padding:2px}
+    .language-switcher__option{min-width:29px;min-height:26px;padding:0 6px;font-size:8px}
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

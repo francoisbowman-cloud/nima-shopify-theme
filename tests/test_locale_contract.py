@@ -10,6 +10,8 @@ LOCALES = {
 }
 
 TRANSLATION_RE = re.compile(r"(['\"])([A-Za-z0-9_.-]+)\1\s*\|\s*t\b")
+PLACEHOLDER_RE = re.compile(r"{{\s*([A-Za-z0-9_.-]+)\s*}}")
+FORBIDDEN_RENDER_MARKERS = ("translation missing", "translation_missing", "missing translation")
 
 DYNAMIC_REQUIRED_KEYS = {
     "sections.footer.newsletter_kicker",
@@ -34,6 +36,11 @@ DYNAMIC_REQUIRED_KEYS = {
     "sections.magazine.story_3_kicker",
     "sections.magazine.story_3_heading",
     "sections.magazine.story_3_text",
+    "sections.magazine.brand_kicker",
+    "sections.magazine.brand_heading",
+    "sections.magazine.brand_side_heading",
+    "sections.magazine.brand_text",
+    "sections.magazine.brand_button",
 }
 
 
@@ -57,6 +64,17 @@ def _flatten(value, prefix=""):
     return out
 
 
+def _flatten_values(value, prefix=""):
+    out = {}
+    if isinstance(value, dict):
+        for key, child in value.items():
+            new_prefix = f"{prefix}.{key}" if prefix else key
+            out.update(_flatten_values(child, new_prefix))
+    else:
+        out[prefix] = value
+    return out
+
+
 def _liquid_translation_keys():
     keys = set()
     for path in THEME.rglob("*.liquid"):
@@ -68,6 +86,13 @@ def _liquid_translation_keys():
 def _locale_key_sets():
     return {
         locale: _flatten(_load_json_with_shopify_comment(path))
+        for locale, path in LOCALES.items()
+    }
+
+
+def _locale_values():
+    return {
+        locale: _flatten_values(_load_json_with_shopify_comment(path))
         for locale, path in LOCALES.items()
     }
 
@@ -107,3 +132,42 @@ def test_en_and_es_locale_structures_match():
         "Locale key sets differ. "
         f"Only EN: {only_en or 'none'}; Only ES: {only_es or 'none'}"
     )
+
+
+def test_locale_values_are_nonblank_and_do_not_contain_missing_markers():
+    failures = []
+    for locale, values in _locale_values().items():
+        for key, value in values.items():
+            if not isinstance(value, str) or not value.strip():
+                failures.append(f"{locale}:{key}=blank")
+                continue
+            lower = value.lower()
+            for marker in FORBIDDEN_RENDER_MARKERS:
+                if marker in lower:
+                    failures.append(f"{locale}:{key} contains {marker!r}")
+    assert not failures, "Invalid locale values:\n" + "\n".join(failures)
+
+
+def test_interpolation_placeholders_match_between_en_and_es():
+    values = _locale_values()
+    failures = []
+    for key in sorted(values["en"]):
+        en_placeholders = set(PLACEHOLDER_RE.findall(values["en"][key]))
+        es_placeholders = set(PLACEHOLDER_RE.findall(values["es"][key]))
+        if en_placeholders != es_placeholders:
+            failures.append(
+                f"{key}: EN={sorted(en_placeholders)} ES={sorted(es_placeholders)}"
+            )
+    assert not failures, "Locale interpolation mismatch:\n" + "\n".join(failures)
+
+
+def test_theme_sources_do_not_ship_literal_translation_missing_markers():
+    failures = []
+    for path in THEME.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in {".liquid", ".json", ".js", ".css"}:
+            continue
+        text = path.read_text(encoding="utf-8").lower()
+        for marker in FORBIDDEN_RENDER_MARKERS:
+            if marker in text:
+                failures.append(f"{path.relative_to(ROOT)} contains {marker!r}")
+    assert not failures, "Literal translation-missing marker found:\n" + "\n".join(failures)

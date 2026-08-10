@@ -11,8 +11,8 @@
   This snippet maps the known type values to a `collections.category.*`
   locale key (translated in both locales/es.default.json and locales/en.json)
   and falls back to the raw `type` string for anything not in the mapping —
-  so a new/unmapped product type never breaks or shows "translation missing",
-  it just behaves exactly like before this fix.
+  so a new/unmapped product type never breaks or exposes a missing-locale
+  marker; it just behaves exactly like before this fix.
 
   Usage: {% render 'product-type-label', type: product.type %}
 {%- endcomment -%}

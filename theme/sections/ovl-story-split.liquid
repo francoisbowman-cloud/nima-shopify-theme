@@ -1,13 +1,27 @@
-<section class="split">
+{%- liquid
+  assign brand_kicker = section.settings.left_kicker
+  assign brand_heading = section.settings.left_heading
+  assign brand_side_heading = section.settings.right_heading
+  assign brand_text = section.settings.right_text
+  assign brand_button = section.settings.button_label
+  if section.settings.use_localized_copy
+    assign brand_kicker = 'sections.magazine.brand_kicker' | t
+    assign brand_heading = 'sections.magazine.brand_heading' | t
+    assign brand_side_heading = 'sections.magazine.brand_side_heading' | t
+    assign brand_text = 'sections.magazine.brand_text' | t
+    assign brand_button = 'sections.magazine.brand_button' | t
+  endif
+-%}
+<section class="split split--brand">
   <div class="dark">
-    <span class="kicker">{{ section.settings.left_kicker }}</span>
-    <h2 class="big">{{ section.settings.left_heading }}</h2>
+    <span class="kicker">{{ brand_kicker }}</span>
+    <h2 class="big">{{ brand_heading }}</h2>
   </div>
   <div>
-    <h3 style="font-size:36px">{{ section.settings.right_heading }}</h3>
-    <p class="muted">{{ section.settings.right_text }}</p>
-    {%- if section.settings.button_label != blank -%}
-      <a class="btn" href="{{ section.settings.button_url | default: '#' }}">{{ section.settings.button_label }} →</a>
+    <h3 class="split__side-heading">{{ brand_side_heading }}</h3>
+    <p class="muted">{{ brand_text }}</p>
+    {%- if brand_button != blank -%}
+      <a class="btn" href="{{ section.settings.button_url | default: '#' }}">{{ brand_button }}</a>
     {%- endif -%}
   </div>
 </section>
@@ -16,6 +30,7 @@
 {
   "name": "OVL Story (split oscuro)",
   "settings": [
+    { "type": "checkbox", "id": "use_localized_copy", "label": "Usar copy automático EN/ES", "default": true },
     { "type": "text", "id": "left_kicker", "label": "Kicker", "default": "OVL Story" },
     { "type": "textarea", "id": "left_heading", "label": "Título grande", "default": "No vendemos plástico. Diseñamos tranquilidad." },
     { "type": "text", "id": "right_heading", "label": "Título derecho", "default": "Producto integrado" },
