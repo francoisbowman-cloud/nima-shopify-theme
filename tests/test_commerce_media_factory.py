@@ -66,10 +66,10 @@ class CommerceMediaFactoryTests(unittest.TestCase):
         self.assertIn("foreground_touches_safe_edge", reasons)
 
     def test_complex_background_not_auto_normalized(self):
-        image = Image.new("RGB", (1000, 1000), (240, 240, 240))
+        image = Image.new("RGB", (1000, 1000), (252, 252, 252))
         draw = ImageDraw.Draw(image)
         for x in range(0, 1000, 20):
-            draw.rectangle((x, 0, x + 9, 1000), fill=(170, 180, 190))
+            draw.rectangle((x, 0, x + 9, 1000), fill=(90, 125, 155))
         draw.ellipse((250, 250, 750, 750), fill=(25, 90, 150))
         metrics = factory.analyze_image(image, POLICY)
         status, reasons = factory.classify(metrics, POLICY)
