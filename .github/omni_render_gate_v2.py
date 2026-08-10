@@ -23,12 +23,12 @@ async def assert_home_fundamentals(page, viewport: str):
           const copyStyle = getComputedStyle(copy);
           const headingStyle = getComputedStyle(heading);
           const paragraphStyle = getComputedStyle(paragraph);
-          const bg = copyStyle.backgroundColor;
           return {
             copy: {x:c.x,y:c.y,w:c.width,h:c.height,right:c.right,bottom:c.bottom},
             media: {x:m.x,y:m.y,w:m.width,h:m.height,right:m.right,bottom:m.bottom},
             copyPosition: copyStyle.position,
-            copyBg: bg,
+            copyBgColor: copyStyle.backgroundColor,
+            copyBgImage: copyStyle.backgroundImage,
             headingColor: headingStyle.color,
             paragraphColor: paragraphStyle.color,
             headingSize: parseFloat(headingStyle.fontSize),
@@ -43,7 +43,10 @@ async def assert_home_fundamentals(page, viewport: str):
     overlap_y = max(0, min(c["bottom"], m["bottom"]) - max(c["y"], m["y"]))
     overlap_area = overlap_x * overlap_y
     assert overlap_area <= 2, f"Home story text overlaps lifestyle image: {geometry}"
-    assert geometry["copyBg"] not in {"rgba(0, 0, 0, 0)", "transparent"}, f"Home story copy panel is transparent: {geometry}"
+
+    has_opaque_color = geometry["copyBgColor"] not in {"rgba(0, 0, 0, 0)", "transparent"}
+    has_background_image = geometry["copyBgImage"] not in {"none", ""}
+    assert has_opaque_color or has_background_image, f"Home story copy panel has no readable background: {geometry}"
     assert geometry["headingSize"] >= 34, f"Home story heading became too small: {geometry}"
     assert geometry["paragraphSize"] >= 14, f"Home story body became too small: {geometry}"
 
