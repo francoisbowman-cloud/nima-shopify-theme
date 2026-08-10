@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/nima_commerce_media/**'
       - 'catalog/commerce-media-active.json'
+      - 'catalog/commerce-media-semantic.json'
       - 'tests/test_commerce_media_factory.py'
       - '.github/workflows/commerce-media-factory.yml'
   workflow_dispatch:
@@ -28,12 +29,19 @@ jobs:
             --manifest catalog/commerce-media-active.json \
             --out commerce-media-evidence \
             --normalize-safe
+      - name: Apply semantic publication gate
+        run: |
+          python tools/nima_commerce_media/publish_gate.py \
+            --audit commerce-media-evidence/audit.json \
+            --semantic catalog/commerce-media-semantic.json \
+            --output commerce-media-evidence/publish-plan.json
       - name: Route unresolved exceptions to OMNI manifest
         if: always()
         run: |
           if [ -f commerce-media-evidence/audit.json ]; then
             python tools/nima_commerce_media/omni_adapter.py \
               --audit commerce-media-evidence/audit.json \
+              --semantic catalog/commerce-media-semantic.json \
               --output commerce-media-evidence/omni-exceptions.json
           fi
       - name: Publish summary
@@ -41,6 +49,17 @@ jobs:
         run: |
           if [ -f commerce-media-evidence/REPORT.md ]; then
             cat commerce-media-evidence/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f commerce-media-evidence/publish-plan.json ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '## Semantic publication gate' >> "$GITHUB_STEP_SUMMARY"
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          data = json.loads(Path('commerce-media-evidence/publish-plan.json').read_text())
+          print(f"- Approved candidates: **{len(data.get('approved_candidates', []))}**")
+          print(f"- Blocked candidates: **{len(data.get('blocked_candidates', []))}**")
+          PY
           fi
       - name: Upload media evidence
         if: always()
