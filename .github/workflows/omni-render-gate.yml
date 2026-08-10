@@ -1,0 +1,61 @@
+name: OMNI render gate
+
+on:
+  pull_request:
+    paths:
+      - 'theme/**'
+      - '.github/omni_render_gate.py'
+      - '.github/workflows/omni-render-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  storefront-render-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NIMA_PRIMARY_URL: https://nimapets.com
+      NIMA_FALLBACK_URL: https://gbe01p-0e.myshopify.com
+      NIMA_PREVIEW_THEME_ID: '199660142673'
+      NIMA_PRODUCT_HANDLE: anti-splash-water-bowl-for-dogs-1l-large-capacity-drinker-drinking-bowls-dog-waterer-for-puppy-cat-pet-accessories
+      NIMA_VARIANT_ID: '59833605062737'
+      NIMA_RENDER_OUT: omni-render-evidence
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright==1.54.0
+          python -m playwright install --with-deps chromium
+
+      - name: Execute real Shopify OMNI Render Gate
+        run: python .github/omni_render_gate.py
+
+      - name: Publish Render Gate summary
+        if: always()
+        run: |
+          if [ -f omni-render-evidence/REPORT.md ]; then
+            cat omni-render-evidence/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '## Nima × OMNI Render Gate' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo 'No report was produced.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nima-omni-render-evidence
+          path: omni-render-evidence/
+          if-no-files-found: warn
+          retention-days: 14
