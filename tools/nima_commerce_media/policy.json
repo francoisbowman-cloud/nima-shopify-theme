@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "name": "Nima Commerce Media Contract v1",
+  "canvas_rgb": [255, 255, 255],
+  "min_source_px": 800,
+  "white_threshold": 245,
+  "min_border_white_ratio": 0.985,
+  "uniform_background_spread_max": 32.0,
+  "background_tolerance": 42.0,
+  "fringe_blend": 0.14,
+  "geometry_profiles": {
+    "compact_object": {
+      "target_occupancy": 0.58,
+      "min_occupancy": 0.34,
+      "max_occupancy": 0.78,
+      "safe_margin": 0.08
+    },
+    "wide_object": {
+      "target_occupancy": 0.54,
+      "min_occupancy": 0.30,
+      "max_occupancy": 0.75,
+      "safe_margin": 0.08
+    },
+    "tall_object": {
+      "target_occupancy": 0.50,
+      "min_occupancy": 0.26,
+      "max_occupancy": 0.70,
+      "safe_margin": 0.09
+    },
+    "long_accessory": {
+      "target_occupancy": 0.44,
+      "min_occupancy": 0.20,
+      "max_occupancy": 0.65,
+      "safe_margin": 0.10
+    },
+    "soft_goods": {
+      "target_occupancy": 0.56,
+      "min_occupancy": 0.30,
+      "max_occupancy": 0.76,
+      "safe_margin": 0.09
+    },
+    "flat_ground": {
+      "target_occupancy": 0.50,
+      "min_occupancy": 0.26,
+      "max_occupancy": 0.72,
+      "safe_margin": 0.10
+    }
+  }
+}

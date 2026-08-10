@@ -1,0 +1,52 @@
+name: Commerce Media Factory
+
+on:
+  pull_request:
+    paths:
+      - 'tools/nima_commerce_media/**'
+      - 'catalog/commerce-media-active.json'
+      - 'tests/test_commerce_media_factory.py'
+      - '.github/workflows/commerce-media-factory.yml'
+  workflow_dispatch:
+
+jobs:
+  factory-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install media dependencies
+        run: python -m pip install --disable-pip-version-check pillow numpy requests
+      - name: Run deterministic factory tests
+        run: python -m unittest tests.test_commerce_media_factory -v
+      - name: Audit active Shopify featured media
+        run: |
+          python tools/nima_commerce_media/factory.py \
+            --manifest catalog/commerce-media-active.json \
+            --out commerce-media-evidence \
+            --normalize-safe
+      - name: Route unresolved exceptions to OMNI manifest
+        if: always()
+        run: |
+          if [ -f commerce-media-evidence/audit.json ]; then
+            python tools/nima_commerce_media/omni_adapter.py \
+              --audit commerce-media-evidence/audit.json \
+              --output commerce-media-evidence/omni-exceptions.json
+          fi
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f commerce-media-evidence/REPORT.md ]; then
+            cat commerce-media-evidence/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload media evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nima-commerce-media-factory-evidence
+          path: commerce-media-evidence
+          if-no-files-found: error
+          retention-days: 14
