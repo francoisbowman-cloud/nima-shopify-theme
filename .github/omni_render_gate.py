@@ -139,19 +139,33 @@ async def assert_surface_geometry(page, route: str, viewport: str):
     elif route == "collection":
         cards = page.locator(".product-grid .pcard")
         assert await cards.count() > 0, "Collection rendered no product cards"
-        first = cards.first
         if viewport == "desktop":
-            geometry = await first.evaluate(
-                "el => {const s=getComputedStyle(el); return {column:s.gridColumnEnd,row:s.gridRowEnd};}"
+            anchor = page.locator("[data-product-grid] > a.pcard:first-of-type")
+            assert await anchor.count() == 1, "Collection merchandising anchor selector did not resolve"
+            geometry = await anchor.evaluate(
+                """el => {
+                    const s=getComputedStyle(el);
+                    const grid=el.parentElement;
+                    return {
+                      bodyClass:document.body.className,
+                      className:el.className,
+                      columnStart:s.gridColumnStart,
+                      columnEnd:s.gridColumnEnd,
+                      rowStart:s.gridRowStart,
+                      rowEnd:s.gridRowEnd,
+                      gridDisplay:getComputedStyle(grid).display,
+                      gridTemplateColumns:getComputedStyle(grid).gridTemplateColumns,
+                      matched:el.matches('[data-product-grid] > a.pcard:first-of-type')
+                    };
+                }"""
             )
-            assert "span 2" in geometry["column"] or "span 2" in geometry["row"], (
-                "Desktop collection merchandising anchor did not span the grid: " + str(geometry)
+            assert "span 2" in geometry["columnEnd"] and "span 2" in geometry["rowEnd"], (
+                "Desktop collection merchandising anchor did not span the grid: " + json.dumps(geometry)
             )
     elif route == "pdp":
         assert await page.locator("[data-gallery-main]").count() == 1, "PDP main gallery image missing"
         assert await page.locator("[data-product-form]").count() == 1, "PDP product form missing"
-        add = page.locator("[data-add-btn]")
-        assert await add.count() == 1, "PDP add-to-cart control missing"
+        assert await page.locator("[data-add-btn]").count() == 1, "PDP add-to-cart control missing"
     elif route == "search":
         assert await page.locator(".search-form input[name='q']").count() == 1, "Search query input missing"
         assert await page.locator(".search-form button[type='submit']").count() == 1, "Search submit missing"
@@ -159,6 +173,12 @@ async def assert_surface_geometry(page, route: str, viewport: str):
         assert await page.locator(".cart-summary").count() == 1, "Cart summary missing"
         assert await page.locator("button[name='checkout']").count() == 1, "Checkout button missing"
         assert await page.locator("input[name='updates[]']").count() >= 1, "Cart quantity contract missing"
+
+
+async def capture(page, locale: str, viewport: str, route: str) -> str:
+    shot = OUT / f"{locale}-{viewport}-{route}.png"
+    await page.screenshot(path=str(shot), full_page=True)
+    return shot.name
 
 
 async def run_case(browser, base: str, locale: str, viewport: str, report: dict):
@@ -181,11 +201,10 @@ async def run_case(browser, base: str, locale: str, viewport: str, report: dict)
             await reveal(page)
             await assert_common(page, locale, route)
             await assert_commerce_media(page, route)
+            screenshot = await capture(page, locale, viewport, route)
             await assert_surface_geometry(page, route, viewport)
-            shot = OUT / f"{locale}-{viewport}-{route}.png"
-            await page.screenshot(path=str(shot), full_page=True)
             report["cases"].append(
-                {"locale": locale, "viewport": viewport, "route": route, "url": page.url, "screenshot": shot.name, "status": "PASS"}
+                {"locale": locale, "viewport": viewport, "route": route, "url": page.url, "screenshot": screenshot, "status": "PASS"}
             )
 
         response = await page.goto(cart_permalink(base, locale), wait_until="domcontentloaded", timeout=45000)
@@ -195,11 +214,10 @@ async def run_case(browser, base: str, locale: str, viewport: str, report: dict)
         assert await page.locator(".cart-item").count() >= 1, "Cart permalink did not populate the cart"
         await assert_common(page, locale, "cart")
         await assert_commerce_media(page, "cart")
+        screenshot = await capture(page, locale, viewport, "cart")
         await assert_surface_geometry(page, "cart", viewport)
-        shot = OUT / f"{locale}-{viewport}-cart.png"
-        await page.screenshot(path=str(shot), full_page=True)
         report["cases"].append(
-            {"locale": locale, "viewport": viewport, "route": "cart", "url": page.url, "screenshot": shot.name, "status": "PASS"}
+            {"locale": locale, "viewport": viewport, "route": "cart", "url": page.url, "screenshot": screenshot, "status": "PASS"}
         )
     finally:
         await context.close()
