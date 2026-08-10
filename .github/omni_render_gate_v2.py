@@ -1,0 +1,41 @@
+import asyncio
+
+import omni_render_gate as gate
+
+
+async def assert_surface_geometry(page, route: str, viewport: str):
+    if route == "home":
+        cards = page.locator(".shop-window__grid .pcard")
+        assert await cards.count() >= 3, "Home shop window needs at least 3 product cards"
+        if viewport == "desktop":
+            grid = page.locator(".shop-window__grid")
+            columns = await grid.evaluate("el => getComputedStyle(el).gridTemplateColumns")
+            assert len(columns.split()) >= 4, f"Desktop Home commerce grid not stable: {columns}"
+    elif route == "collection":
+        cards = page.locator("[data-product-grid] .pcard")
+        assert await cards.count() > 0, "Collection rendered no product cards"
+        first = cards.first
+        geometry = await first.evaluate(
+            "el => {const s=getComputedStyle(el);return {columnStart:s.gridColumnStart,columnEnd:s.gridColumnEnd,rowStart:s.gridRowStart,rowEnd:s.gridRowEnd}}"
+        )
+        assert "span 2" not in " ".join(geometry.values()), f"Collection first SKU is still oversized: {geometry}"
+        if viewport == "desktop":
+            columns = await page.locator("[data-product-grid]").evaluate("el => getComputedStyle(el).gridTemplateColumns")
+            assert len(columns.split()) >= 4, f"Desktop Collection does not expose four-column commerce rhythm: {columns}"
+    elif route == "pdp":
+        assert await page.locator("[data-gallery-main]").count() == 1, "PDP main gallery image missing"
+        assert await page.locator("[data-product-form]").count() == 1, "PDP product form missing"
+        assert await page.locator("[data-add-btn]").count() == 1, "PDP add-to-cart control missing"
+    elif route == "search":
+        assert await page.locator(".search-form input[name='q']").count() == 1, "Search query input missing"
+        assert await page.locator(".search-form button[type='submit']").count() == 1, "Search submit missing"
+    elif route == "cart":
+        assert await page.locator(".cart-summary").count() == 1, "Cart summary missing"
+        assert await page.locator("button[name='checkout']").count() == 1, "Checkout button missing"
+        assert await page.locator("input[name='updates[]']").count() >= 1, "Cart quantity contract missing"
+
+
+gate.assert_surface_geometry = assert_surface_geometry
+
+if __name__ == "__main__":
+    asyncio.run(gate.main())
