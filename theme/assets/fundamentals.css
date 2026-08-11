@@ -12,195 +12,64 @@
   --nima-overlay-dark:rgba(29,25,22,.68);
 }
 
-/* ---------- Baseline ---------- */
 body{color:var(--nima-readable-ink)}
 p,.rte{line-height:1.65}
 .kicker{line-height:1.3}
 button,input,select,textarea{font:inherit}
+.template-index h1,.template-collection h1,.template-product h1,.template-search h1,.template-cart h1{text-wrap:balance;overflow-wrap:anywhere}
 
-.template-index h1,
-.template-collection h1,
-.template-product h1,
-.template-search h1,
-.template-cart h1{
-  text-wrap:balance;
-  overflow-wrap:anywhere;
-}
-
-/* ---------- Home hero: copy and photography remain separate ---------- */
+/* Home: the copy owns a quiet surface; photography never sits underneath it. */
 .template-index .hero{position:relative;isolation:isolate}
 .template-index .hero-copy{position:relative!important;z-index:2!important;color:var(--nima-readable-ink)!important}
-.template-index .hero-copy h1,
-.template-index .hero-copy p{color:inherit!important}
+.template-index .hero-copy h1,.template-index .hero-copy p{color:inherit!important}
 .template-index .hero-art{position:relative!important;z-index:1!important}
 
-/* ---------- Home story: never place long copy on lifestyle photography ---------- */
-.template-index .premium-story{
-  display:grid!important;
-  grid-template-columns:minmax(320px,.82fr) minmax(0,1.18fr)!important;
-  position:relative!important;
-  isolation:isolate!important;
-  min-height:440px!important;
-  background:var(--nima-readable-panel)!important;
-  overflow:hidden!important;
-}
-.template-index .premium-story__copy{
-  position:relative!important;
-  inset:auto!important;
-  z-index:3!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:center!important;
-  padding:clamp(42px,5vw,72px)!important;
-  background:linear-gradient(135deg,#eee2d2 0%,#f6efe6 100%)!important;
-  color:var(--nima-readable-ink)!important;
-  text-shadow:none!important;
-}
+.template-index .premium-story{display:grid!important;grid-template-columns:minmax(320px,.82fr) minmax(0,1.18fr)!important;position:relative!important;isolation:isolate!important;min-height:440px!important;background:var(--nima-readable-panel)!important;overflow:hidden!important}
+.template-index .premium-story__copy{position:relative!important;inset:auto!important;z-index:3!important;display:flex!important;flex-direction:column!important;justify-content:center!important;padding:clamp(42px,5vw,72px)!important;background:linear-gradient(135deg,#eee2d2 0%,#f6efe6 100%)!important;color:var(--nima-readable-ink)!important;text-shadow:none!important}
 .template-index .premium-story__copy .kicker{color:#6f6257!important;opacity:1!important}
-.template-index .premium-story__copy h2{
-  max-width:9ch!important;
-  margin:8px 0 18px!important;
-  color:var(--nima-readable-ink)!important;
-  font-family:var(--serif)!important;
-  font-size:clamp(38px,4.4vw,60px)!important;
-  font-weight:500!important;
-  line-height:1.02!important;
-  letter-spacing:-.04em!important;
-  text-shadow:none!important;
-}
-.template-index .premium-story__copy p{
-  max-width:36ch!important;
-  margin:0!important;
-  color:var(--nima-readable-muted)!important;
-  font-size:14px!important;
-  line-height:1.7!important;
-  opacity:1!important;
-  text-shadow:none!important;
-}
+.template-index .premium-story__copy h2{max-width:9ch!important;margin:8px 0 18px!important;color:var(--nima-readable-ink)!important;font-family:var(--serif)!important;font-size:clamp(38px,4.4vw,60px)!important;font-weight:500!important;line-height:1.02!important;letter-spacing:-.04em!important;text-shadow:none!important}
+.template-index .premium-story__copy p{max-width:36ch!important;margin:0!important;color:var(--nima-readable-muted)!important;font-size:14px!important;line-height:1.7!important;opacity:1!important;text-shadow:none!important}
 .template-index .premium-story__link{color:var(--nima-readable-ink)!important;margin-top:24px!important}
-.template-index .premium-story__media{
-  position:relative!important;
-  inset:auto!important;
-  z-index:1!important;
-  min-height:440px!important;
-  background:#d7c8b5!important;
-}
+.template-index .premium-story__media{position:relative!important;inset:auto!important;z-index:1!important;min-height:440px!important;background:#d7c8b5!important}
 .template-index .premium-story__media::before{content:none!important}
-.template-index .premium-story__media img{
-  position:absolute!important;
-  inset:0!important;
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-  object-position:center!important;
-  filter:none!important;
-  opacity:1!important;
-}
+.template-index .premium-story__media img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;filter:none!important;opacity:1!important}
 
-/* Legacy split receives the same protection if rendered by an older section instance. */
-.template-index .split{
-  display:grid!important;
-  grid-template-columns:minmax(320px,.82fr) minmax(0,1.18fr)!important;
-  background:var(--nima-readable-panel)!important;
-}
-.template-index .split>div:first-child{
-  position:relative!important;
-  z-index:2!important;
-  background:#f0e7da!important;
-  color:var(--nima-readable-ink)!important;
-}
-.template-index .split>div:first-child h2,
-.template-index .split>div:first-child p,
-.template-index .split>div:first-child .kicker{
-  color:var(--nima-readable-ink)!important;
-  text-shadow:none!important;
-}
+.template-index .split{display:grid!important;grid-template-columns:minmax(320px,.82fr) minmax(0,1.18fr)!important;background:var(--nima-readable-panel)!important}
+.template-index .split>div:first-child{position:relative!important;z-index:2!important;background:#f0e7da!important;color:var(--nima-readable-ink)!important}
+.template-index .split>div:first-child h2,.template-index .split>div:first-child p,.template-index .split>div:first-child .kicker{color:var(--nima-readable-ink)!important;text-shadow:none!important}
 .template-index .split>div:last-child{position:relative!important;z-index:1!important}
 
-/* ---------- Any editorial image overlay must own a contrast layer ---------- */
-.mag-teaser,
-.mag-hero--image{position:relative!important;isolation:isolate!important;background:#3a332d!important}
-.mag-teaser::after,
-.mag-hero--image::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:1;
-  pointer-events:none;
-  background:linear-gradient(90deg,rgba(26,23,20,.76) 0%,rgba(26,23,20,.56) 42%,rgba(26,23,20,.18) 72%,rgba(26,23,20,.08) 100%);
-}
+/* Editorial overlays are permitted only with a deliberate contrast layer. */
+.mag-teaser,.mag-hero--image{position:relative!important;isolation:isolate!important;background:#3a332d!important}
+.mag-teaser::after,.mag-hero--image::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(26,23,20,.76) 0%,rgba(26,23,20,.56) 42%,rgba(26,23,20,.18) 72%,rgba(26,23,20,.08) 100%)}
 .mag-teaser__scrim{z-index:1!important;background:linear-gradient(90deg,rgba(26,23,20,.76),rgba(26,23,20,.12))!important}
-.mag-teaser__card,
-.mag-hero__content{position:relative!important;z-index:3!important;color:#fff!important;text-shadow:0 1px 20px rgba(0,0,0,.18)!important}
-.mag-teaser__card .kicker,
-.mag-hero__content .kicker{color:rgba(255,255,255,.84)!important;opacity:1!important}
-.mag-teaser__card h1,
-.mag-teaser__card h2,
-.mag-hero__content h1,
-.mag-hero__content h2{color:#fff!important;max-width:11ch!important}
-.mag-teaser__card p,
-.mag-hero__content p{color:rgba(255,255,255,.9)!important;max-width:42ch!important}
+.mag-teaser__card,.mag-hero__content{position:relative!important;z-index:3!important;color:#fff!important;text-shadow:0 1px 20px rgba(0,0,0,.18)!important}
+.mag-teaser__card .kicker,.mag-hero__content .kicker{color:rgba(255,255,255,.84)!important;opacity:1!important}
+.mag-teaser__card h1,.mag-teaser__card h2,.mag-hero__content h1,.mag-hero__content h2{color:#fff!important;max-width:11ch!important}
+.mag-teaser__card p,.mag-hero__content p{color:rgba(255,255,255,.9)!important;max-width:42ch!important}
 
-/* ---------- Collection / Search / Cart: clarity and useful density ---------- */
-.template-collection .collection-head .rte,
-.template-collection .collection-sub,
-.template-search .search-results-meta,
-.template-cart .muted{color:var(--nima-readable-muted)!important}
+/* Utility surfaces still belong to the brand, but never at the expense of clarity. */
+.template-collection .collection-head .rte,.template-collection .collection-sub,.template-search .search-results-meta,.template-cart .muted{color:var(--nima-readable-muted)!important}
 .template-search .search-head h1{font-size:clamp(48px,6vw,84px)!important;line-height:.96!important}
 .template-cart .cart-shell>h1{font-size:clamp(48px,6vw,82px)!important;line-height:.96!important}
 .template-search .search-form input{font-size:16px!important;color:var(--nima-readable-ink)!important}
 .template-search .search-form input::placeholder{color:#80776f!important;opacity:1!important}
 
-/* ---------- Product: compact purchase flow, no fake vertical drama ---------- */
-.template-product .buy{
-  justify-content:flex-start!important;
-  min-height:0!important;
-  height:auto!important;
-}
+/* PDP: reassurance is prose, not a layout component. Let text wrap naturally. */
+.template-product .buy{justify-content:flex-start!important;min-height:0!important;height:auto!important}
 .template-product .buy h1{max-width:13ch!important}
-.template-product .product-benefit,
-.template-product .buy>.muted{color:var(--nima-readable-muted)!important}
-.template-product .trust,
-.template-product .trust--center{
-  display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:wrap!important;
-  align-items:center!important;
-  align-content:flex-start!important;
-  justify-content:flex-start!important;
-  gap:6px 22px!important;
-  width:auto!important;
-  min-height:0!important;
-  height:auto!important;
-  max-height:none!important;
-  margin:18px 0 0!important;
-  padding:14px 0!important;
-  color:var(--nima-readable-muted)!important;
-  line-height:1.45!important;
-}
-.template-product .trust>*,
-.template-product .trust--center>*{
-  display:inline!important;
-  flex:0 0 auto!important;
-  position:relative!important;
-  inset:auto!important;
-  width:auto!important;
-  min-width:0!important;
-  min-height:0!important;
-  height:auto!important;
-  margin:0!important;
-  padding:0!important;
-  line-height:1.45!important;
-}
+.template-product .product-benefit,.template-product .buy>.muted{color:var(--nima-readable-muted)!important}
+.template-product .trust,.template-product .trust--center{display:block!important;width:auto!important;min-height:0!important;height:auto!important;max-height:none!important;margin:18px 0 0!important;padding:14px 0!important;color:var(--nima-readable-muted)!important;font-size:12px!important;line-height:1.55!important;text-align:left!important;white-space:normal!important;border-top:1px solid var(--nima-readable-line)!important;border-bottom:1px solid var(--nima-readable-line)!important}
+.template-product .trust>*,.template-product .trust--center>*{display:inline!important;position:static!important;inset:auto!important;float:none!important;width:auto!important;min-width:0!important;min-height:0!important;height:auto!important;margin:0!important;padding:0!important;line-height:inherit!important;vertical-align:baseline!important}
+.template-product .trust>*:not(:last-child)::after,.template-product .trust--center>*:not(:last-child)::after{content:" · "!important;position:static!important;display:inline!important;color:#aaa097!important;margin:0 .42em!important}
 .template-product .trust a{color:var(--nima-readable-ink)!important;text-decoration:underline;text-underline-offset:3px}
 .template-product .product-details{margin-top:20px!important}
 
-/* ---------- Footer form: designed control, visible labels/states ---------- */
+/* Footer form remains a designed, visible control. */
 .footer-newsletter__form input[type="email"]{color:var(--nima-readable-ink)!important;opacity:1!important}
 .footer-newsletter__form input[type="email"]::placeholder{color:#756d65!important;opacity:1!important}
 .footer-newsletter__form button{color:var(--nima-readable-ink)!important;opacity:1!important}
 
-/* ---------- Mobile is a new reading order, not an overlay compression ---------- */
 @media(max-width:800px){
   .template-index .premium-story{display:flex!important;flex-direction:column!important;min-height:0!important}
   .template-index .premium-story__media{order:1!important;min-height:0!important;aspect-ratio:4/3!important}
@@ -209,31 +78,13 @@ button,input,select,textarea{font:inherit}
   .template-index .split{display:flex!important;flex-direction:column!important}
   .template-index .split>div{min-height:auto!important}
 
-  .mag-teaser::after,
-  .mag-hero--image::after{background:linear-gradient(0deg,rgba(26,23,20,.82) 0%,rgba(26,23,20,.42) 58%,rgba(26,23,20,.1) 100%)!important}
-  .mag-teaser__card,
-  .mag-hero__content{justify-content:flex-end!important}
+  .mag-teaser::after,.mag-hero--image::after{background:linear-gradient(0deg,rgba(26,23,20,.82) 0%,rgba(26,23,20,.42) 58%,rgba(26,23,20,.1) 100%)!important}
+  .mag-teaser__card,.mag-hero__content{justify-content:flex-end!important}
 
-  .template-search .search-head h1,
-  .template-cart .cart-shell>h1{font-size:clamp(44px,13vw,64px)!important}
+  .template-search .search-head h1,.template-cart .cart-shell>h1{font-size:clamp(44px,13vw,64px)!important}
 
-  .template-product .trust,
-  .template-product .trust--center{
-    display:grid!important;
-    grid-template-columns:1fr!important;
-    gap:8px!important;
-    margin-top:18px!important;
-    padding:14px 0!important;
-  }
-  .template-product .trust>*,
-  .template-product .trust--center>*{
-    display:block!important;
-    width:auto!important;
-    min-height:0!important;
-    height:auto!important;
-    margin:0!important;
-    padding:0!important;
-  }
+  .template-product .trust,.template-product .trust--center{display:block!important;padding:13px 0!important;line-height:1.65!important}
+  .template-product .trust>*,.template-product .trust--center>*{display:inline!important}
 }
 
 @media(max-width:520px){
@@ -244,7 +95,5 @@ button,input,select,textarea{font:inherit}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .premium-story__media img,
-  .mag-teaser__img,
-  .mag-hero__media{transform:none!important;transition:none!important}
+  .premium-story__media img,.mag-teaser__img,.mag-hero__media{transform:none!important;transition:none!important}
 }
