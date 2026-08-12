@@ -1,44 +1,57 @@
-<section class="container cart">
+<section class="container cart cart-shell">
+  <span class="kicker">{{ 'cart.title' | t }}</span>
   <h1>{{ 'cart.title' | t }}</h1>
 
   {%- if cart.item_count > 0 -%}
-    <form action="{{ routes.cart_url }}" method="post">
-      {%- for item in cart.items -%}
-        <div class="cart-item">
-          <a href="{{ item.url }}">
-            {%- if item.image != blank -%}
-              <img src="{{ item.image | image_url: width: 180 }}" alt="{{ item.title | escape }}" width="90" height="90">
-            {%- endif -%}
-          </a>
-          <div>
-            <a href="{{ item.url }}"><strong>{{ item.product.title }}</strong></a>
-            {%- unless item.variant.title contains 'Default' -%}
-              <div class="muted">{{ item.variant.title }}</div>
-            {%- endunless -%}
-            <div class="muted">{{ item.final_price | money }}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="qty">
-              <input
-                type="number"
-                name="updates[]"
-                value="{{ item.quantity }}"
-                min="0"
-                aria-label="{{ 'cart.quantity' | t }}"
-                data-qty>
-            </div>
-            <div style="margin-top:8px">{{ item.final_line_price | money }}</div>
-            <a class="muted" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
-          </div>
-        </div>
-      {%- endfor -%}
+    <form action="{{ routes.cart_url }}" method="post" class="cart-layout">
+      <div>
+        <div class="cart-items">
+          {%- for item in cart.items -%}
+            <div class="cart-item">
+              <a href="{{ item.url }}">
+                {%- if item.image != blank -%}
+                  <img src="{{ item.image | image_url: width: 240 }}" alt="{{ item.title | escape }}" width="112" height="112">
+                {%- endif -%}
+              </a>
 
-      <div class="cart-foot">
-        <button type="submit" name="update" class="btn btn--light">{{ 'cart.update' | t }}</button>
-        <div class="cart-total">{{ 'cart.subtotal' | t }}: {{ cart.total_price | money }}</div>
+              <div class="cart-item__meta">
+                <a href="{{ item.url }}"><strong>{{ item.product.title }}</strong></a>
+                {%- unless item.variant.title contains 'Default' -%}
+                  <div class="muted">{{ item.variant.title }}</div>
+                {%- endunless -%}
+                <div class="muted">{{ item.final_price | money }}</div>
+              </div>
+
+              <div class="cart-item__actions">
+                <div class="qty">
+                  <input
+                    type="number"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    aria-label="{{ 'cart.quantity' | t }}"
+                    data-qty>
+                </div>
+                <div class="cart-item__line-price">{{ item.final_line_price | money }}</div>
+                <a class="muted" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="cart-continue">
+          <button type="submit" name="update" class="btn btn--light">{{ 'cart.update' | t }}</button>
+        </div>
       </div>
 
-      <button type="submit" name="checkout" class="add" style="margin-top:24px">{{ 'cart.checkout' | t }}</button>
+      <aside class="cart-summary" aria-label="{{ 'cart.subtotal' | t }}">
+        <div class="cart-summary__kicker">{{ 'cart.subtotal' | t }}</div>
+        <div class="cart-total">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <strong>{{ cart.total_price | money }}</strong>
+        </div>
+        <button type="submit" name="checkout" class="add">{{ 'cart.checkout' | t }}</button>
+      </aside>
     </form>
   {%- else -%}
     <div class="empty-state">

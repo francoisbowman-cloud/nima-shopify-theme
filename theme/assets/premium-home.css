@@ -50,5 +50,20 @@
   .journal-teaser-wrap{width:100%;margin-bottom:48px}
   .mag-teaser{min-height:520px}
   .mag-teaser__card{min-height:520px;padding:34px 22px}
-  .mag-teaser__h{font-size:46px;max-width:9ch}
+  .mag-teaser__card{max-width:100%;min-width:0}
+  .mag-teaser__h{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    font-size:clamp(34px,10.5vw,43px);
+    line-height:1.02;
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+  .mag-teaser__card p{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
 }
