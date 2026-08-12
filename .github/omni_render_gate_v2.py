@@ -3,6 +3,61 @@ import asyncio
 import omni_render_gate as gate
 
 
+async def assert_text_containment(page, selector: str):
+    """Fail when visible text is clipped by its own box or an ancestor."""
+    failures = await page.locator(selector).evaluate_all(
+        """elements => elements
+          .filter(el => {
+            const style = getComputedStyle(el);
+            return style.display !== 'none' && style.visibility !== 'hidden' && el.textContent.trim();
+          })
+          .map(el => {
+            const own = el.getBoundingClientRect();
+            let ancestor = el.parentElement;
+            let clippingAncestor = null;
+            while (ancestor) {
+              const style = getComputedStyle(ancestor);
+              if (['hidden', 'clip', 'scroll', 'auto'].includes(style.overflowX)) {
+                clippingAncestor = ancestor.getBoundingClientRect();
+                break;
+              }
+              ancestor = ancestor.parentElement;
+            }
+            const clientClipped = el.scrollWidth > el.clientWidth + 2 || el.scrollHeight > el.clientHeight + 2;
+            const ancestorClipped = clippingAncestor && (
+              own.left < clippingAncestor.left - 2 ||
+              own.right > clippingAncestor.right + 2 ||
+              own.top < clippingAncestor.top - 2 ||
+              own.bottom > clippingAncestor.bottom + 2
+            );
+            return clientClipped || ancestorClipped ? {
+              selector: el.className,
+              text: el.textContent.trim().slice(0, 160),
+              clientWidth: el.clientWidth,
+              scrollWidth: el.scrollWidth,
+              rect: {left: own.left, right: own.right, top: own.top, bottom: own.bottom},
+              clippingAncestor: clippingAncestor && {
+                left: clippingAncestor.left,
+                right: clippingAncestor.right,
+                top: clippingAncestor.top,
+                bottom: clippingAncestor.bottom
+              }
+            } : null;
+          })
+          .filter(Boolean)"""
+    )
+    assert not failures, f"Visible text is clipped: {failures}"
+
+
+async def assert_magazine_teaser(page):
+    teaser = page.locator(".mag-teaser")
+    assert await teaser.count() == 1, "Home Magazine teaser missing"
+    await assert_text_containment(
+        page,
+        ".mag-teaser__card .kicker, .mag-teaser__h, .mag-teaser__card p, .mag-teaser__card .btn",
+    )
+
+
 async def assert_home_fundamentals(page, viewport: str):
     assert await page.locator('link[href*="fundamentals.css"]').count() > 0, "Fundamentals protection layer missing"
 
@@ -49,6 +104,7 @@ async def assert_home_fundamentals(page, viewport: str):
     assert has_opaque_color or has_background_image, f"Home story copy panel has no readable background: {geometry}"
     assert geometry["headingSize"] >= 34, f"Home story heading became too small: {geometry}"
     assert geometry["paragraphSize"] >= 14, f"Home story body became too small: {geometry}"
+    await assert_magazine_teaser(page)
 
     if viewport == "desktop":
         assert c["right"] <= m["x"] + 2 or m["right"] <= c["x"] + 2, f"Desktop story must be side-by-side: {geometry}"
