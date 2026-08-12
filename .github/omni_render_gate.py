@@ -68,7 +68,10 @@ async def reveal(page):
 
 async def choose_base(page):
     failures = []
-    for base in (PRIMARY, FALLBACK):
+    # The canonical myshopify host keeps preview_theme_id semantics stable.
+    # Custom domains can redirect to the live theme while retaining a 200 response,
+    # which previously produced false Render Gate results.
+    for base in (FALLBACK, PRIMARY):
         try:
             response = await page.goto(
                 f"{base}/?preview_theme_id={THEME_ID}",
@@ -77,11 +80,19 @@ async def choose_base(page):
             )
             if response and response.status < 500:
                 await settle(page)
-                return base
+                has_marker = await page.locator('link[href*="omni-evolve.css"]').count() > 0
+                has_home = await page.locator(".shop-window").count() > 0
+                if has_marker and has_home:
+                    return base
+                failures.append(
+                    f"{base}: reachable but preview identity mismatch "
+                    f"(marker={has_marker}, home={has_home}, final_url={page.url})"
+                )
+                continue
             failures.append(f"{base}: HTTP {response.status if response else 'none'}")
         except Exception as exc:
             failures.append(f"{base}: {type(exc).__name__}: {exc}")
-    raise AssertionError("No preview endpoint reachable: " + " | ".join(failures))
+    raise AssertionError("No verified preview endpoint reachable: " + " | ".join(failures))
 
 
 async def assert_common(page, locale: str, route: str):
