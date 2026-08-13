@@ -1,0 +1,154 @@
+<!-- @dsCard group="Home — Propuestas OMNI" viewport="1280x900" name="Home — A. Ritmo Editorial" -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nima — Home · Propuesta A: Ritmo Editorial</title>
+<style>
+  :root{
+    --bg:#FBF8F3; --text:#2B2621; --muted:#7A6F62; --line:#E7DFD2;
+    --soft:#F3ECE1; --accent:#8A5A3B; --accent-tint:#EDE0D0; --page-width:1180px;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .container{width:min(var(--page-width),calc(100% - 48px));margin:auto}
+  .kicker{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--accent);font-weight:800}
+  .btn{display:inline-flex;align-items:center;gap:14px;background:var(--text);color:var(--bg);padding:16px 26px;border-radius:999px;font-weight:700;margin-top:26px;border:0;cursor:pointer;font-size:15px}
+  .btn--ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+
+  /* --- Hero: asimétrico 58/42, misma línea base que el theme actual, tipografía escalada --- */
+  .hero{display:grid;grid-template-columns:1.15fr 1fr;align-items:end;gap:0;border-bottom:1px solid var(--line);min-height:82vh}
+  .hero-copy{padding:96px 6vw 88px max(24px,calc((100vw - var(--page-width))/2))}
+  .hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(48px,6vw,92px);line-height:.98;letter-spacing:-2.5px;margin:22px 0 24px;max-width:640px}
+  .hero p{font-size:18px;line-height:1.65;color:var(--muted);max-width:460px}
+  .hero-art{position:relative;height:82vh;background:linear-gradient(140deg,#f6f4ef,#fff);overflow:hidden}
+  .hero-art img{width:100%;height:100%;object-fit:cover}
+  .hero-art__cap{position:absolute;left:24px;bottom:24px;background:rgba(251,248,243,.92);backdrop-filter:blur(4px);padding:10px 16px;border-radius:999px;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+
+  /* --- Shop window: grid con una tarjeta destacada 2x2, mismo patrón que main-collection --b --- */
+  .shop{padding:96px 0}
+  .shop__head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:44px;border-bottom:1px solid var(--line);padding-bottom:32px}
+  .shop__head h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,3vw,42px);margin:14px 0 0;letter-spacing:-1px}
+  .shop__head p{color:var(--muted);max-width:360px;font-size:15px;line-height:1.6;margin:0}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
+  .card--lead{grid-column:span 2;grid-row:span 2}
+  .card__media{aspect-ratio:1/1;background:var(--soft);position:relative}
+  .card--lead .card__media{aspect-ratio:auto;height:100%;min-height:340px}
+  .card__media img{width:100%;height:100%;object-fit:cover}
+  .card__tag{position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;font-weight:700}
+  .card__body{padding:16px}
+  .card__cat{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .card__title{font-family:var(--serif);font-size:16px;margin:6px 0;line-height:1.3}
+  .card--lead .card__title{font-size:24px}
+  .card__price{font-weight:700;font-size:15px}
+  .shop__foot{margin-top:40px;text-align:center}
+
+  /* --- Story / split: dos columnas, misma línea base --- */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch;border-top:1px solid var(--line)}
+  .split__copy{padding:100px 6vw;display:flex;flex-direction:column;justify-content:center;max-width:520px}
+  .split__copy h2{font-family:var(--serif);font-weight:400;font-size:clamp(32px,3.4vw,52px);letter-spacing:-1.5px;margin:16px 0 20px;line-height:1.05}
+  .split__copy p{color:var(--muted);font-size:16px;line-height:1.65}
+  .split__media{aspect-ratio:4/5;background:var(--soft)}
+  .split__media img{width:100%;height:100%;object-fit:cover}
+
+  /* --- Magazine teaser: banda full-bleed --- */
+  .mag{position:relative;margin:0;min-height:56vh;display:flex;align-items:flex-end}
+  .mag img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .mag::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,16,12,.72),rgba(20,16,12,.08) 60%)}
+  .mag__card{position:relative;padding:56px max(24px,calc((100vw - var(--page-width))/2)) 64px;color:#fff;max-width:620px}
+  .mag__card .kicker{color:var(--accent-tint)}
+  .mag__card h3{font-family:var(--serif);font-weight:400;font-size:clamp(28px,3vw,44px);margin:14px 0 16px;line-height:1.08}
+  .mag__card p{color:rgba(255,255,255,.82);font-size:15px;line-height:1.6;margin:0 0 20px}
+
+  @media(max-width:800px){
+    .hero{grid-template-columns:1fr;min-height:auto}
+    .hero-copy{padding:56px 24px 40px}
+    .hero h1{font-size:44px;letter-spacing:-1.5px}
+    .hero-art{height:52vh}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .card--lead{grid-column:span 2;grid-row:auto}
+    .card--lead .card__media{aspect-ratio:16/10;min-height:0}
+    .split{grid-template-columns:1fr}
+    .split__copy{padding:56px 24px;max-width:none}
+    .split__media{aspect-ratio:16/10}
+    .mag__card{padding:40px 24px 48px}
+  }
+</style>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="kicker">Nima — Cuidado diario</span>
+      <h1>Un día tranquilo,<br>en casa.</h1>
+      <p>Objetos pensados para el ritmo lento de las mascotas — y de las personas que las cuidan.</p>
+      <a class="btn" href="#">Comprar ahora →</a>
+    </div>
+    <div class="hero-art">
+      <img src="https://nimapets.com/cdn/shop/files/01-hero.png?v=1784680022&width=1400" alt="Gato y perro descansando juntos en casa">
+      <span class="hero-art__cap">Colección Cuidado diario</span>
+    </div>
+  </section>
+
+  <section class="container shop">
+    <div class="shop__head">
+      <div>
+        <span class="kicker">Nuestros esenciales</span>
+        <h2>Piezas de cada día, elegidas con intención.</h2>
+      </div>
+      <p>Una selección concisa de objetos útiles para comer, descansar, pasear y cuidar — pensados para sentirse bien dentro de casa.</p>
+    </div>
+    <div class="grid">
+      <div class="card card--lead">
+        <div class="card__media">
+          <span class="card__tag">Más vendido</span>
+          <img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/cc40b4c96f73a9de783d11b272bc8dcf.jpg?v=1784258413" alt="Anti-Splash Water Bowl">
+        </div>
+        <div class="card__body">
+          <span class="card__cat">Comederos</span>
+          <div class="card__title">Anti-Splash Water Bowl 1L</div>
+          <div class="card__price">$13.99</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/16f50db9a79da16d24adca97ec68a043.jpg?v=1784391712" alt="Portable Pet Grooming Hammock"></div>
+        <div class="card__body"><span class="card__cat">Grooming</span><div class="card__title">Grooming Hammock</div><div class="card__price">$9.99</div></div>
+      </div>
+      <div class="card">
+        <div class="card__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/062f480de3b5d01626923c1370f00388.jpg?v=1784259301" alt="Crate Water Bowl"></div>
+        <div class="card__body"><span class="card__cat">Comederos</span><div class="card__title">Crate Water Bowl</div><div class="card__price">$14.99</div></div>
+      </div>
+      <div class="card">
+        <div class="card__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/1e3669b9fbc269b055bd6034eb582730.jpg?v=1784391703" alt="Benat Pets Dog Bath Towel"></div>
+        <div class="card__body"><span class="card__cat">Grooming</span><div class="card__title">Dog Bath Towel</div><div class="card__price">$13.99</div></div>
+      </div>
+    </div>
+    <div class="shop__foot"><a class="btn btn--ghost" href="#">Ver todo ↗</a></div>
+  </section>
+
+  <section class="split">
+    <div class="split__copy">
+      <span class="kicker">Vivir bien juntos</span>
+      <h2>Espacios tranquilos.<br>Mascotas felices.</h2>
+      <p>Elegimos esenciales bien hechos que acompañan las rutinas diarias, favorecen el descanso y aportan un poco más de armonía al hogar.</p>
+      <a class="btn btn--ghost" href="#">Nuestra filosofía</a>
+    </div>
+    <div class="split__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/6bf05982b5cc431a353d672a2708a996.jpg?v=1784318451" alt="Rutina de cuidado"></div>
+  </section>
+
+  <section class="mag">
+    <img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/6bf05982b5cc431a353d672a2708a996.jpg?v=1784318451" alt="Journal Nima">
+    <div class="mag__card">
+      <span class="kicker">Desde el Journal</span>
+      <h3>Cuidado, confort y los rituales de cada día.</h3>
+      <p>Historias y guías prácticas para construir una vida más tranquila y consciente junto a las mascotas.</p>
+      <a class="btn" style="background:#fff;color:var(--text)" href="#">Leer el Journal</a>
+    </div>
+  </section>
+</body>
+</html>
