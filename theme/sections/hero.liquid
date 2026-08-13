@@ -26,6 +26,21 @@
     </div>
     <a class="hb-studio__lead" href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">
       {%- if lead_product != blank -%}
+        {%- if lead_product.featured_image != blank -%}
+          {%- assign lead_alt = lead_product.featured_image.alt | default: lead_product.title -%}
+          <div class="hb-studio__lead-media">
+            {{
+              lead_product.featured_image
+              | image_url: width: 480
+              | image_tag:
+                widths: '240, 360, 480',
+                sizes: '(min-width: 801px) 150px, 112px',
+                loading: 'eager',
+                decoding: 'async',
+                alt: lead_alt
+            }}
+          </div>
+        {%- endif -%}
         <div>
           <span class="kicker hb-kicker--dark">{{ 'products.bestseller' | t }}</span>
           <h3>{{ lead_product.title }}</h3>
