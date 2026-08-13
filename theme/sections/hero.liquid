@@ -1,29 +1,46 @@
-<section class="hero">
-  <div class="hero-copy">
+{%- liquid
+  assign hero_alt = section.settings.image.alt | default: 'home.hero.heading' | t | strip_html
+  assign lead_product = collections['all'].products.first
+-%}
+<section class="hb-studio">
+  <div class="hb-studio__head">
     <span class="kicker">{{ 'home.hero.kicker' | t }}</span>
     <h1>{{ 'home.hero.heading' | t }}</h1>
     <p>{{ 'home.hero.text' | t }}</p>
-    <a class="btn" href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">{{ 'home.hero.cta' | t }}</a>
   </div>
-  <div class="hero-art">
-    {%- if section.settings.image != blank -%}
-      {%- assign hero_alt = section.settings.image.alt | default: 'home.hero.heading' | t | strip_html -%}
-      <img
-        src="{{ section.settings.image | image_url: width: 1400 }}"
-        srcset="
-          {{ section.settings.image | image_url: width: 640 }} 640w,
-          {{ section.settings.image | image_url: width: 960 }} 960w,
-          {{ section.settings.image | image_url: width: 1200 }} 1200w,
-          {{ section.settings.image | image_url: width: 1400 }} 1400w,
-          {{ section.settings.image | image_url: width: 1800 }} 1800w"
-        sizes="(min-width: 801px) 58vw, 100vw"
-        alt="{{ hero_alt | escape }}"
-        width="{{ section.settings.image.width }}"
-        height="{{ section.settings.image.height }}"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async">
-    {%- endif -%}
+  <div class="hb-studio__spread">
+    <div class="hb-studio__hero">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag:
+            widths: '640, 960, 1200, 1400, 1800',
+            sizes: '(min-width: 801px) 60vw, 100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            decoding: 'async',
+            alt: hero_alt
+        }}
+      {%- endif -%}
+    </div>
+    <a class="hb-studio__lead" href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">
+      {%- if lead_product != blank -%}
+        <div>
+          <span class="kicker hb-kicker--dark">{{ 'products.bestseller' | t }}</span>
+          <h3>{{ lead_product.title }}</h3>
+          {%- if lead_product.type != blank -%}
+            <p>{% render 'product-type-label', type: lead_product.type %}</p>
+          {%- endif -%}
+        </div>
+        <div class="hb-price">{{ lead_product.price | money }}</div>
+      {%- else -%}
+        <div>
+          <span class="kicker hb-kicker--dark">{{ 'home.hero.kicker' | t }}</span>
+          <h3>{{ 'home.hero.heading' | t }}</h3>
+        </div>
+      {%- endif -%}
+    </a>
   </div>
 </section>
 

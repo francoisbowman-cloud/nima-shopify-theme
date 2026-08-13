@@ -1,0 +1,140 @@
+<!-- @dsCard group="Home — Propuestas OMNI" viewport="1280x900" name="Home — B. Estudio Terracota" -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nima — Home · Propuesta B: Estudio Terracota</title>
+<style>
+  :root{
+    --bg:#FBF8F3; --text:#2B2621; --muted:#7A6F62; --line:#E7DFD2;
+    --soft:#F3ECE1; --accent:#8A5A3B; --accent-tint:#EDE0D0; --page-width:1180px;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .container{width:min(var(--page-width),calc(100% - 48px));margin:auto}
+  .kicker{text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--accent);font-weight:800}
+  .kicker--dark{color:var(--accent-tint)}
+  .btn{display:inline-flex;align-items:center;gap:14px;background:var(--text);color:var(--bg);padding:17px 28px;border-radius:999px;font-weight:700;margin-top:28px;border:0;cursor:pointer;font-size:15px}
+  .btn--light{background:#fff;color:var(--text)}
+
+  /* --- Hero + shop window fusionados en un spread grande, tipografía sobredimensionada --- */
+  .studio{background:var(--soft);padding:70px 0 0;border-bottom:1px solid var(--line)}
+  .studio__head{padding:0 24px;text-align:center;max-width:900px;margin:0 auto 48px}
+  .studio__head h1{font-family:var(--serif);font-weight:400;font-size:clamp(52px,8vw,128px);letter-spacing:-4px;line-height:.92;margin:18px 0}
+  .studio__head p{color:var(--muted);font-size:18px;max-width:480px;margin:0 auto}
+  .studio__spread{display:grid;grid-template-columns:1.3fr .7fr;gap:2px;background:var(--line)}
+  .studio__hero{position:relative;aspect-ratio:16/11;background:#fff;overflow:hidden}
+  .studio__hero img{width:100%;height:100%;object-fit:cover}
+  .studio__lead{background:var(--text);color:var(--bg);padding:44px 40px;display:flex;flex-direction:column;justify-content:space-between}
+  .studio__lead .price{font-size:34px;font-family:var(--serif)}
+  .studio__lead h3{font-family:var(--serif);font-weight:400;font-size:28px;margin:12px 0;line-height:1.1}
+  .studio__lead p{color:rgba(251,248,243,.7);font-size:14px;line-height:1.6;margin:0}
+
+  /* --- Shop rail: tira horizontal de producto, sobre bloque terracota --- */
+  .rail{background:var(--accent);padding:64px 0 76px}
+  .rail__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:32px}
+  .rail__head h2{font-family:var(--serif);font-weight:400;color:#fff;font-size:clamp(26px,2.6vw,36px);margin:0;letter-spacing:-1px}
+  .rail__head a{color:var(--accent-tint);font-size:13px;font-weight:700;letter-spacing:.04em}
+  .rail__scroll{display:grid;grid-auto-flow:column;grid-auto-columns:240px;gap:18px;overflow-x:auto;padding-bottom:8px}
+  .rcard{background:var(--bg);border-radius:12px;overflow:hidden}
+  .rcard__media{aspect-ratio:1/1;background:var(--soft)}
+  .rcard__media img{width:100%;height:100%;object-fit:cover}
+  .rcard__body{padding:14px}
+  .rcard__title{font-size:13.5px;line-height:1.3;margin:0 0 6px}
+  .rcard__price{font-weight:700;font-size:14px}
+
+  /* --- Story: bloque asimétrico, imagen desbordando el texto --- */
+  .story{position:relative;padding:110px 0;overflow:hidden}
+  .story__grid{display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;gap:48px}
+  .story__media{aspect-ratio:3/4}
+  .story__media img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+  .story__copy h2{font-family:var(--serif);font-weight:400;font-size:clamp(38px,4.6vw,64px);letter-spacing:-2px;line-height:1;margin:18px 0 22px}
+  .story__copy p{color:var(--muted);font-size:17px;line-height:1.65;max-width:440px}
+
+  /* --- Magazine teaser: inversa oscura, tipografía enorme --- */
+  .mag{background:var(--text);color:var(--bg);padding:100px 0}
+  .mag__grid{display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px}
+  .mag h3{font-family:var(--serif);font-weight:400;font-size:clamp(36px,5vw,72px);letter-spacing:-2px;line-height:1;margin:16px 0 0}
+  .mag p{color:rgba(251,248,243,.65);font-size:15px;max-width:380px;margin:18px 0 0}
+
+  @media(max-width:800px){
+    .studio__spread{grid-template-columns:1fr}
+    .studio__hero{aspect-ratio:4/3}
+    .story__grid{grid-template-columns:1fr}
+    .story__copy{order:2}
+    .story{padding:56px 0}
+    .mag{padding:56px 0}
+    .mag__grid{grid-template-columns:1fr}
+    .rail{padding:48px 0 56px}
+  }
+</style>
+</head>
+<body>
+  <section class="studio">
+    <div class="studio__head">
+      <span class="kicker">Nima — Cuidado diario</span>
+      <h1>Un día<br>tranquilo.</h1>
+      <p>Objetos pensados para el ritmo lento de las mascotas — y de las personas que las cuidan.</p>
+    </div>
+    <div class="studio__spread">
+      <div class="studio__hero">
+        <img src="https://nimapets.com/cdn/shop/files/01-hero.png?v=1784680022&width=1400" alt="Gato y perro descansando juntos en casa">
+      </div>
+      <div class="studio__lead">
+        <div>
+          <span class="kicker kicker--dark">Más vendido</span>
+          <h3>Anti-Splash Water Bowl 1L</h3>
+          <p>128 reseñas — comederos que no se derraman, para casas con ritmo propio.</p>
+        </div>
+        <div class="price">$13.99</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rail">
+    <div class="container">
+      <div class="rail__head">
+        <h2>Piezas de cada día</h2>
+        <a href="#">Ver todo ↗</a>
+      </div>
+      <div class="rail__scroll">
+        <div class="rcard"><div class="rcard__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/16f50db9a79da16d24adca97ec68a043.jpg?v=1784391712" alt="Grooming Hammock"></div><div class="rcard__body"><div class="rcard__title">Grooming Hammock</div><div class="rcard__price">$9.99</div></div></div>
+        <div class="rcard"><div class="rcard__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/062f480de3b5d01626923c1370f00388.jpg?v=1784259301" alt="Crate Water Bowl"></div><div class="rcard__body"><div class="rcard__title">Crate Water Bowl</div><div class="rcard__price">$14.99</div></div></div>
+        <div class="rcard"><div class="rcard__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/1e3669b9fbc269b055bd6034eb582730.jpg?v=1784391703" alt="Dog Bath Towel"></div><div class="rcard__body"><div class="rcard__title">Dog Bath Towel</div><div class="rcard__price">$13.99</div></div></div>
+        <div class="rcard"><div class="rcard__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/2d74bc0f6cb9e6cb5446decb9fff5e89.jpg?v=1784318443" alt="Foam Soccer Balls"></div><div class="rcard__body"><div class="rcard__title">Foam Soccer Balls x12</div><div class="rcard__price">$11.99</div></div></div>
+        <div class="rcard"><div class="rcard__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/8675696449229fe539dbd230f0005da3.jpg?v=1784318451" alt="Dog Poop Bag Holder"></div><div class="rcard__body"><div class="rcard__title">Poop Bag Holder</div><div class="rcard__price">$11.99</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story container">
+    <div class="story__grid">
+      <div class="story__media"><img src="https://cdn.shopify.com/s/files/1/1057/8483/6177/files/6bf05982b5cc431a353d672a2708a996.jpg?v=1784318451" alt="Rutina de cuidado"></div>
+      <div class="story__copy">
+        <span class="kicker">Vivir bien juntos</span>
+        <h2>Espacios tranquilos.<br>Mascotas felices.</h2>
+        <p>Elegimos esenciales bien hechos que acompañan las rutinas diarias, favorecen el descanso y aportan un poco más de armonía al hogar.</p>
+        <a class="btn" style="background:transparent;color:var(--text);border:1px solid var(--line)" href="#">Nuestra filosofía</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mag">
+    <div class="container mag__grid">
+      <div>
+        <span class="kicker kicker--dark">Desde el Journal</span>
+        <h3>Cuidado, confort y<br>los rituales de<br>cada día.</h3>
+      </div>
+      <div>
+        <p>Historias y guías prácticas para construir una vida más tranquila y consciente junto a las mascotas.</p>
+        <a class="btn btn--light" href="#">Leer el Journal</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
