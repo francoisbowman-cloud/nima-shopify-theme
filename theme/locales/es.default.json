@@ -27,18 +27,18 @@
     }
   },
   "announcement": {
-    "shipping_returns": "Envíos dentro de Estados Unidos · Checkout seguro"
+    "shipping_returns": "Envíos dentro de Estados Unidos · Pago seguro"
   },
   "home": {
     "hero": {
       "kicker": "Estilo de vida y esenciales para mascotas",
-      "heading": "Diseñado para una vida más tranquila y mejor con mascotas.",
+      "heading": "Diseñado para vivir mejor y con más calma junto a ellos.",
       "text": "Esenciales pensados para las mascotas y para quienes las aman.",
       "cta": "Ver esenciales"
     },
     "shop_window": {
       "kicker": "Nuestros esenciales",
-      "heading": "Piezas de cada día, elegidas con intención.",
+      "heading": "Piezas cotidianas, elegidas con intención.",
       "text": "Una selección concisa de objetos útiles para comer, descansar, pasear y cuidar — pensados para sentirse bien dentro de casa.",
       "view_all": "Ver todo",
       "empty": "Selecciona una colección en el editor del tema para destacar productos aquí."
@@ -50,10 +50,10 @@
       "cta": "Nuestra filosofía"
     },
     "journal": {
-      "kicker": "Desde el Journal",
+      "kicker": "Desde la revista",
       "heading": "Cuidado, confort y los rituales de cada día.",
       "text": "Historias y guías prácticas para construir una vida más tranquila y consciente junto a las mascotas.",
-      "cta": "Leer el Journal"
+      "cta": "Leer la revista"
     }
   },
   "accessibility": {
@@ -70,7 +70,7 @@
     "quantity": "Cantidad",
     "breadcrumb": "Ruta de navegación",
     "home": "Inicio",
-    "secure_checkout": "Checkout seguro",
+    "secure_checkout": "Pago seguro",
     "add_to_cart": "Añadir al carrito",
     "adding": "Añadiendo…",
     "added": "Añadido ✓",
@@ -107,10 +107,10 @@
     "default_description": "Piezas funcionales que simplifican el cuidado diario y mantienen el hogar visualmente tranquilo.",
     "no_filter_results": "No hay productos disponibles en esta categoría.",
     "category": {
-      "feeding": "Comederos",
+      "feeding": "Alimentación",
       "rest": "Descanso",
       "walking": "Paseo",
-      "grooming": "Grooming"
+      "grooming": "Aseo"
     }
   },
   "cart": {
@@ -124,7 +124,7 @@
     "continue_shopping": "Seguir comprando"
   },
   "blogs": {
-    "journal": "Nima Journal",
+    "journal": "Revista Nima",
     "read": "Leer"
   },
   "contact": {
@@ -136,7 +136,7 @@
   },
   "footer": {
     "policies": "Políticas",
-    "secure_checkout": "Checkout seguro alojado por Shopify"
+    "secure_checkout": "Pago seguro gestionado por Shopify"
   },
   "sections": {
     "footer": {

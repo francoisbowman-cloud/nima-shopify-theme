@@ -43,7 +43,11 @@
           <h4>{{ block.settings.heading }}</h4>
           <ul>
             {%- for link in block.settings.menu.links -%}
-              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              <li>
+                <a href="{{ link.url }}">
+                  {%- if link.url == routes.search_url -%}{{ 'general.search' | t }}{%- else -%}{{ link.title }}{%- endif -%}
+                </a>
+              </li>
             {%- endfor -%}
           </ul>
         </div>
