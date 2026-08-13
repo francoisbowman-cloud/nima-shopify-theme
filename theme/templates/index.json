@@ -27,7 +27,7 @@
       "settings": {
         "left_image": "shopify://shop_images/Home_Split_lado_ComprarUtility.png",
         "right_image": "shopify://shop_images/Home_Split_lado_DescubrirEditorial.png",
-        "left_button_url": "/pages/about"
+        "left_button_url": "/pages/sobre-nima"
       }
     },
     "magazine-teaser": {

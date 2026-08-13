@@ -21,7 +21,7 @@
 .hb-rail{background:var(--green);padding:64px 0 76px}
 .hb-rail__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:32px}
 .hb-rail__head h2{font-family:var(--serif);font-weight:400;color:var(--bg);font-size:clamp(26px,2.6vw,36px);margin:0;letter-spacing:-1px}
-.hb-rail__head a{color:var(--green2);font-size:13px;font-weight:700;letter-spacing:.04em}
+.hb-rail__head a{color:var(--bg);font-size:13px;font-weight:700;letter-spacing:.04em}
 .hb-rail__scroll{display:grid;grid-auto-flow:column;grid-auto-columns:240px;gap:18px;overflow-x:auto;padding-bottom:8px}
 .hb-rail__scroll .pcard{background:var(--bg);border-radius:12px}
 
@@ -38,6 +38,7 @@
 .hb-mag__grid{position:relative;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px}
 .hb-mag h3{font-family:var(--serif);font-weight:400;font-size:clamp(36px,5vw,72px);letter-spacing:-2px;line-height:1;margin:16px 0 0}
 .hb-mag p{color:color-mix(in srgb, var(--bg) 82%, transparent);font-size:15px;max-width:380px;margin:18px 0 0}
+.hb-mag .btn--light{background:var(--bg);color:var(--text);padding:var(--space-16) var(--space-24);border:0}
 
 @media(max-width:800px){
   .hb-studio__spread{grid-template-columns:1fr}
