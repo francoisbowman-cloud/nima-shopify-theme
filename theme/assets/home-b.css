@@ -1,0 +1,51 @@
+/* Home — Propuesta B "Estudio Terracota" (piloto OMNI x Claude Design x Claude Code, Fase 4)
+   Clases nuevas y con espacio de nombres (hb-*), sin tocar .hero/.shop-window/.premium-story/
+   .mag-teaser/.btn/.kicker/.pcard existentes -- evita romper otras plantillas que los comparten
+   (product-routine-cross-sell.liquid en product.json reusa .shop-window__, main-collection/search
+   /list-collections reusan .pcard). Ver CLAUDE.md: tokens de color/tipografía viven solo en
+   layout/theme.liquid y layout/password.liquid -- este archivo no redeclara :root. */
+
+.hb-studio{background:var(--soft);padding:70px 0 0;border-bottom:1px solid var(--line)}
+.hb-studio__head{padding:0 24px;text-align:center;max-width:900px;margin:0 auto 48px}
+.hb-studio__head h1{font-family:var(--serif);font-weight:400;font-size:clamp(52px,8vw,128px);letter-spacing:-4px;line-height:.92;margin:18px 0}
+.hb-studio__head p{color:var(--muted);font-size:18px;max-width:480px;margin:0 auto}
+.hb-studio__spread{display:grid;grid-template-columns:1.3fr .7fr;gap:2px;background:var(--line)}
+.hb-studio__hero{position:relative;aspect-ratio:16/11;background:var(--white);overflow:hidden}
+.hb-studio__hero img{width:100%;height:100%;object-fit:cover}
+.hb-studio__lead{background:var(--text);color:var(--bg);padding:44px 40px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.hb-studio__lead .hb-price{font-size:34px;font-family:var(--serif)}
+.hb-studio__lead h3{font-family:var(--serif);font-weight:400;font-size:28px;margin:12px 0;line-height:1.1}
+.hb-studio__lead p{color:color-mix(in srgb, var(--bg) 78%, transparent);font-size:14px;line-height:1.6;margin:0}
+.hb-kicker--dark{color:var(--green2)}
+
+.hb-rail{background:var(--green);padding:64px 0 76px}
+.hb-rail__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:32px}
+.hb-rail__head h2{font-family:var(--serif);font-weight:400;color:var(--bg);font-size:clamp(26px,2.6vw,36px);margin:0;letter-spacing:-1px}
+.hb-rail__head a{color:var(--green2);font-size:13px;font-weight:700;letter-spacing:.04em}
+.hb-rail__scroll{display:grid;grid-auto-flow:column;grid-auto-columns:240px;gap:18px;overflow-x:auto;padding-bottom:8px}
+.hb-rail__scroll .pcard{background:var(--bg);border-radius:12px}
+
+.hb-story{position:relative;padding:110px 0}
+.hb-story__grid{display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;gap:48px}
+.hb-story__media{aspect-ratio:3/4}
+.hb-story__media img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+.hb-story__copy h2{font-family:var(--serif);font-weight:400;font-size:clamp(38px,4.6vw,64px);letter-spacing:-2px;line-height:1;margin:18px 0 22px}
+.hb-story__copy p{color:var(--muted);font-size:17px;line-height:1.65;max-width:440px}
+
+.hb-mag{position:relative;background:var(--text);color:var(--bg);padding:100px 0}
+.hb-mag__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28}
+.hb-mag__scrim{position:absolute;inset:0;background:color-mix(in srgb, var(--text) 55%, transparent)}
+.hb-mag__grid{position:relative;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px}
+.hb-mag h3{font-family:var(--serif);font-weight:400;font-size:clamp(36px,5vw,72px);letter-spacing:-2px;line-height:1;margin:16px 0 0}
+.hb-mag p{color:color-mix(in srgb, var(--bg) 82%, transparent);font-size:15px;max-width:380px;margin:18px 0 0}
+
+@media(max-width:800px){
+  .hb-studio__spread{grid-template-columns:1fr}
+  .hb-studio__hero{aspect-ratio:4/3}
+  .hb-story{padding:56px 0}
+  .hb-story__grid{grid-template-columns:1fr}
+  .hb-story__copy{order:2}
+  .hb-rail{padding:48px 0 56px}
+  .hb-mag{padding:56px 0}
+  .hb-mag__grid{grid-template-columns:1fr}
+}

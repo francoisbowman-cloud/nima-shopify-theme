@@ -1,28 +1,30 @@
-<div class="container journal-teaser-wrap">
-  <section class="mag-teaser">
-    {%- if section.settings.image != blank -%}
-      {%- assign teaser_alt = section.settings.image.alt | default: 'home.journal.heading' | t | strip_html -%}
-      {{
-        section.settings.image
-        | image_url: width: 1800
-        | image_tag:
-          widths: '640, 960, 1200, 1600, 1800',
-          sizes: '(min-width: 1180px) 1180px, 100vw',
-          loading: 'lazy',
-          decoding: 'async',
-          class: 'mag-teaser__img',
-          alt: teaser_alt
-      }}
-    {%- endif -%}
-    <div class="mag-teaser__scrim"></div>
-    <div class="mag-teaser__card">
-      <span class="kicker on-dark-kicker">{{ 'home.journal.kicker' | t }}</span>
-      <h3 class="mag-teaser__h">{{ 'home.journal.heading' | t }}</h3>
-      <p class="on-dark-text">{{ 'home.journal.text' | t }}</p>
+<section class="hb-mag">
+  {%- if section.settings.image != blank -%}
+    {%- assign teaser_alt = section.settings.image.alt | default: 'home.journal.heading' | t | strip_html -%}
+    {{
+      section.settings.image
+      | image_url: width: 1800
+      | image_tag:
+        widths: '640, 960, 1200, 1600, 1800',
+        sizes: '100vw',
+        loading: 'lazy',
+        decoding: 'async',
+        class: 'hb-mag__bg',
+        alt: teaser_alt
+    }}
+    <div class="hb-mag__scrim"></div>
+  {%- endif -%}
+  <div class="container hb-mag__grid">
+    <div>
+      <span class="kicker hb-kicker--dark">{{ 'home.journal.kicker' | t }}</span>
+      <h3>{{ 'home.journal.heading' | t }}</h3>
+    </div>
+    <div>
+      <p>{{ 'home.journal.text' | t }}</p>
       <a class="btn btn--light" href="{{ section.settings.button_url | default: '/pages/magazine' }}">{{ 'home.journal.cta' | t }}</a>
     </div>
-  </section>
-</div>
+  </div>
+</section>
 
 {% schema %}
 {
