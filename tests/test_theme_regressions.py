@@ -35,6 +35,14 @@ class ThemeRegressionTests(unittest.TestCase):
         self.assertIn("id: submittedVariantId", source)
         self.assertNotIn("setTimeout(function () {\n          if (btn) { btn.disabled = false; btn.textContent = original; }", source)
 
+    def test_product_cards_guard_against_supplier_listing_alt_text(self):
+        helper = (ROOT / "theme/snippets/product-image-alt.liquid").read_text(encoding="utf-8")
+        card = (ROOT / "theme/snippets/product-card.liquid").read_text(encoding="utf-8")
+        self.assertIn("safe_alt.size > 140", helper)
+        self.assertIn("assign safe_alt = product.title", helper)
+        self.assertIn("render 'product-image-alt'", card)
+        self.assertNotIn("product.featured_image.alt | default: product.title", card)
+
 
 if __name__ == "__main__":
     unittest.main()
