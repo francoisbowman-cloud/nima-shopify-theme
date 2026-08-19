@@ -43,6 +43,30 @@ class ThemeRegressionTests(unittest.TestCase):
         self.assertIn("render 'product-image-alt'", card)
         self.assertNotIn("product.featured_image.alt | default: product.title", card)
 
+    def test_product_and_collection_meta_descriptions_have_content_fallbacks(self):
+        source = (ROOT / "theme/layout/theme.liquid").read_text(encoding="utf-8")
+        self.assertIn("when 'product'", source)
+        self.assertIn("product.description | strip_html | strip_newlines | truncate: 160", source)
+        self.assertIn("when 'collection'", source)
+        self.assertIn("collection.description | strip_html | strip_newlines | truncate: 160", source)
+
+    def test_css_override_layer_budget_cannot_silently_grow(self):
+        source = (ROOT / "theme/layout/theme.liquid").read_text(encoding="utf-8")
+        stylesheets = re.findall(r"\{\{\s*'([^']+\.css)'\s*\|\s*asset_url\s*\|\s*stylesheet_tag\s*\}\}", source)
+        expected = [
+            "base.css",
+            "launch.css",
+            "premium.css",
+            "premium-home.css",
+            "release-hotfix.css",
+            "audit-polish.css",
+            "commerce-white.css",
+            "pdp-gallery-fix.css",
+            "home-b.css",
+        ]
+        self.assertEqual(stylesheets, expected)
+        self.assertLessEqual(len(stylesheets), 9)
+
 
 if __name__ == "__main__":
     unittest.main()
