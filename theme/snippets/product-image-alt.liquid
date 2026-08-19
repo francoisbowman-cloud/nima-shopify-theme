@@ -1,0 +1,12 @@
+{%- comment -%}
+  Returns a concise, product-safe image alt value.
+  Supplier imports can carry marketplace listing titles hundreds of characters long.
+  Preserve intentional concise alt text; otherwise fall back to the curated product title.
+  Usage: {% capture image_alt %}{% render 'product-image-alt', image: image, product: product %}{% endcapture %}
+{%- endcomment -%}
+{%- liquid
+  assign safe_alt = image.alt | strip
+  if safe_alt == blank or safe_alt.size > 140
+    assign safe_alt = product.title | strip
+  endif
+-%}{{- safe_alt -}}
