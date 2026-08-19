@@ -15,8 +15,18 @@
         case template.name
           when 'index'
             assign meta_description = 'seo.home_description' | t
+          when 'product'
+            if product.description != blank
+              assign meta_description = product.description | strip_html | strip_newlines | truncate: 160
+            else
+              assign meta_description = 'seo.default_description' | t
+            endif
           when 'collection'
-            assign meta_description = 'seo.collection_description' | t: collection: collection.title
+            if collection.description != blank
+              assign meta_description = collection.description | strip_html | strip_newlines | truncate: 160
+            else
+              assign meta_description = 'seo.collection_description' | t: collection: collection.title
+            endif
           when 'search'
             assign meta_description = 'seo.search_description' | t
           else
