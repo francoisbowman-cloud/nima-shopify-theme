@@ -13,7 +13,7 @@
 <a class="pcard{% if is_featured %} pcard--featured{% endif %}" href="{{ product.url }}" data-category="{{ product.type | escape }}">
   <div class="pcard__media">
     {%- if product.featured_image != blank -%}
-      {%- assign card_alt = product.featured_image.alt | default: product.title -%}
+      {%- capture card_alt -%}{% render 'product-image-alt', image: product.featured_image, product: product %}{%- endcapture -%}
       {{
         product.featured_image
         | image_url: width: 1200
