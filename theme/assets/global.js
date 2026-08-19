@@ -59,6 +59,22 @@
       .catch(function () {});
   }
 
+  function currentVariantInput(form) {
+    return form.querySelector('[data-variant-option]:checked');
+  }
+
+  function syncAddButtonToCurrentVariant(form, btn) {
+    if (!btn) return;
+    var input = currentVariantInput(form);
+    if (!input) return;
+    var available = input.getAttribute('data-available') === 'true';
+    var priceText = input.getAttribute('data-price') || '';
+    btn.disabled = !available;
+    btn.textContent = available
+      ? btn.getAttribute('data-add-label') + ' — ' + priceText
+      : btn.getAttribute('data-soldout-label');
+  }
+
   /* ---- Add to cart ---- */
   document.addEventListener('submit', function (e) {
     var form = e.target.closest('[data-product-form]');
@@ -67,6 +83,8 @@
 
     var btn = form.querySelector('[data-add-btn]');
     var error = form.querySelector('[data-product-error]');
+    var idInput = form.querySelector('[name="id"]');
+    var submittedVariantId = idInput ? idInput.value : '';
     var original = btn ? btn.textContent : '';
     var quantityInput = form.querySelector('[name="quantity"]');
     var quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
@@ -80,7 +98,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        id: form.querySelector('[name="id"]').value,
+        id: submittedVariantId,
         quantity: quantity
       })
     })
@@ -90,13 +108,24 @@
       })
       .then(function () {
         refreshCartCount();
-        if (btn) { btn.textContent = btn.getAttribute('data-added') || 'Añadido ✓'; }
-        setTimeout(function () {
-          if (btn) { btn.disabled = false; btn.textContent = original; }
-        }, 1600);
+        var variantUnchanged = idInput && idInput.value === submittedVariantId;
+        if (btn && variantUnchanged) {
+          btn.textContent = btn.getAttribute('data-added') || 'Añadido ✓';
+          setTimeout(function () {
+            syncAddButtonToCurrentVariant(form, btn);
+          }, 1600);
+        } else {
+          syncAddButtonToCurrentVariant(form, btn);
+        }
       })
       .catch(function () {
-        if (btn) { btn.disabled = false; btn.textContent = original; }
+        var variantUnchanged = idInput && idInput.value === submittedVariantId;
+        if (btn && variantUnchanged) {
+          btn.disabled = false;
+          btn.textContent = original;
+        } else {
+          syncAddButtonToCurrentVariant(form, btn);
+        }
         if (error) error.hidden = false;
       });
   });
