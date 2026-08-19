@@ -1,63 +1,27 @@
 {%- liquid
   assign e1 = product.metafields.ovl.dominant_emotion
   assign e2 = product.metafields.ovl.emotional_benefit
-  assign visual_profile = product.metafields.ovl.visual_profile
 -%}
 
 <section class="container story story--b">
-  {%- if section.settings.kicker != blank -%}<span class="kicker">{{ section.settings.kicker }}</span>{%- endif -%}
-
+  <span class="kicker">{{ 'products.story.kicker' | t }}</span>
   <div class="story-grid story-grid--b">
     <div>
       {%- if section.settings.image != blank -%}
         {%- assign story_alt = section.settings.image.alt | default: product.title -%}
-        {{
-          section.settings.image
-          | image_url: width: 1400
-          | image_tag:
-            widths: '480, 720, 960, 1200, 1400',
-            sizes: '(min-width: 801px) 48vw, 100vw',
-            loading: 'lazy',
-            decoding: 'async',
-            alt: story_alt
-        }}
+        {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '480, 720, 960, 1200, 1400', sizes: '(min-width: 801px) 48vw, 100vw', loading: 'lazy', decoding: 'async', alt: story_alt }}
       {%- elsif product.images[1] != blank -%}
-        {{
-          product.images[1]
-          | image_url: width: 1400
-          | image_tag:
-            widths: '480, 720, 960, 1200, 1400',
-            sizes: '(min-width: 801px) 48vw, 100vw',
-            loading: 'lazy',
-            decoding: 'async',
-            alt: product.title
-        }}
+        {{ product.images[1] | image_url: width: 1400 | image_tag: widths: '480, 720, 960, 1200, 1400', sizes: '(min-width: 801px) 48vw, 100vw', loading: 'lazy', decoding: 'async', alt: product.title }}
       {%- endif -%}
     </div>
     <div>
-      <span class="kicker">Experiencia OVL</span>
-      <h3 class="story--b__h">{{ section.settings.subheading }}</h3>
-      <div class="rte">{{ section.settings.body }}</div>
-
+      <h3 class="story--b__h">{{ 'products.story.heading' | t }}</h3>
+      <p class="rte">{{ 'products.story.body' | t }}</p>
       {%- if e1 != blank or e2 != blank -%}
         <div class="ovl-badges">
           {%- assign all_emotions = "Tranquilidad,Seguridad,Confort,Ternura,Frescura,Cuidado" | split: "," -%}
-          {%- for emo in all_emotions -%}
-            {%- if emo == e1 or emo == e2 -%}
-              <span class="ovl-badge ovl-badge--active">{{ emo }}</span>
-            {%- else -%}
-              <span class="ovl-badge">{{ emo }}</span>
-            {%- endif -%}
-          {%- endfor -%}
+          {%- for emo in all_emotions -%}<span class="ovl-badge{% if emo == e1 or emo == e2 %} ovl-badge--active{% endif %}">{{ emo }}</span>{%- endfor -%}
         </div>
-      {%- endif -%}
-
-      {%- if visual_profile != blank -%}
-        <p class="visual-profile"><span>{{ 'products.visual_profile' | t }}:</span> {{ visual_profile }}</p>
-      {%- endif -%}
-
-      {%- if section.settings.button_label != blank -%}
-        <a class="btn" href="{{ section.settings.button_url | default: '#' }}">{{ section.settings.button_label }} →</a>
       {%- endif -%}
     </div>
   </div>
@@ -65,15 +29,10 @@
 
 {% schema %}
 {
-  "name": "Experiencia OVL",
+  "name": "Historia de producto",
   "settings": [
-    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Experiencia OVL" },
-    { "type": "image_picker", "id": "image", "label": "Imagen (si vacío, usa la 2ª imagen del producto)" },
-    { "type": "text", "id": "subheading", "label": "Título", "default": "Un objeto convertido en experiencia." },
-    { "type": "richtext", "id": "body", "label": "Cuerpo", "default": "<p>OVL organiza la luz, el ritmo, la composición y el lenguaje alrededor de una emoción dominante. El producto sigue siendo fácil de comprar; la historia empieza después, para quien quiere comprender más.</p>" },
-    { "type": "text", "id": "button_label", "label": "Texto del botón" },
-    { "type": "url", "id": "button_url", "label": "Enlace del botón" }
+    { "type": "image_picker", "id": "image", "label": "Imagen (si vacío, usa la 2ª imagen del producto)" }
   ],
-  "presets": [{ "name": "Producto — Experiencia OVL" }]
+  "presets": [{ "name": "Producto — Historia" }]
 }
 {% endschema %}
