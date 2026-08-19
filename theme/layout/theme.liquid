@@ -1,14 +1,8 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="{{ settings.color_bg }}">
-    <link rel="canonical" href="{{ canonical_url }}">
-    {%- if settings.favicon != blank -%}
-      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
-    {%- endif -%}
-
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="{{ settings.color_bg }}"><link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}<link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">{%- endif -%}
     {%- liquid
       assign meta_description = page_description
       if meta_description == blank
@@ -34,70 +28,13 @@
         endcase
       endif
     -%}
-
-    <title>
-      {{ page_title }}
-      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
-      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &middot; {{ shop.name }}{% endunless -%}
-    </title>
-
-    <meta name="description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
-    <meta property="og:site_name" content="{{ shop.name | escape }}">
-    <meta property="og:title" content="{{ page_title | escape }}">
-    <meta property="og:description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
-    <meta property="og:url" content="{{ canonical_url }}">
-    <meta property="og:type" content="{% if request.page_type == 'product' %}product{% else %}website{% endif %}">
-    <meta name="twitter:card" content="summary_large_image">
-
-    {{ content_for_header }}
-    {% render 'structured-data' %}
-
-    {%- style -%}
-      :root{
-        --bg: {{ settings.color_bg }};
-        --text: {{ settings.color_text }};
-        --muted: {{ settings.color_muted }};
-        --line: {{ settings.color_line }};
-        --soft: {{ settings.color_soft }};
-        --green: {{ settings.color_accent }};
-        --green2: {{ settings.color_accent_soft }};
-        --page-width: {{ settings.page_width }}px;
-        {%- if settings.heading_font != blank -%}
-          --serif: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
-        {%- endif -%}
-        {%- if settings.body_font != blank -%}
-          --sans: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
-        {%- endif -%}
-      }
-    {%- endstyle -%}
-
-    {%- style -%}
-      {%- if settings.body_font != blank -%}{{ settings.body_font | font_face: font_display: 'swap' }}{%- endif -%}
-      {%- if settings.heading_font != blank -%}{{ settings.heading_font | font_face: font_display: 'swap' }}{%- endif -%}
-    {%- endstyle -%}
-
-    {{ 'base.css' | asset_url | stylesheet_tag }}
-    {{ 'launch.css' | asset_url | stylesheet_tag }}
-    {{ 'premium.css' | asset_url | stylesheet_tag }}
-    {{ 'premium-home.css' | asset_url | stylesheet_tag }}
-    {{ 'release-hotfix.css' | asset_url | stylesheet_tag }}
-    {{ 'audit-polish.css' | asset_url | stylesheet_tag }}
-    {{ 'commerce-white.css' | asset_url | stylesheet_tag }}
-    {{ 'pdp-gallery-fix.css' | asset_url | stylesheet_tag }}
-    {{ 'home-b.css' | asset_url | stylesheet_tag }}
+    <title>{{ page_title }}{%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}{%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}{%- unless page_title contains shop.name %} &middot; {{ shop.name }}{% endunless -%}</title>
+    <meta name="description" content="{{ meta_description | strip_html | strip_newlines | escape }}"><meta property="og:site_name" content="{{ shop.name | escape }}"><meta property="og:title" content="{{ page_title | escape }}"><meta property="og:description" content="{{ meta_description | strip_html | strip_newlines | escape }}"><meta property="og:url" content="{{ canonical_url }}"><meta property="og:type" content="{% if request.page_type == 'product' %}product{% else %}website{% endif %}"><meta name="twitter:card" content="summary_large_image">
+    {{ content_for_header }}{% render 'structured-data' %}
+    {%- style -%}:root{--bg:{{ settings.color_bg }};--text:{{ settings.color_text }};--muted:{{ settings.color_muted }};--line:{{ settings.color_line }};--soft:{{ settings.color_soft }};--green:{{ settings.color_accent }};--green2:{{ settings.color_accent_soft }};--page-width:{{ settings.page_width }}px;{%- if settings.heading_font != blank -%}--serif:{{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};{%- endif -%}{%- if settings.body_font != blank -%}--sans:{{ settings.body_font.family }},{{ settings.body_font.fallback_families }};{%- endif -%}}{%- endstyle -%}
+    {%- style -%}{%- if settings.body_font != blank -%}{{ settings.body_font | font_face: font_display: 'swap' }}{%- endif -%}{%- if settings.heading_font != blank -%}{{ settings.heading_font | font_face: font_display: 'swap' }}{%- endif -%}{%- endstyle -%}
+    {{ 'base.css' | asset_url | stylesheet_tag }}{{ 'launch.css' | asset_url | stylesheet_tag }}{{ 'premium.css' | asset_url | stylesheet_tag }}{{ 'premium-home.css' | asset_url | stylesheet_tag }}{{ 'release-hotfix.css' | asset_url | stylesheet_tag }}{{ 'audit-polish.css' | asset_url | stylesheet_tag }}{{ 'commerce-white.css' | asset_url | stylesheet_tag }}{{ 'pdp-gallery-fix.css' | asset_url | stylesheet_tag }}{{ 'home-b.css' | asset_url | stylesheet_tag }}{{ 'perceptual-hotfix.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'global.js' | asset_url }}" defer></script>
   </head>
-
-  <body class="template-{{ template.name | handle }}">
-    <a class="skip-to-content visually-hidden" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
-
-    {% sections 'header-group' %}
-
-    <main id="MainContent" role="main">
-      {{ content_for_layout }}
-    </main>
-
-    {% sections 'footer-group' %}
-  </body>
+  <body class="template-{{ template.name | handle }}"><a class="skip-to-content visually-hidden" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>{% sections 'header-group' %}<main id="MainContent" role="main">{{ content_for_layout }}</main>{% sections 'footer-group' %}</body>
 </html>
