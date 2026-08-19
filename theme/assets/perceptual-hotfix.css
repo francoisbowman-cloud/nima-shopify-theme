@@ -1,0 +1,29 @@
+/* OMNI perceptual hotfix — customer-visible media geometry only. */
+.pcard__media,
+.template-product .gallery__main,
+.template-product .gallery__thumbs button{
+  overflow:hidden!important;
+  background:#fff!important;
+}
+.pcard__media img,
+.pcard__media .pcard__image,
+.template-product .gallery__main>img,
+.template-product [data-gallery-main],
+.template-product .gallery__thumbs img,
+.template-product [data-gallery-thumb] img{
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#fff!important;
+}
+.pcard__media img,.pcard__media .pcard__image{padding:10%!important}
+.template-product .gallery__main>img,.template-product [data-gallery-main]{padding:8%!important}
+.template-product .gallery__thumbs img,.template-product [data-gallery-thumb] img{padding:7px!important}
+@media(max-width:520px){
+  .pcard__media img,.pcard__media .pcard__image{padding:12%!important}
+  .template-product .gallery__main>img,.template-product [data-gallery-main]{padding:9%!important}
+}
