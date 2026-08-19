@@ -1,0 +1,47 @@
+{
+  "schema": "omni.catalog_quality_round.v1",
+  "project": "nima",
+  "captured_at": "2026-08-19",
+  "source": "Shopify Admin GraphQL live catalog audit",
+  "active_products": 59,
+  "findings": {
+    "missing_explicit_seo": {
+      "count": 44,
+      "ratio": 0.7458,
+      "action": "theme fallback added now; product-level SEO remains a controlled content batch"
+    },
+    "missing_product_type": {
+      "count": 12,
+      "ratio": 0.2034,
+      "handles": [
+        "foam-soccer-balls-cat-toys-pack-of-12",
+        "dog-poop-bag-holder-and-dispenser-with-leash-attachment-leak-proof-easy-twist-top-for-refills-includes-1-roll-bags-blush",
+        "pet-dog-grooming-scissors-stainless-straight-curved-thinning-shears-trimmer-kits",
+        "dog-poop-bags-280-counts-extra-thick-leakproof-waste-bag-with-dispenser-for-doggy-scented",
+        "rabbit-chew-ball-timothy-grass-grinding-small-animal-activity-play-chew-toys-for-bunny-rabbits-hamster-guinea-pigs-gerbils",
+        "waterproof-pet-feeding-mats-with-high-lips-multiple-size-and-colors-for-dogs-cats-others-g",
+        "16pcs-timothy-hay-treats-natural-chews-for-teeth-handmade-rabbit-chinchilla-gerbil-rat-hamster-toys-bunny-guinea-pig",
+        "pet-memorial-picture-frame-sympathy-gift-dog-cat-tribute-black-sympathy-loss-gift-dog-cat-remembrance-keepsake-tribute",
+        "feather-teaser-cat-toy-interactive-wand-with-extra-long-34-5-wand-and-small-bell-fun-exerciser-playing-toy-for-kittens-or-cats-brown-feather",
+        "dog-costume-clothes-cute-denim-overalls-for-small-medium-pets-boy-girl-dogs-coats-jeans-t-shirts-sweatshirts",
+        "bird-chewing-toy-large-medium-parrot-cage-bite-toys-african-grey-macaws-cockatoos-eclectus-amazon-apple-22inch",
+        "dog-bed-crate-pad-ultra-soft-pet-mat-star-print-22-inch-brown-washable-crate-mat-for-large-medium-small-dogs-reversible-fleece-dog-crate-kennel-mat-flat-cat-bed-liner"
+      ],
+      "action": "classify in a separate reviewed Shopify content batch; do not guess taxonomy"
+    },
+    "supplier_shaped_primary_media_alt": {
+      "status": "present",
+      "action": "render-time guard already active for excessively long alt text; source cleanup remains a controlled media/content batch"
+    },
+    "css_override_layers": {
+      "active_stylesheets": 9,
+      "action": "budget frozen at current count; consolidation requires visual before/after evidence rather than blind deletion"
+    }
+  },
+  "restrain": {
+    "live_product_mutations_performed": false,
+    "production_theme_mutations_performed": false,
+    "reason": "SEO, product type, and source media edits affect live catalog data immediately and need a separately reviewed batch. CSS deletion without rendered evidence is also rejected."
+  },
+  "round_status": "IMPLEMENTED_SAFE_LAYER_AWAITING_CI"
+}
