@@ -27,6 +27,14 @@ class ThemeRegressionTests(unittest.TestCase):
         self.assertIn(".split--b{display:block;min-height:0", css)
         self.assertIn(".split--b>div{padding:0}", css)
 
+    def test_add_to_cart_feedback_does_not_restore_stale_variant_state(self):
+        source = (ROOT / "theme/assets/global.js").read_text(encoding="utf-8")
+        self.assertIn("submittedVariantId", source)
+        self.assertIn("syncAddButtonToCurrentVariant(form, btn)", source)
+        self.assertIn("idInput.value === submittedVariantId", source)
+        self.assertIn("id: submittedVariantId", source)
+        self.assertNotIn("setTimeout(function () {\n          if (btn) { btn.disabled = false; btn.textContent = original; }", source)
+
 
 if __name__ == "__main__":
     unittest.main()
