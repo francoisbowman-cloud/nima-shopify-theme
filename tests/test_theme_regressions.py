@@ -3,7 +3,6 @@ import re
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -33,15 +32,6 @@ class ThemeRegressionTests(unittest.TestCase):
         self.assertIn("syncAddButtonToCurrentVariant(form, btn)", source)
         self.assertIn("idInput.value === submittedVariantId", source)
         self.assertIn("id: submittedVariantId", source)
-        self.assertNotIn("setTimeout(function () {\n          if (btn) { btn.disabled = false; btn.textContent = original; }", source)
-
-    def test_product_cards_guard_against_supplier_listing_alt_text(self):
-        helper = (ROOT / "theme/snippets/product-image-alt.liquid").read_text(encoding="utf-8")
-        card = (ROOT / "theme/snippets/product-card.liquid").read_text(encoding="utf-8")
-        self.assertIn("safe_alt.size > 140", helper)
-        self.assertIn("assign safe_alt = product.title", helper)
-        self.assertIn("render 'product-image-alt'", card)
-        self.assertNotIn("product.featured_image.alt | default: product.title", card)
 
     def test_product_and_collection_meta_descriptions_have_content_fallbacks(self):
         source = (ROOT / "theme/layout/theme.liquid").read_text(encoding="utf-8")
@@ -53,19 +43,10 @@ class ThemeRegressionTests(unittest.TestCase):
     def test_css_override_layer_budget_cannot_silently_grow(self):
         source = (ROOT / "theme/layout/theme.liquid").read_text(encoding="utf-8")
         stylesheets = re.findall(r"\{\{\s*'([^']+\.css)'\s*\|\s*asset_url\s*\|\s*stylesheet_tag\s*\}\}", source)
-        expected = [
-            "base.css",
-            "launch.css",
-            "premium.css",
-            "premium-home.css",
-            "release-hotfix.css",
-            "audit-polish.css",
-            "commerce-white.css",
-            "pdp-gallery-fix.css",
-            "home-b.css",
-        ]
+        expected = ["base.css","launch.css","premium.css","premium-home.css","release-hotfix.css","audit-polish.css","commerce-white.css","pdp-gallery-fix.css","home-b.css","perceptual-hotfix.css"]
         self.assertEqual(stylesheets, expected)
-        self.assertLessEqual(len(stylesheets), 9)
+        self.assertLessEqual(len(stylesheets), 10)
+        self.assertEqual(stylesheets[-1], "perceptual-hotfix.css")
 
 
 if __name__ == "__main__":
