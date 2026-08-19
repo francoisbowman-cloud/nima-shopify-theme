@@ -1,0 +1,12 @@
+{% doc %}
+@param {image} image - Product image whose alt text is evaluated.
+@param {product} product - Product that owns the image.
+@example
+{% render 'product-image-alt', image: product.featured_image, product: product %}
+{% enddoc %}
+{%- liquid
+  assign safe_alt = image.alt | strip
+  if safe_alt == blank or safe_alt.size > 140
+    assign safe_alt = product.title | strip
+  endif
+-%}{{- safe_alt -}}
