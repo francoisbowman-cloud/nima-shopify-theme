@@ -40,10 +40,20 @@
       </div>
       {%- for block in section.blocks -%}
         <div {{ block.shopify_attributes }}>
-          <h4>{{ block.settings.heading }}</h4>
+          {%- assign footer_heading_key = 'sections.footer.menu_' | append: forloop.index | append: '_heading' -%}
+          <h4>{%- if section.settings.use_localized_copy and forloop.index <= 2 -%}{{ footer_heading_key | t }}{%- else -%}{{ block.settings.heading }}{%- endif -%}</h4>
           <ul>
             {%- for link in block.settings.menu.links -%}
-              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- assign footer_link_key = '' -%}
+              {%- case link.handle -%}
+                {%- when 'home' -%}{%- assign footer_link_key = 'sections.footer.links.home' -%}
+                {%- when 'catalogo' -%}{%- assign footer_link_key = 'sections.footer.links.catalog' -%}
+                {%- when 'magazine' -%}{%- assign footer_link_key = 'sections.footer.links.magazine' -%}
+                {%- when 'sobre-nima' -%}{%- assign footer_link_key = 'sections.footer.links.about' -%}
+                {%- when 'contacto' -%}{%- assign footer_link_key = 'sections.footer.links.contact' -%}
+                {%- when 'search' -%}{%- assign footer_link_key = 'general.search' -%}
+              {%- endcase -%}
+              <li><a href="{{ link.url }}">{%- if section.settings.use_localized_copy and footer_link_key != blank -%}{{ footer_link_key | t }}{%- else -%}{{ link.title }}{%- endif -%}</a></li>
             {%- endfor -%}
           </ul>
         </div>
