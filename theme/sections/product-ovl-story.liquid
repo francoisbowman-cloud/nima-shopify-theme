@@ -20,7 +20,18 @@
       {%- if e1 != blank or e2 != blank -%}
         <div class="ovl-badges">
           {%- assign all_emotions = "Tranquilidad,Seguridad,Confort,Ternura,Frescura,Cuidado" | split: "," -%}
-          {%- for emo in all_emotions -%}<span class="ovl-badge{% if emo == e1 or emo == e2 %} ovl-badge--active{% endif %}">{{ emo }}</span>{%- endfor -%}
+          {%- for emo in all_emotions -%}
+            {%- assign emotion_key = '' -%}
+            {%- case emo -%}
+              {%- when 'Tranquilidad' -%}{%- assign emotion_key = 'products.emotions.tranquility' -%}
+              {%- when 'Seguridad' -%}{%- assign emotion_key = 'products.emotions.security' -%}
+              {%- when 'Confort' -%}{%- assign emotion_key = 'products.emotions.comfort' -%}
+              {%- when 'Ternura' -%}{%- assign emotion_key = 'products.emotions.tenderness' -%}
+              {%- when 'Frescura' -%}{%- assign emotion_key = 'products.emotions.freshness' -%}
+              {%- when 'Cuidado' -%}{%- assign emotion_key = 'products.emotions.care' -%}
+            {%- endcase -%}
+            <span class="ovl-badge{% if emo == e1 or emo == e2 %} ovl-badge--active{% endif %}">{{ emotion_key | t }}</span>
+          {%- endfor -%}
         </div>
       {%- endif -%}
     </div>

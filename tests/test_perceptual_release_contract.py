@@ -29,6 +29,22 @@ def test_internal_omni_vocabulary_cannot_leak_into_product_story():
     assert "products.story.heading" in story
 
 
+def test_product_emotion_badges_are_locale_driven():
+    story = read("sections/product-ovl-story.liquid")
+    en = read("locales/en.json")
+    es = read("locales/es.default.json")
+    assert "products.emotions.tranquility" in story
+    assert "products.emotions.security" in story
+    assert "products.emotions.comfort" in story
+    assert "products.emotions.tenderness" in story
+    assert "products.emotions.freshness" in story
+    assert "products.emotions.care" in story
+    for token in ['"tranquility":"Calm"', '"security":"Security"', '"care":"Care"']:
+        assert token in en
+    for token in ['"tranquility":"Tranquilidad"', '"security":"Seguridad"', '"care":"Cuidado"']:
+        assert token in es
+
+
 def test_commercial_media_has_last_loaded_containment_guard():
     layout = read("layout/theme.liquid")
     css = read("assets/perceptual-hotfix.css")
