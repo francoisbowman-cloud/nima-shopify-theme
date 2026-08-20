@@ -2,7 +2,6 @@
   assign e1 = product.metafields.ovl.dominant_emotion
   assign e2 = product.metafields.ovl.emotional_benefit
 -%}
-
 <section class="container story story--b">
   <span class="kicker">{{ 'products.story.kicker' | t }}</span>
   <div class="story-grid story-grid--b">
@@ -21,23 +20,14 @@
         <div class="ovl-badges">
           {%- assign all_emotions = "Tranquilidad,Seguridad,Confort,Ternura,Frescura,Cuidado" | split: "," -%}
           {%- for emo in all_emotions -%}
-            {%- assign emotion_key = '' -%}
-            {%- case emo -%}
-              {%- when 'Tranquilidad' -%}{%- assign emotion_key = 'products.emotions.tranquility' -%}
-              {%- when 'Seguridad' -%}{%- assign emotion_key = 'products.emotions.security' -%}
-              {%- when 'Confort' -%}{%- assign emotion_key = 'products.emotions.comfort' -%}
-              {%- when 'Ternura' -%}{%- assign emotion_key = 'products.emotions.tenderness' -%}
-              {%- when 'Frescura' -%}{%- assign emotion_key = 'products.emotions.freshness' -%}
-              {%- when 'Cuidado' -%}{%- assign emotion_key = 'products.emotions.care' -%}
-            {%- endcase -%}
-            <span class="ovl-badge{% if emo == e1 or emo == e2 %} ovl-badge--active{% endif %}">{{ emotion_key | t }}</span>
+            {%- capture public_emotion -%}{% render 'public-emotion-label', emotion: emo %}{%- endcapture -%}
+            {%- if public_emotion != blank -%}<span class="ovl-badge{% if emo == e1 or emo == e2 %} ovl-badge--active{% endif %}">{{ public_emotion | strip }}</span>{%- endif -%}
           {%- endfor -%}
         </div>
       {%- endif -%}
     </div>
   </div>
 </section>
-
 {% schema %}
 {
   "name": "Historia de producto",
