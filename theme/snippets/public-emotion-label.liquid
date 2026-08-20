@@ -1,0 +1,16 @@
+{%- comment -%}
+  Public vocabulary boundary for OVL emotion values.
+  Input: `emotion` may contain an internal canonical value stored in metafields.
+  Output: locale-safe customer-facing label. Unknown values render nothing rather
+  than leaking internal vocabulary into the storefront.
+{%- endcomment -%}
+{%- assign emotion_key = '' -%}
+{%- case emotion -%}
+  {%- when 'Tranquilidad' -%}{%- assign emotion_key = 'products.emotions.tranquility' -%}
+  {%- when 'Seguridad' -%}{%- assign emotion_key = 'products.emotions.security' -%}
+  {%- when 'Confort' -%}{%- assign emotion_key = 'products.emotions.comfort' -%}
+  {%- when 'Ternura' -%}{%- assign emotion_key = 'products.emotions.tenderness' -%}
+  {%- when 'Frescura' -%}{%- assign emotion_key = 'products.emotions.freshness' -%}
+  {%- when 'Cuidado' -%}{%- assign emotion_key = 'products.emotions.care' -%}
+{%- endcase -%}
+{%- if emotion_key != blank -%}{{ emotion_key | t }}{%- endif -%}
