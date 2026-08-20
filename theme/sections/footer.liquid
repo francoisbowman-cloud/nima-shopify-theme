@@ -14,143 +14,31 @@
     assign footer_tagline = 'sections.footer.tagline' | t
   endif
 -%}
-<footer class="footer">
-  <div class="container">
-    {%- if newsletter_heading != blank -%}
-      <div class="footer-newsletter">
-        <div>
-          <span class="kicker on-dark-kicker">{{ newsletter_kicker }}</span>
-          <h2>{{ newsletter_heading }}</h2>
-        </div>
-        {%- form 'customer', class: 'footer-newsletter__form' -%}
-          <input type="hidden" name="contact[tags]" value="newsletter">
-          <label class="visually-hidden" for="FooterNewsletterEmail">{{ 'contact.email' | t }}</label>
-          <input id="FooterNewsletterEmail" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="{{ newsletter_placeholder }}" required>
-          <button type="submit">{{ newsletter_button }}</button>
-          {%- if form.posted_successfully? -%}<p role="status">{{ newsletter_success }}</p>{%- endif -%}
-          {%- if form.errors -%}<div role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
-        {%- endform -%}
-      </div>
-    {%- endif -%}
-    <div class="footer-main">
-    <div class="footer-cols">
-      <div class="footer-brand">
-        <div class="logo">{{ shop.name }}.</div>
-        <p class="muted">{{ footer_tagline }}</p>
-      </div>
-      {%- for block in section.blocks -%}
-        <div {{ block.shopify_attributes }}>
-          {%- assign footer_heading_key = 'sections.footer.menu_' | append: forloop.index | append: '_heading' -%}
-          <h4>{%- if section.settings.use_localized_copy and forloop.index <= 2 -%}{{ footer_heading_key | t }}{%- else -%}{{ block.settings.heading }}{%- endif -%}</h4>
-          <ul>
-            {%- for link in block.settings.menu.links -%}
-              {%- assign footer_link_key = '' -%}
-              {%- case link.handle -%}
-                {%- when 'home' -%}{%- assign footer_link_key = 'sections.footer.links.home' -%}
-                {%- when 'catalogo' -%}{%- assign footer_link_key = 'sections.footer.links.catalog' -%}
-                {%- when 'magazine' -%}{%- assign footer_link_key = 'sections.footer.links.magazine' -%}
-                {%- when 'sobre-nima' -%}{%- assign footer_link_key = 'sections.footer.links.about' -%}
-                {%- when 'contacto' -%}{%- assign footer_link_key = 'sections.footer.links.contact' -%}
-                {%- when 'search' -%}{%- assign footer_link_key = 'general.search' -%}
-              {%- endcase -%}
-              <li><a href="{{ link.url }}">{%- if section.settings.use_localized_copy and footer_link_key != blank -%}{{ footer_link_key | t }}{%- else -%}{{ link.title }}{%- endif -%}</a></li>
-            {%- endfor -%}
-          </ul>
-        </div>
-      {%- endfor -%}
-      {%- if shop.policies.size > 0 -%}
-        <div>
-          <h4>{{ 'footer.policies' | t }}</h4>
-          <ul>
-            {%- for policy in shop.policies -%}
-              {%- if policy != blank -%}
-                <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-        </div>
-      {%- endif -%}
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
-      <span>{{ 'footer.secure_checkout' | t }}</span>
-    </div>
-    </div>
-  </div>
-</footer>
-
+<footer class="footer"><div class="container">
+{%- if newsletter_heading != blank -%}<div class="footer-newsletter"><div><span class="kicker on-dark-kicker">{{ newsletter_kicker }}</span><h2>{{ newsletter_heading }}</h2></div>{%- form 'customer', class: 'footer-newsletter__form' -%}<input type="hidden" name="contact[tags]" value="newsletter"><label class="visually-hidden" for="FooterNewsletterEmail">{{ 'contact.email' | t }}</label><input id="FooterNewsletterEmail" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" placeholder="{{ newsletter_placeholder }}" required><button type="submit">{{ newsletter_button }}</button>{%- if form.posted_successfully? -%}<p role="status">{{ newsletter_success }}</p>{%- endif -%}{%- if form.errors -%}<div role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}{%- endform -%}</div>{%- endif -%}
+<div class="footer-main"><div class="footer-cols"><div class="footer-brand"><div class="logo">{{ shop.name }}.</div><p class="muted">{{ footer_tagline }}</p></div>
+{%- for block in section.blocks -%}<div {{ block.shopify_attributes }}>{%- assign footer_heading_key = 'sections.footer.menu_' | append: forloop.index | append: '_heading' -%}<h4>{% if section.settings.use_localized_copy and forloop.index <= 2 %}{{ footer_heading_key | t }}{% else %}{{ block.settings.heading }}{% endif %}</h4><ul>
+{%- for link in block.settings.menu.links -%}
+{%- liquid
+  assign footer_link_key = ''
+  assign normalized_path = link.url | split: '?' | first
+  if normalized_path == '/' or normalized_path == routes.root_url
+    assign footer_link_key = 'sections.footer.links.home'
+  elsif normalized_path contains '/collections/'
+    assign footer_link_key = 'sections.footer.links.catalog'
+  elsif normalized_path contains '/blogs/'
+    assign footer_link_key = 'sections.footer.links.magazine'
+  elsif normalized_path contains '/pages/sobre-nima' or normalized_path contains '/pages/about'
+    assign footer_link_key = 'sections.footer.links.about'
+  elsif normalized_path contains '/pages/contact'
+    assign footer_link_key = 'sections.footer.links.contact'
+  elsif normalized_path contains '/search'
+    assign footer_link_key = 'general.search'
+  endif
+-%}
+<li><a href="{{ link.url }}">{% if section.settings.use_localized_copy and footer_link_key != blank %}{{ footer_link_key | t }}{% else %}{{ link.title }}{% endif %}</a></li>{%- endfor -%}</ul></div>{%- endfor -%}
+{%- if shop.policies.size > 0 -%}<div><h4>{{ 'footer.policies' | t }}</h4><ul>{%- for policy in shop.policies -%}{%- if policy != blank -%}<li><a href="{{ policy.url }}">{{ policy.title }}</a></li>{%- endif -%}{%- endfor -%}</ul></div>{%- endif -%}
+</div><div class="footer-bottom"><span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span><span>{{ 'footer.secure_checkout' | t }}</span></div></div></div></footer>
 {% schema %}
-{
-  "name": "Pie de página",
-  "settings": [
-    {
-      "type": "checkbox",
-      "id": "use_localized_copy",
-      "label": "Usar copy automático EN/ES",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "newsletter_kicker",
-      "label": "Etiqueta del newsletter",
-      "default": "Notas de Nima"
-    },
-    {
-      "type": "text",
-      "id": "newsletter_heading",
-      "label": "Título del newsletter",
-      "default": "Ideas útiles para compartir mejor cada día con ellos."
-    },
-    {
-      "type": "text",
-      "id": "newsletter_placeholder",
-      "label": "Placeholder del correo",
-      "default": "Tu correo electrónico"
-    },
-    {
-      "type": "text",
-      "id": "newsletter_button",
-      "label": "Botón del newsletter",
-      "default": "Suscribirme"
-    },
-    {
-      "type": "text",
-      "id": "newsletter_success",
-      "label": "Mensaje de éxito",
-      "default": "Gracias por acompañarnos."
-    },
-    {
-      "type": "text",
-      "id": "tagline",
-      "label": "Tagline",
-      "default": "Objetos útiles e historias honestas para una vida más tranquila con mascotas."
-    }
-  ],
-  "blocks": [
-    {
-      "type": "menu",
-      "name": "Columna de menú",
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "Título",
-          "default": "Tienda"
-        },
-        {
-          "type": "link_list",
-          "id": "menu",
-          "label": "Menú"
-        }
-      ]
-    }
-  ],
-  "max_blocks": 3,
-  "presets": [
-    {
-      "name": "Pie de página",
-      "blocks": [{ "type": "menu" }, { "type": "menu" }]
-    }
-  ]
-}
+{"name":"Pie de página","settings":[{"type":"checkbox","id":"use_localized_copy","label":"Usar copy automático EN/ES","default":true},{"type":"text","id":"newsletter_kicker","label":"Etiqueta del newsletter","default":"Notas de Nima"},{"type":"text","id":"newsletter_heading","label":"Título del newsletter","default":"Ideas útiles para compartir mejor cada día con ellos."},{"type":"text","id":"newsletter_placeholder","label":"Placeholder del correo","default":"Tu correo electrónico"},{"type":"text","id":"newsletter_button","label":"Botón del newsletter","default":"Suscribirme"},{"type":"text","id":"newsletter_success","label":"Mensaje de éxito","default":"Gracias por acompañarnos."},{"type":"text","id":"tagline","label":"Tagline","default":"Objetos útiles e historias honestas para una vida más tranquila con mascotas."}],"blocks":[{"type":"menu","name":"Columna de menú","settings":[{"type":"text","id":"heading","label":"Título","default":"Tienda"},{"type":"link_list","id":"menu","label":"Menú"}]}],"max_blocks":3,"presets":[{"name":"Pie de página","blocks":[{"type":"menu"},{"type":"menu"}]}]}
 {% endschema %}
