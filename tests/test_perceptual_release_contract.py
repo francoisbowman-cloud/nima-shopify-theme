@@ -16,11 +16,20 @@ def test_internal_omni_vocabulary_cannot_leak_into_product_story():
     for forbidden in ('experiencia ovl','omni visual language','visual profile'): assert forbidden not in customer
     assert 'products.story.kicker' in story and 'products.story.heading' in story
 
-def test_product_emotion_badges_are_locale_driven():
-    story=read('sections/product-ovl-story.liquid'); en=read('locales/en.json'); es=read('locales/es.default.json')
-    for key in ('tranquility','security','comfort','tenderness','freshness','care'): assert f'products.emotions.{key}' in story
-    for token in ['"tranquility":"Calm"','"security":"Security"','"care":"Care"']: assert token in en
-    for token in ['"tranquility":"Tranquilidad"','"security":"Seguridad"','"care":"Cuidado"']: assert token in es
+def test_internal_emotion_values_cross_one_public_vocabulary_boundary():
+    story=read('sections/product-ovl-story.liquid'); card=read('snippets/product-card.liquid'); boundary=read('snippets/public-emotion-label.liquid')
+    assert "render 'public-emotion-label'" in story
+    assert "render 'public-emotion-label'" in card
+    assert '{{ ovl_emotion }}' not in card
+    assert '{{ internal_emotion }}' not in card
+    for internal in ('Tranquilidad','Seguridad','Confort','Ternura','Frescura','Cuidado'): assert internal in boundary
+    for key in ('tranquility','security','comfort','tenderness','freshness','care'): assert f'products.emotions.{key}' in boundary
+
+def test_unknown_internal_emotion_is_suppressed_not_leaked():
+    boundary=read('snippets/public-emotion-label.liquid')
+    assert "assign emotion_key = ''" in boundary
+    assert "if emotion_key != blank" in boundary
+    assert '{{ emotion }}' not in boundary
 
 def test_commercial_media_has_last_loaded_containment_guard():
     layout=read('layout/theme.liquid'); css=read('assets/perceptual-hotfix.css')
