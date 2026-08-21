@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "snapshot": "2026-08-10",
+  "decisions": {
+    "pet-grooming-gloves-dog-brush-mitt-deshedding-hair-removal-massage-horse-pair": {
+      "status": "PASS",
+      "reason": "product-only pair of grooming gloves; no lifestyle subject or supplier frame"
+    },
+    "anti-splash-water-bowl-for-dogs-1l-large-capacity-drinker-drinking-bowls-dog-waterer-for-puppy-cat-pet-accessories": {
+      "status": "PASS",
+      "reason": "product-only bowl on clean commerce canvas"
+    },
+    "calming-cat-bed-for-indoor-cats-anti-anxiety-donut-round-dog-bed-fluffy-faux-fur-washable-pet-bed-for-small-medium-dogs-and-cats-grey-20in": {
+      "status": "PASS",
+      "reason": "product-only bed on clean commerce canvas"
+    },
+    "crate-water-bowl-for-dogs-cats-no-spill-stainless-steel-7-5x7-4x1-7-in-pink": {
+      "status": "FAIL",
+      "reason": "secondary cat/lifestyle composite remains in the commercial image"
+    }
+  }
+}

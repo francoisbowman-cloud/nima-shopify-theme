@@ -1,0 +1,33 @@
+name: OMNI MCP Probe
+
+on:
+  pull_request:
+    paths:
+      - 'tools/nima_commerce_media/omni_mcp_client.py'
+      - '.github/workflows/omni-mcp-probe.yml'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install client dependency
+        run: python -m pip install --disable-pip-version-check requests
+      - name: Handshake and discover OMNI tools
+        run: |
+          python tools/nima_commerce_media/omni_mcp_client.py \
+            --endpoint https://image-toolkit-production.up.railway.app/mcp \
+            --probe \
+            --output commerce-media-evidence/omni-mcp-tools.json
+      - name: Upload MCP discovery evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: omni-mcp-discovery
+          path: commerce-media-evidence/omni-mcp-tools.json
+          if-no-files-found: error
+          retention-days: 14
